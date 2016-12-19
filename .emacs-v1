@@ -1,0 +1,958 @@
+;; =======================================================================
+;; ## Basic Settings
+;; Use (setq ...) to set value locally to a buffer
+;; Use (setq-default ...) to set value globally 
+;; set the default font
+;; (set-frame-font Fontname-Size)
+;; (set-frame-font "DejaVu Sans Mono-13")
+(set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
+(set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
+
+;; select the coding style of the emacs
+(prefer-coding-system 'utf-8)
+;; (set-default-coding-systems 'utf-8)
+
+;; disable the alarm bell
+(setq visible-bell 1)
+
+;; keyboard scroll one line at a time
+(setq scroll-step 1)
+
+;; support mouse wheel scrolling
+(mouse-wheel-mode t)
+
+;; scroll down one line at a time
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+
+;; M-x linum-mode to display line number
+(global-linum-mode 1)
+;; this package of displaying line numbers runs very slowly.
+
+;; set the format and spaces of the linenumber
+(if (display-graphic-p)
+    (setq linum-format "%3d \u2502")
+    (setq linum-format "3d |"))
+
+;; M-x hl-line-mode to highlight the current line
+;; (global-hl-line-mode 1)
+
+;; Set any color as the background face of the current line
+;; (set-face-background 'hl-line "#3e4446") ;; "#3e4446"
+;; (set-face-background hl-line-face "gray13") ;; SeaGreen4 gray13
+
+;; To keep syntax highlighting in the current line:
+;; (set-face-foreground 'highlight nil)
+
+;; Enable column-number-mode in the mode line
+(setq column-number-mode t)
+
+;; Enable show-paren-mode
+;; show the matching parenthesis
+(show-paren-mode t)
+;; deactivate the delay to show the matching paren
+(setq show-paren-delay 0)
+
+;; "If a matching paren is off-screen, echo the matching line."
+(defadvice show-paren-function
+    (after show-matching-paren-offscreen activate)
+  "If the matching paren is offscreen, show the matching line in the
+   echo area. Has no effect if the character before point is not
+   of the syntax class ')'."
+  (interactive)
+  (let* ((cb (char-before (point)))
+         (matching-text (and cb
+                             (char-equal (char-syntax cb) ?\) )
+                             (blink-matching-open))))
+    (when matching-text (message matching-text))))
+
+;; auto close bracket insertion. New in emacs 24
+;; insert a closing delimiter when we insert
+;; an opening delimiter
+;; (electric-pair-mode 1)
+;; make electric-pair-mode work on more brackets
+;; (setq electric-pair-pairs '(
+;;                             (?\{ . ?\})
+;;                             ))
+;; I comment out this electric pair mode since sometimes
+;; it is very annoying.
+
+;; Set cursor color to white
+(set-cursor-color "#ffffff") 
+
+;; When the GUI emacs is running,
+;; switch the windows with Meta + an arrow key
+;; If Emacs is running in the terminal, use C-c + arrow key
+(if (display-graphic-p)
+    (windmove-default-keybindings 'meta)
+    (progn
+      (global-set-key (kbd "C-c <left>")  'windmove-left)
+      (global-set-key (kbd "C-c <right>") 'windmove-right)
+      (global-set-key (kbd "C-c <up>")    'windmove-up)
+      (global-set-key (kbd "C-c <down>")  'windmove-down)))
+
+;; disable ESC to unsplit windows
+(global-unset-key (kbd "ESC ESC ESC"))
+
+;; auto-revert-mode
+(global-auto-revert-mode 1)
+;; - if it does not work, M-x revert-buffer RET yes RET
+;; - use a more practice trick: use C-x C-v RET. This tell to find an
+;;   alternate file and by default emacs suggests you the current file.
+
+;; to install a plugin file myplugin.el to this folder and add the
+;; second line
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
+;; if this one does not work (load "myplugin.el"),
+;; try this (require 'myplugin)
+
+;; Indentation Setup
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+
+;; set the c-style indentation to ellemtel
+(setq c-default-style "ellemtel" c-basic-offset 2)
+
+;; Automatic(electric) Indentation
+(global-set-key (kbd "RET") 'newline-and-indent)
+;; (define-key global-map (kbd "RET") 'newline-and-indent)
+(electric-indent-mode +1)
+
+;; activate the auto-fill-mode as a minor mode when opening a text
+;; file. The auto-fill-mode will start a new line when the current
+;; line is too long if the SPC or RET is pressed.
+;; I do not quite like this feature. 
+;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+;; Disable the Menu-bar, tool bar and scroll bar
+;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+;; (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+;; (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
+;; prevent the creation of backup files
+;; (setq make-backup-files nil)
+
+;; Make a backup file by copying
+(setq backup-by-copying t)
+
+;; Have it save the backup files in some other directory, where they
+;; won't bother you unless you go looking for them. I have the following
+;; in my .emacs:
+;; (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+;;   backup-by-copying t    ; Don't delink hardlinks
+;;   version-control t      ; Use version numbers on backups
+;;   delete-old-versions t  ; Automatically delete excess backups
+;;   kept-new-versions 20   ; how many of the newest versions to keep
+;;   kept-old-versions 5    ; and how many of the old
+;;   )
+
+;; If you enable Delete Selection mode, a minor mode, then inserting
+;; text while the mark is active causes the selected text to be
+;; deleted first.
+(delete-selection-mode 1)
+
+;; Set the emacs-grep to highlight the matching words
+(setq grep-highlight-matches t)
+
+;; make emacs respond to mouse clicks on terminal
+(xterm-mouse-mode 1)
+
+;; Change "yes or no" to "y or n"
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; make searches case insensitive
+(setq case-fold-search t)   
+;; =======================================================================
+;; =======================================================================
+;; ## Package Installation
+;; =======================================================================
+;; All packages from repositories
+;; start package.el with emacs
+(require 'package)
+;; add MELPA to repository list
+;; melpa is a package archive managed by Milkypostman. It's the
+;; easiest package archive to add packages too, and is automatically
+;; updated when the package is. The go-to source for up to date, and
+;; the vast majority of, packages. However it's worth noting that with
+;; cutting-edge comes instability, so that is a risk of stability one
+;; should be aware of. It's worth noting I've never been broken for
+;; any package I've installed via melpa, however.
+;; (add-to-list 'package-archives
+             ;; '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; marmalade is another third-party package manager. Marmalade tends to
+;; be more stable, due to the requirement that developers explicitely
+;; upload new versions of their packages.
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/") t)
+;; initialize package.el
+(setq package-enable-at-startup nil)
+(package-initialize)
+;; =======================================================================
+;; Emacs theme setup
+;; =======================================================================
+(setq custom-safe-themes t)
+(if (and (>= emacs-major-version 24)
+         (>= emacs-minor-version 4))
+    (add-to-list 'custom-theme-load-path
+                 "~/.emacs.d/themes")    
+    (add-to-list 'load-path "~/.emacs.d/themes"))
+
+;; load a customized theme in a new directory
+(add-to-list 'custom-theme-load-path
+             "~/.emacs.d/themes/emacs-color-theme-solarized")    
+;; (load-theme 'towombat t)
+;; (load-theme 'hc-zenburn t)
+(load-theme 'zenburn t)
+;; (set-frame-parameter nil 'background-mode 'dark)
+;; make the modeline high contrast
+;; (setq solarized-high-contrast-mode-line t)
+;; (load-theme 'solarized t)
+;; =======================================================================
+;; Change the emacs mode line to Vim's power line 
+;; (require 'powerline)
+;; (powerline-default-theme)
+;; =======================================================================
+;; highlight the current line number
+;; (require 'hlinum)
+;; (hlinum-activate)
+;; =======================================================================
+;; start auto-complete with emacs
+;; (require 'auto-complete)
+;; do default config for auto-complete
+;; (require 'auto-complete-config)
+;; (ac-config-default)
+;; enable the autocomplete in the racket mode
+;; (add-to-list 'ac-modes 'racket-mode)
+;; (add-to-list 'ac-modes 'sql-mode)
+;; (add-to-list 'ac-modes 'nesc-mode)
+
+;; How to install auto-complete in the older version of the emacs
+;; M-x load-file RET fileLocation/install.el
+;; install to ~/.emacs.d add this code to your .emacs
+;; (add-to-list 'load-path "~/.emacs.d/")
+;; (require 'auto-complete-config)
+;; (add-to-list 'ac-dictionary-directories "~./emacs.d//ac-dict")
+;; (ac-config-default)
+;; M-x eval-buffer # to execute the code in the .emacs buffer
+;;
+;; 3/08/2015 Disabled
+;; If the code is longer than 400 lines, this package because it works
+;; very slowly.
+
+;; -------------------------------------------------------------------------
+;; a new minor mode to text completion
+;; add these two lines if you install it manually
+;; (add-to-list 'load-path "/path/to/company")
+;; (autoload 'company-mode "company" nil t)
+;; Currently, I use company-mode for text completion (for Emacs 24)
+;; (require 'company-emacs-eclim)
+(require 'company)
+(eval-after-load "company"
+  '(progn 
+     (add-hook 'after-init-hook 'global-company-mode)
+     ;; decrease delay before autocompletion popup shows
+     (setq company-idle-delay .3)
+     ;; remove annoying blinking
+     (setq company-echo-delay 0)
+     ;; start autocompletion only after typing
+     (setq company-begin-commands '(self-insert-command)) 
+     ;; a python backend for company
+     ;; Add company-anaconda to allowed company-mode backends list
+     (add-to-list 'company-backends 'company-anaconda)
+     ;; Enable anaconda-mode in buffers you want to use company-anaconda
+     (add-hook 'python-mode-hook 'anaconda-mode)
+     ;; call the function named company-select-next when tab is pressed
+     (define-key company-active-map (kbd "TAB") 'company-select-next)
+     (define-key company-active-map [tab] 'company-select-next)
+     ;; turn on the company-selection-wrap-around
+     (setq company-selection-wrap-around t)
+     ;; set up CEDET
+     ;; In python mode, it causes annoying warning.
+     ;; (semantic-mode 1)
+     ;; make the text completion output case-sensitive
+     (setq company-dabbrev-downcase nil) ;; set it globally
+     ;; add the nesc-mode to the company-dabbrev-code list
+     ;; does not work (add-to-list 'company-dabbrev-code-modes 'nesC-mode)
+     ;; initialize company-auctex (company-auctex-init)
+     ;; register company-math as a company backend
+     (add-to-list 'company-backends 'company-math-symbols-unicode)
+     ;; register company-web-... as a company backend
+     (add-to-list 'company-backends 'company-web-html)
+     (add-to-list 'company-backends 'company-web-jade)
+     (add-to-list 'company-backends 'company-web-slim)
+     ))
+;; =======================================================================
+;; start yasnippet with emacs
+;; YASnippet is a template system for Emacs. It allows you to type an
+;; abbreviation and automatically expand it into function
+;; templates. Bundled language templates include: C, C++, C#, Perl,
+;; Python, Ruby, SQL, LaTeX, HTML, CSS and more.
+;; (require 'yasnippet)
+;; (yas-global-mode 1)
+;; =======================================================================
+;; Interactively Do Things
+;; It is a plugin that should be included in Emacs by default.
+;; M-x ido-mode
+(require 'ido)
+(eval-after-load "ido"
+  '(progn 
+     (ido-mode t)
+     (ido-vertical-mode 1)
+     ;; customize all front colors
+     (setq ido-use-faces t)
+     (set-face-attribute 'ido-vertical-first-match-face nil
+                         :background nil
+                         :foreground "orange")
+     (set-face-attribute 'ido-vertical-only-match-face nil
+                         :background nil
+                         :foreground nil)
+     (set-face-attribute 'ido-vertical-match-face nil
+                         :foreground nil)
+     ;; make the ido display vertically
+     (setq ido-vertical-show-count t)))
+
+;; =======================================================================
+;; drag-stuff functions
+;; move lines or a region up or down by pressing M-S-up or M-S-down
+(require 'drag-stuff)
+
+;; Control key as modifier:
+;; (setq drag-stuff-modifier 'control)
+(setq drag-stuff-modifier '(meta shift))
+;; Or use the global mode to activate it in all buffers.
+;; (drag-stuff-global-mode t)
+;; drag-stuff is buffer local, so hook it up
+(add-hook 'text-mode-hook 'drag-stuff-mode)
+(add-hook 'emacs-lisp-mode-hook 'drag-stuff-mode)
+(add-hook 'LaTeX-mode-hook 'drag-stuff-mode)
+(add-hook 'c-mode-hook 'drag-stuff-mode)
+(add-hook 'sh-mode-hook 'drag-stuff-mode)
+(add-hook 'nesc-mode-hook 'drag-stuff-mode)
+(add-hook 'python-mode-hook 'drag-stuff-mode)
+(add-hook 'java-mode-hook 'drag-stuff-mode)
+(add-hook 'web-mode-hook 'drag-stuff-mode)
+;; (add-hook 'html-mode-hook 'drag-stuff-mode)
+;; (add-hook 'css-mode-hook 'drag-stuff-mode)
+;; (add-hook 'js2-mode-hook 'drag-stuff-mode)
+(add-hook 'ruby-mode-hook 'drag-stuff-mode)
+;; =======================================================================
+;; multiple cursors
+;; (autoload 'multiple-cursors-mode "multiple-cursors") does not work
+;; to get out of this mode press C-g or RET
+(require 'multiple-cursors)
+(eval-after-load "multiple-cursors"
+  '(progn 
+     (global-set-key (kbd "C-S-l C-S-l") 'mc/edit-lines)
+     (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+     (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+     (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+     (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)))
+;; =======================================================================
+;; Hightlight indentation
+;; add | | indentation highlight
+;; install the indentation highlight and add the load path to the code
+(add-to-list 'load-path "~/.emacs.d/highlight-indents/")
+(require 'highlight-indentation)
+(set-face-background 'highlight-indentation-face "#555555")
+(set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
+;; hook the highlight mode to the python and the jav
+;; (add-hook 'css-mode-hook 'highlight-indentation-mode)
+(add-hook 'css-mode-hook 'highlight-indentation-current-column-mode)
+(add-hook 'nesc-mode-hook 'highlight-indentation-current-column-mode)
+(add-hook 'python-mode-hook 'highlight-indentation-current-column-mode)
+(add-hook 'java-mode-hook 'highlight-indentation-current-column-mode)
+(add-hook 'js2-mode-hook 'highlight-indentation-current-column-mode)
+
+;; =======================================================================
+;; fic mode to highlight some texts in comments such as
+;; FIXME BUG TODO 
+(add-to-list 'load-path "~/.emacs.d/fic-mode/")
+(require 'fic-mode)
+(add-hook 'c-mode-hook 'fic-mode)
+(add-hook 'nesc-mode-hook 'fic-mode)
+(add-hook 'java-mode-hook 'fic-mode)
+(add-hook 'python-mode-hook 'fic-mode)
+(add-hook 'c++-mode-hook 'fic-mode)
+(add-hook 'emacs-lisp-mode-hook 'fic-mode)
+;; (add-hook 'c-mode-hook 'turn-on-fic-mode)
+;; (add-hook 'nesc-mode-hook 'turn-on-fic-mode)
+;; (add-hook 'java-mode-hook 'turn-on-fic-mode)
+;; (add-hook 'python-mode-hook 'turn-on-fic-mode)
+;; (add-hook 'c++-mode-hook 'turn-on-fic-mode)
+;; (add-hook 'emacs-lisp-mode-hook 'turn-on-fic-mode)
+
+;; =======================================================================
+;; enable sublimity-scroll to scroll more smoothly
+(require 'sublimity-scroll)
+;; =======================================================================
+;; Rainbow Mode:
+;; Vistualize the color for all hex values in the background Some
+;; colors, like HTML colors name (yellow, red, ...) and rgb() ones are
+;; automatically activated in some mode like html-mode or css-mode. On
+;; the other hand, the X colors are activated only in some mode like
+;; emacs-lisp-mode or c-mode. The hexadecimal ones (#aabbcc) are
+;; always activated.
+;;
+;; All this can be configured via M-x customize-group rainbow.
+;; Reference:
+;; https://julien.danjou.info/projects/emacs-packages#erc-track-score
+(require 'rainbow-mode)
+(add-hook 'emacs-lisp-mode-hook (lambda () (rainbow-mode 1)))
+(add-hook 'web-mode-hook (lambda () (rainbow-mode 1)))
+(add-to-list 'rainbow-r-colors-major-mode-list
+             'web-mode
+             'emacs-lisp-mode)
+;; (add-hook 'html-mode-hook (lambda () (rainbow-mode 1)))
+;; (add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
+;; =======================================================================
+(require 'rainbow-delimiters)
+;; (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+;; ==================================================================
+;; Takes a color string like #ffe0e0 and returns a light
+;; https://github.com/mariusk/emacs-color
+;; or dark foreground color to make sure text is readable.
+;; (defun fg-from-bg (bg)
+;;   (let* ((avg (/ (+ (string-to-number (substring bg 1 3) 16)
+;;                     (string-to-number (substring bg 3 5) 16)
+;;                     (string-to-number (substring bg 5 7) 16)
+;;                     ) 3)))
+;;     (if (> avg 128) "#000000" "#ffffff")
+;;     ))
+
+;; Improved from http://ergoemacs.org/emacs/emacs_CSS_colors.html
+;; * Avoid mixing up #abc and #abcabc regexps
+;; * Make sure dark background have light foregrounds and vice versa
+;; (defun xah-syntax-color-hex ()
+;;   "Syntax color text of the form 「#ff1100」 and 「#abc」 in current buffer.
+;; URL `https://github.com/mariusk/emacs-color'
+;; Version 2016-08-09"
+  ;; (interactive)
+  ;; (font-lock-add-keywords
+  ;;  nil
+  ;;  '(
+  ;;    ("#[ABCDEFabcdef[:digit:]]\\{6\\}"
+  ;;     (0 (progn (let* ((bgstr (match-string-no-properties 0))
+  ;;                      (fgstr (fg-from-bg bgstr)))
+  ;;                 (put-text-property
+  ;;                  (match-beginning 0)
+  ;;                  (match-end 0)
+  ;;                  'face (list :background bgstr :foreground fgstr))))))
+  ;;    ("#[ABCDEFabcdef[:digit:]]\\{3\\}[^ABCDEFabcdef[:digit:]]"
+  ;;     (0 (progn (let* (
+  ;;                      (ms (match-string-no-properties 0))
+  ;;                      (r (substring ms 1 2))
+  ;;                      (g (substring ms 2 3))
+  ;;                      (b (substring ms 3 4))
+  ;;                      (bgstr (concat "#" r r g g b b))
+  ;;                      (fgstr (fg-from-bg bgstr)))
+  ;;                 (put-text-property
+  ;;                  (match-beginning 0)
+  ;;                  (- (match-end 0) 1)
+  ;;                  'face (list :background bgstr :foreground fgstr)
+  ;;                  )))))
+  ;;    ))
+  ;; (font-lock-fontify-buffer))
+
+;; Generates a list of random color values using the
+;; Golden Ratio method described here:
+;;   http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
+;; The list will be length long. Example:
+;;
+(require 'color)
+(defun gen-col-list (length s v &optional hval)
+  (cl-flet ( (random-float () (/ (random 10000000000) 10000000000.0))
+             (mod-float (f) (- f (ffloor f))) )
+    (unless hval
+      (setq hval (random-float)))
+    (let ((golden-ratio-conjugate (/ (- (sqrt 5) 1) 2))
+          (h hval)
+          (current length)
+          (ret-list '()))
+      (while (> current 0)
+        (setq ret-list
+              (append ret-list 
+                      (list (apply 'color-rgb-to-hex (color-hsl-to-rgb h s v)))))
+        (setq h (mod-float (+ h golden-ratio-conjugate)))
+        (setq current (- current 1)))
+      ret-list)))
+
+(defun set-random-rainbow-colors (s l &optional h)
+  ;; Output into message buffer in case you get a scheme you REALLY like.
+  ;; (message "set-random-rainbow-colors %s" (list s l h))
+  (rainbow-delimiters-mode t)
+
+  ;; I also want css style colors in my code.
+  ;; (xah-syntax-color-hex)
+  ;; This function and fg-from-bg are redundant with rainbow mode.
+
+  ;; Show mismatched braces in bright red.
+  (set-face-background 'rainbow-delimiters-unmatched-face "red")
+
+  ;; Rainbow delimiters based on golden ratio
+  (let ( (colors (gen-col-list 9 s l h))
+         (i 1) )
+    (let ( (length (length colors)) )
+      ;;(message (concat "i " (number-to-string i) " length " (number-to-string length)))
+      (while (<= i length) 
+        (let ( (rainbow-var-name (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))
+               (col (nth i colors)) )
+          ;; (message (concat rainbow-var-name " => " col))
+          (set-face-foreground (intern rainbow-var-name) col))
+        (setq i (+ i 1))))))
+
+;; saturation: s [gray 0 - 1 pure color]
+;; lightness: l [dark 0 - 1 fully illuminated (completely white)]
+;; the default values of s and l are 0.5 and 0.49, and
+;; the color of braskets looks quite nice for the theme with the
+;; white background.
+;; (add-hook 'emacs-lisp-mode-hook
+;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
+;; (add-hook 'lisp-mode-hook
+;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
+(add-hook 'prog-mode-hook
+          '(lambda () (set-random-rainbow-colors 0.8 0.6 0.7)))
+
+;; =======================================================================
+;; Undo-tree makes the undo and redo in emacs more easy-to-use
+;; C-_ or C-/  (`undo-tree-undo') Undo changes.
+;; M-_ or C-?  (`undo-tree-redo') Redo changes.
+;; C-x u to run undo-tree-visualize which opens a second buffer
+;; displaying a tree view of your undo history in a buffer. You can
+;; navigate this with the arrow keys and watch the main buffer change
+;; through its previous states, and hit q to exit when you have the
+;; buffer the way you wanted it, or C-q to quit without making any
+;; changes.
+(require 'undo-tree)
+(global-undo-tree-mode)
+(setq undo-tree-visualizer-timestamps t)
+(setq undo-tree-visualizer-diff t)
+(defun clear-undo-tree ()
+  (interactive)
+  (setq buffer-undo-tree nil))
+(global-set-key [(C-c) u] 'clear-undo-tree)
+;; =======================================================================
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/sql"))
+ (when (require 'sql-upcase nil :noerror)
+   (add-hook 'sql-mode-hook 'sql-upcase-mode)
+   (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))
+(setq sql-upcase-mixed-case t)
+(add-hook 'sql-mode-hook (lambda ()
+                           (setq indent-tabs-mode nil) ; disable tab mode
+                           (setq tab-width 2)))
+;; =======================================================================
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/palette"))
+;; ;;  if this one does not work (load "myplugin.el"), try this (require 'myplugin)
+;; (require 'palette) ; Load this library.
+;; ;; M-x palette
+;; =======================================================================
+;; iedit mode
+;; edit variables with the same name in the buffer
+;; It is quite redundant with multiple cursors.
+;; Fix iedit bug in Mac
+;; (require 'iedit)
+;; ;; improve iedit mode based on variable's scope 
+;; (defun iedit-dwim (arg)
+;;   "Starts iedit but uses \\[narrow-to-defun] to limit its scope."
+;;   (interactive "P")
+;;   (if arg
+;;       (iedit-mode)
+;;       (save-excursion
+;; 	(save-restriction
+;; 	  (widen)
+;; 	  ;; this function determines the scope of `iedit-start'.
+;; 	  (if iedit-mode
+;; 	      (iedit-done)
+;; 	      ;; `current-word' can of course be replaced by other
+;; 	      ;; functions.
+;; 	      (narrow-to-defun)
+;; 	    (iedit-start (current-word) (point-min) (point-max)))))))
+
+;; (global-set-key (kbd "C-;") 'iedit-dwim)
+;; =======================================================================
+;; Visible bookmarks in buffer for GNU Emacs 
+(require 'bm)
+;; M$ Visual Studio key setup.
+(global-set-key (kbd "<C-f2>") 'bm-toggle)
+(global-set-key (kbd "<f2>")   'bm-next)
+(global-set-key (kbd "<S-f2>") 'bm-previous)
+;; Click on fringe to toggle bookmarks, and use mouse wheel to move
+;; between them.
+(global-set-key (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
+(global-set-key (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
+(global-set-key (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
+
+;; ==================================================================
+(require 'web-mode)
+;; It does not include ruby into this mode.
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+
+;; HTML element offset indentation
+(setq web-mode-markup-indent-offset 2)
+
+;; CSS offset indentation
+(setq web-mode-css-indent-offset 2)
+
+;; Script/code offset indentation (for JavaScript, Java, PHP,
+;; Embedded Ruby (.erb), VBScript, Python, etc.)
+(setq web-mode-code-indent-offset 2)
+
+;; highlight the current column with
+(setq web-mode-enable-current-column-highlight t)
+;; =======================================================================
+;; Smart Parent mode
+;; (require 'smartparens-config)
+;; (show-smartparens-global-mode t)
+;; (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+;; (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+;; the first three functions are bound to C-c (, C-c [, and C-c {,
+;; respectively.
+;; (defn foo args (let [x 0] (inc x)))
+;;           ̅
+;; and you want to surround args with [ and ]:
+;; (defn foo [args] (let [x 0] (inc x)))
+;;            ̅
+;; Press C-c [
+;; (defmacro def-pairs (pairs)
+;;   `(progn
+;;      ,@(loop for (key . val) in pairs
+;;           collect
+;;             `(defun ,(read (concat
+;;                             "wrap-with-"
+;;                             (prin1-to-string key)
+;;                             "s"))
+;;                  (&optional arg)
+;;                (interactive "p")
+;;                (sp-wrap-with-pair ,val)))))
+
+;; (def-pairs ((paren        . "(")
+;;             (bracket      . "[")
+;;             (brace        . "{")
+;;             (single-quote . "'")
+;;             (double-quote . "\"")
+;;             (back-quote   . "`")))
+
+;; (bind-keys
+;;  :map smartparent-mode-map
+;;  ("C-c ("  . wrap-with-parens)
+;;  ("C-c ["  . wrap-with-brackets)
+;;  ("C-c {"  . wrap-with-braces)
+;;  ("C-c '"  . wrap-with-single-quotes)
+;;  ("C-c \"" . wrap-with-double-quotes)
+;;  ("C-c `"  . wrap-with-back-quotes))
+;; =======================================================================
+;; highlight a line that the number of characters exceeds 80.
+;; (require 'whitespace)
+;; (setq whitespace-line-column 70) ;; limit line length
+;; (setq whitespace-style '(face lines-tail))
+;; (global-whitespace-mode +1)
+;; (add-hook 'prog-mode-hook 'whitespace-mode)
+;; =======================================================================
+;; =======================================================================
+;; ## Additional functions for all modes
+;; =======================================================================
+;; Code folding
+;; (require 'origami)
+;; do not know how to use origami yet
+;; in C mode 
+(add-hook 'c-mode-common-hook
+	  (lambda()
+	    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+	    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+	    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+	    (local-set-key (kbd "C-c <down>")  'hs-show-all)
+	    (hs-minor-mode t)))
+
+;; Code folding in Python mode
+(add-hook 'python-mode-hook
+	  (lambda()
+	    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+	    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+	    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+	    (local-set-key (kbd "C-c <down>")  'hs-show-all)
+	    (hs-minor-mode t)))
+
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda()
+	    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+	    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+	    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+	    (local-set-key (kbd "C-c <down>")  'hs-show-all)
+	    (hs-minor-mode t)))
+
+;; This minor mode will add little +/- displays to foldable regions in the
+;; buffer and to folded regions. It is indented to be used in
+;; conjunction with hideshow.el which is a part of GNU Emacs since
+;; version 20.
+(autoload 'hideshowvis-enable "hideshowvis" "Highlight foldable regions")
+(autoload 'hideshowvis-minor-mode
+  "hideshowvis"
+  "Will indicate regions foldable with hideshow in the fringe."
+  'interactive)
+(dolist (hook (list 'emacs-lisp-mode-hook
+                    'c++-mode-hook
+                    'nesc-mode-hook
+                    'python-mode-hook))
+  (add-hook hook 'hideshowvis-enable))
+(hideshowvis-symbols)
+(setq hideshowvis-ignore-same-line nil)
+;; ==================================================================
+;; a new function to kill the whole line
+;; this one moves the cursor to the proper indented position.
+(defun smart-kill-whole-line (&optional arg)
+  "A simple wrapper around `kill-whole-line' that respects indentation."
+  (interactive "P")
+  (kill-whole-line arg)
+  (back-to-indentation))
+
+(global-set-key [remap kill-whole-line] 'smart-kill-whole-line)
+;; ==================================================================
+;; If the current line is commented, uncomment. If it is uncommented,
+;; comment it. Morover, I would also to comment out the whole line,
+;; not just from cursor position.
+;; toggle the commented line 
+(defun toggle-comment-on-line ()
+  "comment or uncomment current line"
+  (interactive)
+  (comment-or-uncomment-region (line-beginning-position)
+			       (line-end-position)))
+;; binding the key M-c with toggle-comment-on-line
+;; In fact, this key binding is used to capitalize the first
+;; letter of a word, but I cannot find a better binding.
+(global-set-key (kbd "M-c") 'toggle-comment-on-line)
+
+;; ===================================================================
+;; python-mode
+;; Python Custom Identation Setup
+;; set the python code to indent with the tab-width = 2
+(add-hook 'python-mode-hook 
+          (lambda () 
+            (setq indent-tabs-mode nil) ; disable tab mode
+            (setq tab-width 2)
+            (setq python-indent 2) ; set the indentation width for python
+            (setq electric-indent-chars '(?\n))))
+	    ; stop autoindenting when ":" is pressed
+			   
+;; Ignoring electric indentation
+(defun electric-indent-ignore-python (char)
+  "Ignore electric indentation for python-mode"
+  (if (equal major-mode 'python-mode)
+      `no-indent'
+      nil))
+(add-hook 'electric-indent-functions 'electric-indent-ignore-python)
+
+;; Enter key executes newline-and-indent
+(defun set-newline-and-indent ()
+  "Map the return key with `newline-and-indent'"
+  (local-set-key (kbd "RET") 'newline-and-indent))
+(add-hook 'python-mode-hook 'set-newline-and-indent)
+
+;; ======================================================================
+;; Racket Mode https://github.com/greghendershott/racket-mode
+;; prevents emacs from showing 'lambda' as 'λ'
+(setq racket-mode-pretty-lambda t)
+
+;; (if a   =>  (if a
+;      b           b
+;    c)            c)
+(put 'if 'lisp-indent-function 3)
+;;; ---------------------------------------------------------------------
+;; (type-case FAW a-fae
+;     [a ...
+;     [b ... 
+(put 'type-case 'racket-indent-function 2)
+(put 'local 'racket-indent-function nil)
+(put '+ 'racket-indent-function nil)
+(put '- 'racket-indent-function nil)
+
+(add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+(add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+;; =====================================================================
+;; nesC mode
+(setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
+(autoload 'nesc-mode "nesc.el")
+(add-to-list 'auto-mode-alist '("\\.nc\\'" . nesc-mode))
+(add-hook 'nesc-mode-hook
+          (lambda () (modify-syntax-entry ?_ "w")))
+;; =====================================================================
+;; LaTeX Preview pane Installation
+;; enable the LaTeX preview pane to automatically load with 
+;; your LaTeX files. I prefer to use Latex/P as a mojor to write
+;; a latex file; thus, the auctex package should be installed from
+;; the package manager.
+;; (latex-preview-pane-enable)
+;; in case this does not work, M-x latex-preview-pane-mode
+;; http://www.latexbuch.de/install-latex-windows-7/
+;; (server-start) 
+;; (add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
+;; (setq reftex-plug-into-AUCTeX t) 
+;; (setq-default ispell-program-name "aspell")
+;; how to add the directory where pdflatex.exe is located to
+;; the PATH environment
+;; (setenv "PATH"
+;;         (concat (getenv "PATH")
+;;                 "C:/texlive/2015/bin/win32" ";"))
+;; recheck whether it is added correctly or not by
+;; M-x getenv RET PATH RET
+
+;; ==================================================================
+;; set the java-style indentation to ellemtel
+(add-hook 'java-mode-hook (lambda ()
+                            (setq c-basic-offset 2
+                                  tab-width 2
+                                  indent-tabs-mode nil)))
+;; (require 'jdee)
+;; ==================================================================
+;; shell mode
+(add-hook 'sh-mode-hook (lambda ()
+                          (setq indent-tabs-mode t
+                                tab-width 4
+                                sh-basic-offset 4
+                                sh-indentation 4)))
+;; ==================================================================
+;; Ruby mode
+(add-hook 'ruby-mode-hook (lambda ()
+                            (setq indent-tabs-mode nil
+                                  tab-width 2
+                                  ruby-indent-level 2)))
+;; ==================================================================
+;; Arduino mode
+(add-hook 'arduino-mode-hook
+          (lambda ()
+            (modify-syntax-entry ?_ "w")))
+;; ==================================================================
+;; Setup new keybindings
+;; It does not work since C-S-<direction> must select words 
+;; (global-set-key (kbd "SPC-<left>") ' shrink-window-horizontally)
+;; (global-set-key (kbd "SPC-<down>") 'enlarge-window-horizontally)
+;; (global-set-key (kbd "SPC-<down>") 'shrink-window)
+;; (global-set-key (kbd "SPC-<up>") 'enlarge-window)
+
+;; Turning off some unused minor-mode
+;; (add-hook 'css-mode-hook (lambda () (abbrev-mode -1)))
+;; ==================================================================
+;; clear the buffer of the eshell by M-x eshell-clear-buffer
+;; (defun eshell-clear-buffer ()
+;;   "Clear terminal"
+;;   (interactive)
+;;   (let ((inhibit-read-only t))
+;;     (erase-buffer)
+;;     (eshell-send-input)))
+;; (add-hook 'eshell-mode-hook
+;;           (lambda()
+;;             (local-set-key (kbd "C-x ") 'eshell-clear-buffer)))
+;;
+;;; ------------------------------------------------------------------
+;; While typing clear in eshell mode, it will clear the buffer
+(defun eshell/clear ()
+  "Clear the eshell buffer."
+  ;; (interactive) 
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (eshell-send-input)))
+
+(defun shell/clear ()
+  "Clear the shell buffer."
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
+;; (defun shell/clear1 ()
+;;   "Clear the shell buffer."
+;;   (interactive)
+;;   (let ((inhibit-read-only t)
+;; 	(comint-buffer-maximum-size 0))
+;;     (erase-buffer)
+;;     (comint-send-input)))
+
+(setq ansi-color-names-vector ; better contrast colors
+      ["black" "red4" "green4" "yellow4"
+       "blue3" "magenta4" "cyan4" "white"])
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+(add-hook 'eshell-preoutput-filter-functions
+          'ansi-color-filter-apply)
+(add-hook 'eshell-preoutput-filter-functions
+          'ansi-color-apply)
+;; ==================================================================
+;; Ensure ibuffer opens with point at the current buffer's entry.
+;; How to use iBuffer
+;; call ibuffer C-x C-b and mark buffers in the list with 
+;; - m (mark the buffer you want to keep)
+;; - t (toggle marks)
+;; - D (kill all marked buffers)
+;; - g (update ibuffer)
+;; - x (execute the commands)
+(defadvice ibuffer
+  (around ibuffer-point-to-most-recent) ()
+  "Open ibuffer with cursor pointed to most recent buffer name."
+  (let ((recent-buffer-name (buffer-name)))
+    ad-do-it
+    (ibuffer-jump-to-buffer recent-buffer-name)))
+(ad-activate 'ibuffer)
+
+;; nearly all of this is the default layout
+(setq ibuffer-formats 
+      '((mark modified read-only " "
+              (name 25 25 :left :elide) ; change: 30s were originally 18s
+              " "
+              (size 9 -1 :right)
+              " "
+              (mode 16 16 :left :elide)
+              " " filename-and-process)
+        (mark " "
+              (name 16 -1)
+              " " filename)))
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+;; ==================================================================
+;; Org mode customization
+
+;; hide the structural markers in the org-mode
+(setq org-hide-emphasis-markers t)	
+
+;; add more work flow
+(setq org-todo-keywords
+      '((sequence "TODO" "|" "PENDING" "|" "DONE")))
+;; set the source file to create an agenda
+(setq org-agenda-files (list 
+                        "E:/Dropbox/todolist/mytodolist.org"))
+;; set the amount of whitespaces between a headline and its tag
+;; -70 comes from the width of ~70 characters per line. Thus,
+;; tags willl be shown up at the end of the headline's line
+(setq org-tags-column -70)
+;; let me determine the image width
+(setq org-image-actual-width nil)
+;; ==================================================================
+;; Mathlab mode for emacs
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/matlab"))
+(add-to-list 'load-path "~/.emacs.d/matlab/")
+(setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
+;; (autoload 'matlab-mode "matlab" "Enter Matlab mode." t)
+;; (autoload 'matlab-shell "matlab" "Interactive Matlab mode." t)
+
+;; ==================================================================
+;; Print out the emacs init time in the minibuffer
+(run-with-idle-timer 1 nil (lambda ()
+                             (message "emacs-init-time: %s"
+                                      (emacs-init-time))))
+
+;; ==================================================================
+;; ==================================================================
+;; ## Emacs Lisp
+;; (display-grpahic-p) = check whether emacs is on the terminal mode or not
+;; (interactive) = it will call this function if we press M-x function-name
+;; function name = mode-name/what-to-type -> read what we type in that mode
+;; (progn
+;;   ...
+;;   ...)    =  execute the statements in sequence and return the value
+;;              of the last one 
