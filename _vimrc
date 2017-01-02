@@ -70,3 +70,14 @@ augroup filetypedetect
   au! BufRead,BufNewFile *nc setfiletype nc 
 augroup END
 
+" how to install vim-plug
+" https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
+if empty(glob('~/vimfiles/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
+
+call plug#begin('~/vimfiles/plugged')
+Plug 'mbbill/undotree'
+call plug#end() 

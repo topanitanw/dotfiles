@@ -1,5 +1,9 @@
-;; nesc zenburn
+;; nesc and zenburn are two customized packages 
 ;; Modified Emacs should be downloaded from http://vgoulet.act.ulaval.ca/en/.
+;; emacs for window users
+;; http://gregorygrubbs.com/emacs/10-tips-emacs-windows/
+;; emacs tutorial
+;; http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/
 ;; =======================================================================
 ;; ## Basic Settings
 ;; Use (setq ...) to set value locally to a buffer
@@ -7,9 +11,19 @@
 ;; set the default font
 ;; (set-frame-font Fontname-Size)
 ;; (set-frame-font "DejaVu Sans Mono-13")
-(set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
-(set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
+;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
+;; (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
+(set-face-attribute 'default nil 
+                    :family "DejaVu Sans Mono"
+                    :height 130
+                    :weight 'normal
+                    :width 'normal)
 
+(set-face-attribute 'mode-line nil
+                    :family "DejaVu Sans Mono"
+                    :height 130
+                    :weight 'normal
+                    :width 'normal)
 ;; select the coding style of the emacs
 (prefer-coding-system 'utf-8)
 
@@ -32,7 +46,7 @@
 ;; set the format and spaces of the linenumber
 (if (display-graphic-p)
     (setq linum-format "%3d \u2502")
-  (setq linum-format "%3d |"))
+    (setq linum-format "%3d |"))
 
 ;; M-x hl-line-mode to highlight the current line
 ;; (global-hl-line-mode 1)
@@ -116,7 +130,9 @@
 ;; Automatic(electric) Indentation
 (global-set-key (kbd "RET") 'newline-and-indent)
 ;; (define-key global-map (kbd "RET") 'newline-and-indent)
-(electric-indent-mode +1)
+(when (and (>= emacs-major-version 24)
+           (>= emacs-minor-version 4))
+  (electric-indent-mode +1))
 
 ;; activate the auto-fill-mode as a minor mode when opening a text
 ;; file. The auto-fill-mode will start a new line when the current
@@ -198,19 +214,6 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-;; =======================================================================
-;; Emacs theme setup
-;; =======================================================================
-;; (setq custom-safe-themes t)
-;; load a customized theme in a new directory
-(setq custom-safe-themes t)
-(if (and (>= emacs-major-version 24)
-         (>= emacs-minor-version 4))
-    (add-to-list 'custom-theme-load-path
-                 "~/.emacs.d/themes")    
-  (add-to-list 'load-path "~/.emacs.d/themes"))
-(use-package zenburn-theme)
-(load-theme 'zenburn t)
 
 ;; =======================================================================
 ;; Highlight the numbers
@@ -223,6 +226,23 @@
   :defer t
   :init
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+
+;; =======================================================================
+;; Emacs theme setup
+;; =======================================================================
+;; (setq custom-safe-themes t)
+;; load a customized theme in a new directory
+;; (setq custom-safe-themes t)
+;; (if (and (>= emacs-major-version 24)
+;;          (>= emacs-minor-version 4))
+;;     (add-to-list 'custom-theme-load-path
+;;                  "~/.emacs.d/themes")    
+;;   (add-to-list 'load-path "~/.emacs.d/themes"))
+(use-package zenburn-theme
+  :ensure t
+  :init
+  (load-theme 'zenburn t))
+
 ;; =======================================================================
 ;; Powerline
 ;; =======================================================================
@@ -230,6 +250,27 @@
 ;;   :ensure t
 ;;   :config
 ;;   (powerline-default-theme))
+
+;; =======================================================================
+;; Diminish
+;; =======================================================================
+;; rename the major-mode and minor-mode package on the mode line
+(use-package diminish
+  :ensure t
+  :config
+  (defmacro rename-major-mode (package-name mode new-name)
+ `(eval-after-load ,package-name
+   '(defadvice ,mode (after rename-modeline activate)
+      (setq mode-name ,new-name))))
+
+  ;; how to call the macro
+  ;; (rename-major-mode "ruby-mode" ruby-mode "RUBY")
+  (defmacro rename-minor-mode (package mode new-name)
+    `(eval-after-load ,package
+       '(diminish ',mode ,new-name)))
+  ;; how to call the macro
+  ;; (rename-minor-mode "company" company-mode "CMP")
+  )
 ;; =======================================================================
 ;; Company 
 ;; =======================================================================
@@ -251,7 +292,8 @@
         ;; make the text completion output case-sensitive
         company-dabbrev-downcase nil) ;; set it globally
   ;; call the function named company-select-next when tab is pressed  
-  (define-key company-active-map [tab] 'company-select-next))
+  (define-key company-active-map [tab] 'company-select-next)
+  (rename-minor-mode "company" company-mode "Com"))
 
 (use-package company-math
   :ensure t
@@ -330,8 +372,10 @@
   (ido-mode 1)
   (flx-ido-mode 1)
   ;; disable ido faces to see flx highlights.
-  (setq ido-enable-flex-matching nil)
-  (setq ido-use-faces t))
+  (setq ido-enable-flex-matching nil
+        flx-ido-threshold 1000
+        ido-use-faces t))
+
 ;; =======================================================================
 ;; smex
 ;; =======================================================================
@@ -357,7 +401,9 @@
   (("M-S-<up>" . drag-stuff-up)
 	 ("M-S-<down>" . drag-stuff-down)
 	 ("M-S-<left>" . drag-stuff-left)
-	 ("M-S-<right>" . drag-stuff-right)))
+	 ("M-S-<right>" . drag-stuff-right))
+  :config
+  (rename-minor-mode "drag-stuff" drag-stuff-mode "Drag"))
 
 ;; =======================================================================
 ;; multiple-cursor 
@@ -371,6 +417,7 @@
    ("C-<" . mc/mark-previous-like-this)
    ("C-c C-<" . mc/mark-all-like-this)
    ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+
 ;; =======================================================================
 ;; highlight-indentation
 ;; =======================================================================
@@ -387,6 +434,7 @@
   (add-hook 'python-mode-hook 'highlight-indentation-current-column-mode)
   (add-hook 'java-mode-hook 'highlight-indentation-current-column-mode)
   (add-hook 'js2-mode-hook 'highlight-indentation-current-column-mode))
+
 ;; =======================================================================
 ;; fic-mode TODO BUG FIXME
 ;; =======================================================================
@@ -493,7 +541,7 @@
 (use-package undo-tree
   :ensure t
   :defer t
-  :config
+  :init
   (global-undo-tree-mode 1)
   (setq undo-tree-visualizer-timestamp t
         undo-tree-visualizer-diff t)
@@ -501,7 +549,10 @@
     (interactive)
     (setq buffer-undo-tree nil))
   :bind
-  (("C-c u" . clear-undo-tree)))
+  (("C-c u" . clear-undo-tree))
+  :config
+  (rename-minor-mode "undo-tree" undo-tree-mode "UT"))
+
 ;; =======================================================================
 ;; Bookmark
 ;; =======================================================================
@@ -512,6 +563,19 @@
   (("<C-f2>" . bm-toggle)
    ("<f2>" . bm-next)
    ("<S-f2>" . bm-previous)))
+
+;; ==================================================================
+;; uniquify
+;; ==================================================================
+;; a built-in package in emacs
+(use-package uniquify
+  :defer t
+  :config
+  (setq uniquify-buffer-name-style 'forward)
+  (setq uniquify-separator "/")
+  (setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
+  (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
+
 ;; ==================================================================
 ;; Ensure ibuffer opens with point at the current buffer's entry.
 ;; How to use iBuffer
@@ -552,7 +616,7 @@
                      python-mode-hook
                      emacs-lisp-mode-hook))
   (add-hook mode-hook
-            (lambda()
+            (lambda ()
               (local-set-key (kbd "C-c <right>") 'hs-show-block)
               (local-set-key (kbd "C-c <left>")  'hs-hide-block)
               (local-set-key (kbd "C-c <up>")    'hs-hide-all)
@@ -582,6 +646,13 @@
   "Will indicate regions foldable with hideshow in the fringe."
   'interactive)
 ;; ==================================================================
+;; vimrc-mode
+(use-package vimrc-mode
+  :ensure t
+  :defer t
+  :mode ("\\.vim\\(rc\\)?\\'" . vimrc-mode))
+  
+;; ==================================================================
 ;; a new function to kill the whole line
 ;; this one moves the cursor to the proper indented position.
 (defun smart-kill-whole-line (&optional arg)
@@ -600,7 +671,8 @@
   "comment or uncomment current line"
   (interactive)
   (comment-or-uncomment-region (line-beginning-position)
-			       (line-end-position)))
+                               (line-end-position)))
+
 ;; binding the key M-c with toggle-comment-on-line
 ;; In fact, this key binding is used to capitalize the first
 ;; letter of a word, but I cannot find a better binding.
@@ -612,6 +684,10 @@
 ;; set the python code to indent with the tab-width = 2
 (use-package python
   :mode ("\\.py\\'" . python-mode)
+  :defer t
+  ;; :bind
+  ;; (:map python-mode
+  ;;  ("RET"  .  set-newline-and-indent))
   :config
   (add-hook 'python-mode-hook 
             (lambda () 
@@ -635,59 +711,66 @@
 ;; ===================================================================
 ;; Nesc
 ;; ===================================================================
-;; does not work in emacs 24.5, but it does in emacs 25.1
-;; (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
-;; (autoload 'nesc-mode "nesc.el")
-;; (add-to-list 'auto-mode-alist '("\\.nc\\'" . nesc-mode))
-;; (add-hook 'nesc-mode-hook
-;;           (lambda () (modify-syntax-entry ?_ "w")))
 (use-package nesc
+  :defer t
   :init
   (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))  
   (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
   (autoload 'nesc-mode "nesc.el")
   :mode ("\\.nc\\'" . nesc-mode))
+
 ;; ===================================================================
 ;; Java
-(use-package Java
+(use-package java-mode
+  :mode "\\.java\\'"
+  :defer t
   :config
   (add-hook 'java-mode-hook (lambda ()
-                            (setq c-basic-offset 2
-                                  tab-width 2
-                                  indent-tabs-mode nil))))
+                              (setq c-basic-offset 2
+                                    tab-width 2
+                                    indent-tabs-mode nil))))
+
 ;; ==================================================================
 ;; shell mode
 (use-package shell
+  :defer t
   :config
   (add-hook 'sh-mode-hook (lambda ()
                             (setq indent-tabs-mode t
                                   tab-width 4
                                   sh-basic-offset 4
                                   sh-indentation 4))))
+
 ;; ==================================================================
 ;; Ruby mode
-(use-package ruby
+(use-package ruby-mode
+  :defer t
   :config
   (add-hook 'ruby-mode-hook (lambda ()
                               (setq indent-tabs-mode nil
                                     tab-width 2
                                     ruby-indent-level 2))))
+
 ;; ==================================================================  
 ;; Arduino mode
 (use-package arduino-mode
-  :ensure arduino-mode
+  :ensure t
+  :defer t
   :mode ("\\.\\(pde\\|ino\\)$" . arduino-mode)
   :config
   (add-hook 'arduino-mode-hook
             (lambda ()
               (modify-syntax-entry ?_ "w"))))
+
 ;; ==================================================================  
 ;; Matlab
 ;; ==================================================================
 (use-package matlab-mode
   :ensure t
+  :defer t
   :mode ("\\.m\\'" . matlab-mode)
   :defer t)
+
 ;; =======================================================================
 ;; Web-mode
 ;; =======================================================================
@@ -717,6 +800,11 @@
 
   ;; highlight the current column with
   (setq web-mode-enable-current-column-highlight t))
+
+;; ==================================================================
+;; Gitignore mode
+(use-package gitignore-mode
+  :ensure t)
 ;; ==================================================================  
 ;; Shell
 ;; ==================================================================  
@@ -735,29 +823,29 @@
 ;; ======================================================================
 ;; Racket Mode https://github.com/greghendershott/racket-mode
 ;; prevents emacs from showing 'lambda' as 'λ'
-(setq racket-mode-pretty-lambda t)
 (global-prettify-symbols-mode 1)
 
 ;; (if a   =>  (if a
 ;      b           b
 ;    c)            c)
 (put 'if 'lisp-indent-function 3)
-;;; ---------------------------------------------------------------------
-;; (type-case FAW a-fae
-;     [a ...
-;     [b ... 
-(put 'type-case 'racket-indent-function 2)
-(put 'local 'racket-indent-function nil)
-(put '+ 'racket-indent-function nil)
-(put '- 'racket-indent-function nil)
+;; =======================================================================
+(use-package racket-mode
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+  (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+  :config 
+  (setq racket-mode-pretty-lambda t)
+  ;; (type-case FAW a-fae
+  ;     [a ...
+  ;     [b ... 
+  (put 'type-case 'racket-indent-function 2)
+  (put 'local 'racket-indent-function nil)
+  (put '+ 'racket-indent-function nil)
+  (put '- 'racket-indent-function nil))
 
-(add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
-(add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
-;; ==================================================================  
-;; Print out the emacs init time in the minibuffer
-(run-with-idle-timer 1 nil (lambda ()
-                             (message "emacs-init-time: %s"
-                                      (emacs-init-time))))
 ;; ==================================================================
 ;; Org mode customization
 
@@ -776,7 +864,18 @@
 (setq org-tags-column -70)
 ;; let me determine the image width
 (setq org-image-actual-width nil)
+;; turn on auto fill mode to avoid pressing M-q too often
+(dolist (mode-hook '(org-mode-hook
+                     LaTeX-mode-hook))
+  (add-hook mode-hook 'turn-on-auto-fill))
+
 ;; ==================================================================
+;; ==================================================================  
+;; Print out the emacs init time in the minibuffer
+(run-with-idle-timer 1 nil (lambda ()
+                             (message "emacs-init-time: %s"
+                                      (emacs-init-time))))
+
 ;; ==================================================================
 ;; ## Emacs Lisp
 ;; (display-grpahic-p) = check whether emacs is on the terminal mode or not
