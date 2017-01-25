@@ -6,6 +6,8 @@
 ;; http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/
 ;; popwin https://emacs.stackexchange.com/questions/459/how-to-automatically-kill-helm-buffers-i-dont-need
 ;; https://github.com/anschwa/emacs.d/blob/master/readme.org
+;; https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#13-mode-line
+;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/#fnref:2
 ;; =======================================================================
 ;; ## Basic Settings
 ;; Use (setq ...) to set value locally to a buffer
@@ -187,8 +189,12 @@
 ;; make searches case insensitive
 (setq case-fold-search t)
 ;; detaching the custom-file from .emacs
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
+;; (setq custom-file "~/.emacs.d/custom.el")
+;; (when (file-exists-p custom-file)
+;;   (load custom-file 'noerror))
+
+;; set the number of characters per line
+(setq-default fill-column 80)
 ;; ----------------------------------------------------------------------
 ;; Ensure ibuffer opens with point at the current buffer's entry.
 ;; How to use iBuffer
@@ -261,6 +267,7 @@
   (back-to-indentation))
 
 (global-set-key [remap kill-whole-line] 'smart-kill-whole-line)
+
 ;; ----------------------------------------------------------------------
 ;; If the current line is commented, uncomment. If it is uncommented,
 ;; comment it. Morover, I would also to comment out the whole line,
@@ -276,7 +283,29 @@
 ;; In fact, this key binding is used to capitalize the first
 ;; letter of a word, but I cannot find a better binding.
 (global-set-key (kbd "C-;") 'toggle-comment-on-line)
+;; ----------------------------------------------------------------------
+;; ctags
+(defun build-ctags ()
+  (interactive)
+  (message "building project tags")
+  (let ((root (eproject-root)))
+    (shell-command (concat "ctags -e -R --extra=+fq --exclude=*~ --exclude=db --exclude=test --exclude=.git --exclude=public -f " root "TAGS " root)))
+  (visit-project-tags)
+  (message "tags built successfully"))
 
+(defun my-find-tag ()
+  (interactive)
+  (if (file-exists-p (concat (eproject-root) "TAGS"))
+      (visit-project-tags)
+    (build-ctags))
+  (etags-select-find-tag-at-point))
+
+(global-set-key (kbd "M-.") 'my-find-tag)
+;; find . -type f -iname "*.[chS]" -exec etags -a {} \;
+;; find . -type f -iname "*.[chS]" | xargs etags -a
+;; ctags -e -R *.[chS]
+;; $ sudo apt-get install global # for gtags
+;; $ sudo apt-get install exuberant-ctags
 ;; =======================================================================
 ;; =======================================================================
 ;; ## Package Installation
@@ -314,6 +343,11 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+(eval-when-compile
+  (require 'use-package)
+  (setq-default use-package-always-defer t
+                use-package-always-ensure t))
+(require 'bind-key)
 ;; =======================================================================
 ;; Highlight the numbers
 ;; =======================================================================
@@ -321,8 +355,6 @@
 ;; This package inherits the color of font-lock-constant-face of the theme
 ;; you are using.
 (use-package highlight-numbers
-  :ensure t
-  :defer t
   :init
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
@@ -338,8 +370,8 @@
 ;;                  "~/.emacs.d/themes")
 ;;   (add-to-list 'load-path "~/.emacs.d/themes"))
 (use-package zenburn-theme
-  :ensure t
-  :init
+  :demand t
+  :config
   (load-theme 'zenburn t))
 
 ;; =======================================================================
@@ -355,12 +387,12 @@
 ;; =======================================================================
 ;; rename the major-mode and minor-mode package on the mode line
 (use-package diminish
-  :ensure t
+  :demand t
   :config
   (defmacro rename-major-mode (package-name mode new-name)
- `(eval-after-load ,package-name
-   '(defadvice ,mode (after rename-modeline activate)
-      (setq mode-name ,new-name))))
+    `(eval-after-load ,package-name
+       '(defadvice ,mode (after rename-modeline activate)
+          (setq mode-name ,new-name))))
 
   ;; how to call the macro
   ;; (rename-major-mode "ruby-mode" ruby-mode "RUBY")
@@ -375,8 +407,6 @@
 ;; Company
 ;; =======================================================================
 (use-package company
-  :ensure t
-  :defer t
   :init
   (global-company-mode)
   ;; (add-hook 'after-init-hook 'global-company-mode)
@@ -400,8 +430,6 @@
   (rename-minor-mode "company" company-mode "Com"))
 
 (use-package company-math
-  :ensure t
-  :defer t
   :after company
   :init
   ;; register company-math as a company backend
@@ -409,8 +437,6 @@
 
 ;; register company-web-... as a company backend
 (use-package company-web
-  :ensure t
-  :defer t
   :after company
   :init
   (add-to-list 'company-backends 'company-web-html)
@@ -418,8 +444,6 @@
   (add-to-list 'company-backends 'company-web-slim))
 
 (use-package company-anaconda
-  :ensure t
-  :defer t
   :after company
   :config
   (add-to-list 'company-backends 'company-anaconda)
@@ -427,8 +451,6 @@
   (rename-minor-mode "company-anaconda" company-anaconda "Com-Ana"))
 
 (use-package company-c-headers
-  :ensure t
-  :defer t
   :after company
   :init
   (add-to-list 'company-backends 'company-c-headers))
@@ -448,8 +470,6 @@
 
 (use-package company-flx
   :disabled t
-  :ensure t
-  :defer t
   :after company
   :config
   (company-flx-mode +1))
@@ -481,16 +501,18 @@
 
 (use-package ido-ubiquitous
   :disabled t
-  :ensure t
   :config
   (ido-ubiquitous-mode 1))
 
 (use-package ido-vertical-mode
   ;; :disabled t
   :ensure ido-vertical-mode
-  ;:defer 1
+  :demand t
   :config
   (ido-vertical-mode 1)
+  (setq ido-use-virtual-buffers t)
+  ;; show the count of the candidates
+  (setq ido-vertical-show-count t)
   ;; customize font colors
   (set-face-attribute 'ido-vertical-first-match-face nil
                       :background nil
@@ -503,7 +525,6 @@
 
 (use-package flx-ido
   :disabled t
-  :ensure t
   :config
   ;; (ido-mode 1)
   (flx-ido-mode 1)
@@ -533,9 +554,7 @@
 ;; https://writequit.org/denver-emacs/presentations/2016-03-01-helm.html
 
 (use-package helm
-  ;; :disabled t
-  :ensure t
-  :diminish Helm
+  ;; :diminish (helm-mode)
   :init
   (progn
     (require 'helm-config)
@@ -561,8 +580,6 @@
 ;; drag-stuff
 ;; =======================================================================
 (use-package drag-stuff
-  :ensure t
-  :defer t
   :init
   (drag-stuff-global-mode t)
   :bind
@@ -577,8 +594,6 @@
 ;; multiple-cursor
 ;; =======================================================================
 (use-package multiple-cursors
-  :ensure t
-  :defer t
   :bind
   (("C-c C-l" . mc/edit-lines)
    ("C->" . mc/mark-next-like-this)
@@ -590,8 +605,6 @@
 ;; highlight-indentation
 ;; =======================================================================
 (use-package highlight-indentation
-  :ensure t
-  :defer t
   :config
   (set-face-background 'highlight-indentation-face "#555555")
   (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
@@ -607,8 +620,6 @@
 ;; fic-mode TODO BUG FIXME(owner)
 ;; =======================================================================
 (use-package fic-mode
-  :ensure t
-  :defer t
   :init
   (if (>= emacs-major-version 24)
       (add-hook 'prog-mode-hook 'fic-mode)
@@ -623,8 +634,6 @@
 ;; rainbow-mode red '#ffffff'
 ;; =======================================================================
 (use-package rainbow-mode
-  :ensure t
-  :defer t
   :init
   (add-hook 'emacs-lisp-mode-hook 'rainbow-mode)
   (add-hook 'web-mode-hook 'rainbow-mode))
@@ -633,14 +642,12 @@
 ;; rainbow-delimiters & color
 ;; =======================================================================
 (use-package rainbow-delimiters
-  :ensure t
-  :defer t
+  :disabled t
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package color
-  :ensure t
-  :defer t
+  :disabled t
   :config
   (defun gen-col-list (length s v &optional hval)
     (cl-flet ( (random-float () (/ (random 10000000000) 10000000000.0))
@@ -708,8 +715,6 @@
 ;; buffer the way you wanted it, or C-q to quit without making any
 ;; changes. 1 2 3
 (use-package undo-tree
-  :ensure t
-  :defer t
   :init
   (global-undo-tree-mode 1)
   (setq undo-tree-visualizer-timestamp t
@@ -726,29 +731,26 @@
 ;; Swiper
 ;; =======================================================================
 (use-package swiper
-  ;; :disabled t
-  :ensure t
-  :defer t
-  :bind (("C-s" . swiper))
-  :config
-  (ivy-mode 1)
-  ;; (setq ivy-display-style 'fancy)
-  (setq ivy-use-virtual-buffers t))
-
-(use-package swoop
-  :disabled t
-  :ensure t
+  :bind
+  (("C-s" . swiper))
   :init
-  (global-set-key (kbd "C-o")   'swoop)
-  ;; Change whole buffer's font size (t or nil)
-  (setq swoop-font-size-change: nil))
+  ;; (ivy-mode 1)
+  ;; (setq ivy-display-style 'fancy)
+  ;; using ivy to switch buffers
+  ;; (setq ivy-use-virtual-buffers t)
+  )
 
+(use-package counsel
+  ;; :disabled (and (>= emacs-major-version 24)
+  ;;                (>= emacs-minor-version 4))
+  :bind
+  (;("C-x C-f" . counsel-find-file)
+   ("M-x" . counsel-M-x)))
+  
 ;; =======================================================================
 ;; Avy
 ;; =======================================================================
 (use-package avy
-  :ensure t
-  :defer t
   :bind
   (("C-c j" . avy-goto-char-2)
    ("C-c l" . avy-goto-line)))
@@ -757,8 +759,6 @@
 ;; bookmark
 ;; =======================================================================
 (use-package bm
-  :ensure t
-  :defer t
   :bind
   (("<C-f2>" . bm-toggle)
    ("<f2>" . bm-next)
@@ -769,7 +769,7 @@
 ;; ==================================================================
 ;; a built-in package in emacs
 (use-package uniquify
-  :defer t
+  :ensure nil
   :config
   (setq uniquify-buffer-name-style 'forward)
   (setq uniquify-separator "/")
@@ -777,8 +777,6 @@
   (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
 
 (use-package hydra
-  :ensure t
-  :defer t
   :init
   (defhydra hydra-ibuffer-main (:color pink :hint nil)
     "
@@ -873,10 +871,7 @@
   (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body))
 
 (use-package ace-window
-  :ensure t
-  :defer 1
-  ;; :bind
-  ;; (("C-x o" . ace-window))
+  :bind (("C-x o" . ace-window))
   :config
   (global-set-key [remap other-window] 'ace-window)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
@@ -886,8 +881,6 @@
 ;; conjunction with hideshow.el which is a part of GNU Emacs since
 ;; version 20.
 (use-package hideshowvis
-  :ensure t
-  :defer t
   :init
   (dolist (hook (list 'emacs-lisp-mode-hook
                       'c++-mode-hook
@@ -906,8 +899,6 @@
 ;; ==================================================================
 ;; vimrc-mode
 (use-package vimrc-mode
-  :ensure t
-  :defer t
   :mode ("\\.vim\\(rc\\)?\\'" . vimrc-mode))
 
 ;; ===================================================================
@@ -917,7 +908,6 @@
 ;; set the python code to indent with the tab-width = 2
 (use-package python
   :mode ("\\.py\\'" . python-mode)
-  :defer t
   ;; :bind
   ;; (:map python-mode
   ;;  ("RET"  .  set-newline-and-indent))
@@ -945,7 +935,7 @@
 ;; Nesc
 ;; ===================================================================
 (use-package nesc
-  :defer t
+  :ensure nil
   :init
   (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
   (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
@@ -955,8 +945,8 @@
 ;; ===================================================================
 ;; Java
 (use-package java-mode
+  :ensure nil
   :mode "\\.java\\'" ; ("\\.py\\'" . python-mode)
-  :defer t
   :config
   (add-hook 'java-mode-hook (lambda ()
                               (setq c-basic-offset 2
@@ -966,7 +956,6 @@
 ;; ==================================================================
 ;; shell mode
 (use-package shell
-  :defer t
   :config
   (add-hook 'sh-mode-hook (lambda ()
                             (setq indent-tabs-mode t
@@ -977,7 +966,6 @@
 ;; ==================================================================
 ;; Ruby mode
 (use-package ruby-mode
-  :defer t
   :config
   (add-hook 'ruby-mode-hook (lambda ()
                               (setq indent-tabs-mode nil
@@ -987,8 +975,6 @@
 
 ;; Autocomplete for ruby
 (use-package robe
-  :ensure t
-  :defer t
   :after ruby-mode
   :config
   (add-to-list 'company-backends 'company-robe))
@@ -996,8 +982,6 @@
 ;; ==================================================================
 ;; Arduino mode
 (use-package arduino-mode
-  :ensure t
-  :defer t
   :mode ("\\.\\(pde\\|ino\\)$" . arduino-mode)
   :config
   (add-hook 'arduino-mode-hook
@@ -1008,8 +992,6 @@
 ;; Matlab
 ;; ==================================================================
 (use-package matlab-mode
-  :ensure t
-  :defer t
   :mode ("\\.m\\'" . matlab-mode)
   :defer t)
 
@@ -1017,8 +999,6 @@
 ;; Web-mode
 ;; =======================================================================
 (use-package web-mode
-  :ensure t
-  :defer t
   :mode
   (("\\.phtml\\'" . web-mode)
    ("\\.tpl\\.php\\'" . web-mode)
@@ -1045,9 +1025,7 @@
 
 ;; ==================================================================
 ;; Gitignore mode
-(use-package gitignore-mode
-  :ensure t
-  :defer t)
+(use-package gitignore-mode)
 
 ;; ======================================================================
 ;; Racket Mode https://github.com/greghendershott/racket-mode
@@ -1064,8 +1042,6 @@
 ;; =======================================================================
 ;; racket mode setup
 (use-package racket-mode
-  :ensure t
-  :defer t
   :init
   (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
   (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
@@ -1091,9 +1067,7 @@
 ;; type M-p to print the previous line you used in REPL
 ;; type M-n to print the next line you used in REPL
 (use-package sml-mode
-  :ensure t
-  :mode ("\\.sml\\'" . sml-mode)
-  :defer t)
+  :mode ("\\.sml\\'" . sml-mode))
 
 ;; ==================================================================
 ;; assembly mode setup
@@ -1102,18 +1076,16 @@
   :mode
   (("\\.S\\'" . asm-mode)
    ("\\.asm\\'" . asm-mode))
-  :defer t
   :config
   (setq asm-indent-level 2))
 
 ;; ==================================================================
 ;; Org mode customization
-(use-package org-mode
-  ;; :defer 1
+(use-package org
   :bind
   (("C-c a" . org-agenda))
   :mode ("\\.org\\'" . org-mode)
-  :init
+  :config
   ;; hide the structural markers in the org-mode
   (setq org-hide-emphasis-markers t)
   ;; Display emphasized text as you would in a WYSIWYG editor.
@@ -1122,7 +1094,7 @@
   (setq org-todo-keywords
         '((sequence "TODO(t)" "IN-PROGRESS(i)" "HOLD(h@)" "WAITING(w@/!)" "|" "CANCELED(c@)" "DONE(d@/!)")))
   ;; set the source file to create an agenda
-  (when (window-system)
+  (when window-system
     (setq org-agenda-files
           (list
            "e:/Dropbox/todolist/mytodolist.org"
@@ -1154,49 +1126,33 @@
 
   ;; this one does work with :init but org-agenda-date-weekend
   ;; and org-agenda-date do not work why?
-  ;; (set-face-attribute 'org-agenda-date-today nil
-  ;;                     :foreground "#FFFFEF"
-  ;;                     :background "#3F3F3F"
-  ;;                     :bold t)
-  ;; (set-face-attribute 'org-agenda-date-weekend nil
-  ;;                     :foreground "#6CA0A3";"#8CD0D3"
-  ;;                     :background "#3F3F3F"
-  ;;                     :bold nil)
-  ;; (set-face-attribute 'org-agenda-date nil
-  ;;                     :foreground "#BFEBBF"
-  ;;                     :background "#3F3F3F")
+  (set-face-attribute 'org-agenda-date-today nil
+                      :foreground "#FFFFEF"
+                      :background "#3F3F3F"
+                      :bold t)
+  (set-face-attribute 'org-agenda-date-weekend nil
+                      :foreground "#6CA0A3";"#8CD0D3"
+                      :background "#3F3F3F"
+                      :bold nil)
+  (set-face-attribute 'org-agenda-date nil
+                      :foreground "#BFEBBF"
+                      :background "#3F3F3F")
+  (set-face-attribute 'org-level-7 nil
+                      :foreground "SlateGray2")
+  (set-face-attribute 'org-level-8 nil
+                      :foreground "pink"))
 
-  ;; can put defface in the config zenburn use-package as well
-  ;; (defface org-agenda-date
-  ;;   '((t (:foreground "#8FB28F"
-  ;;                     :background "#3F3F3F"
-  ;;                     :bold nil)))
-  ;;   "Face used in agenda for weekdays."
-  ;;   :group 'org-faces)
-
-  ;; (defface org-agenda-date-today
-  ;;   '((t (:foreground "#FFFFEF"
-  ;;                     :background "#3F3F3F"
-  ;;                     :weight bold
-  ;;                     :italic t)))
-  ;;   "Face used in agenda for today."
-  ;;   :group 'org-faces)
-
-  ;; (defface org-agenda-date-weekend
-  ;;   '((t (:foreground "#6CA0A3"
-  ;;                     :background "#3F3F3F"
-  ;;                     :weight normal)))
-  ;;   "Face used in agenda for weekend."
-  ;;   :group 'org-faces)
-  )
 (dolist (mode-hook '(org-mode-hook
                      LaTeX-mode-hook))
   (add-hook mode-hook 'turn-on-auto-fill))
 
 ;; ==================================================================
 ;; Latex
-;; get 2 spaces indentation:
-(setq LaTeX-item-indent 0)
+;; get 2 spaces indentation for the \item
+(use-package tex
+  :ensure auctex
+  :config
+  (setq LaTeX-item-indent 0))
 ;; ==================================================================
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
