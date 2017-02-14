@@ -8,6 +8,10 @@
 ;; https://github.com/anschwa/emacs.d/blob/master/readme.org
 ;; https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#13-mode-line
 ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/#fnref:2
+;; https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
+;; cheatsheet https://github.com/gnperdue/CheatSheets/blob/master/Emacs.markdown
+;; cheatsheet https://caiorss.github.io/Emacs-Elisp-Programming/Keybindings.html
+;; cheatsheet http://www.unexpected-vortices.com/emacs/quick-ref.html
 ;; =======================================================================
 ;; ## Basic Settings
 ;; Use (setq ...) to set value locally to a buffer
@@ -332,6 +336,8 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 
+(add-to-list 'package-archives
+             '("org" . "http://orgmode.org/elpa/") t)
 ;; initialize package.el
 (setq package-enable-at-startup nil)
 (package-initialize)
@@ -746,7 +752,7 @@
   :bind
   (;("C-x C-f" . counsel-find-file)
    ("M-x" . counsel-M-x)))
-  
+
 ;; =======================================================================
 ;; Avy
 ;; =======================================================================
@@ -1084,7 +1090,7 @@
 (use-package org
   :bind
   (("C-c a" . org-agenda))
-  :mode ("\\.org\\'" . org-mode)
+  :mode ("\\.org\\'" . org)
   :config
   ;; hide the structural markers in the org-mode
   (setq org-hide-emphasis-markers t)
@@ -1116,6 +1122,9 @@
   (setq org-startup-truncated t)
   ;; set the archive file org-file.s_archieve
   (setq org-archive-location "%s_archive::")
+  ;; (require 'ob-sh)
+  ;; (org-babel-do-load-languages 'org-babel-do-load-languages
+  ;;                              '((sh . t)))
   ;; customize the todo keyword faces
   ;; (setq org-todo-keyword-faces
   ;;       '(("TODO" . (:foreground "green" :weight bold))
