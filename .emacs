@@ -355,6 +355,19 @@
                 use-package-always-ensure t))
 (require 'bind-key)
 ;; =======================================================================
+;; Beacon Mode
+;; =======================================================================
+;; highlight the cursor position when it moves suddenly
+(use-package beacon
+  :demand t
+  :diminish t
+  ; :diminish beacon-mode
+  :bind (("C-c b b" . beacon-blink))
+  :config
+  (beacon-mode 1)
+  ;; (setq beacon-color "#666600")
+  )
+;; =======================================================================
 ;; Highlight the numbers
 ;; =======================================================================
 ;; http://www.wilfred.me.uk/blog/2014/09/27/the-definitive-guide-to-syntax-highlighting/
