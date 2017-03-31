@@ -44,7 +44,7 @@
 (mouse-wheel-mode t)
 
 ;; scroll down one line at a time
-;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 
 ;; M-x linum-mode to display line number
 (global-linum-mode 1)
@@ -140,7 +140,11 @@
 ;; set the c-style indentation to ellemtel
 (setq-default c-default-style "ellemtel"
               c-basic-offset 2)
-
+;; set the indent of private, public keywords to be 0.5 x c-basic-offset
+(c-set-offset 'access-label '/)
+;; set the indent of all other elements in the class definition to equal
+;; the c-basic-offset
+(c-set-offset 'inclass      2)
 ;; Automatic(electric) Indentation
 (global-set-key (kbd "RET") 'newline-and-indent)
 ;; (define-key global-map (kbd "RET") 'newline-and-indent)
@@ -178,7 +182,7 @@
 
 ;; If you enable Delete Selection mode, a minor mode, then inserting
 ;; text while the mark is active causes the selected text to be
-;; deleted first.
+;; deleted first, and pressing del/backspace means delete the text.
 (delete-selection-mode 1)
 
 ;; Set the emacs-grep to highlight the matching words
@@ -289,6 +293,11 @@
 (global-set-key (kbd "C-;") 'toggle-comment-on-line)
 ;; ----------------------------------------------------------------------
 ;; ctags
+;; find . -type f -iname "*.[chS]" -exec etags -a {} \;
+;; find . -type f -iname "*.[chS]" | xargs etags -a
+;; ctags -e -R *.[chS]
+;; $ sudo apt-get install global # for gtags
+;; $ sudo apt-get install exuberant-ctags
 (defun build-ctags ()
   (interactive)
   (message "building project tags")
@@ -305,11 +314,26 @@
   (etags-select-find-tag-at-point))
 
 (global-set-key (kbd "M-.") 'my-find-tag)
-;; find . -type f -iname "*.[chS]" -exec etags -a {} \;
-;; find . -type f -iname "*.[chS]" | xargs etags -a
-;; ctags -e -R *.[chS]
-;; $ sudo apt-get install global # for gtags
-;; $ sudo apt-get install exuberant-ctags
+
+;;----------------------------------------------------------------------
+;; remove the ^M
+;; There are two solutions to solve this problem.
+;; 1. call this function
+(defun remove-control-M ()
+  "Remove ^M at end of line in the whole buffer. from Steve"
+  (interactive)
+  (save-match-data
+    (save-excursion
+      (let ((remove-count 0))
+        (goto-char (point-min))
+        (while (re-search-forward (concat (char-to-string 13) "$") (point-max) t)
+          (setq remove-count (+ remove-count 1))
+          (replace-match "" nil nil))
+        (message (format "%d ^M removed from buffer." remove-count))))))
+;; 2. press M-% or M-x replace-string
+;;    - C-q C-M RET
+;;    - RET
+;;    - ! (replace the entire file)
 ;; =======================================================================
 ;; =======================================================================
 ;; ## Package Installation
@@ -391,7 +415,11 @@
 (use-package zenburn-theme
   :demand t
   :config
-  (load-theme 'zenburn t))
+  (load-theme 'zenburn t)
+  (set-face-attribute 'linum nil
+                      :foreground  "#8FB28F"
+                      :background "#3F3F3F"
+                      :bold nil))
 
 ;; =======================================================================
 ;; Powerline
@@ -794,7 +822,7 @@
   (setq uniquify-separator "/")
   (setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
   (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
-
+  
 (use-package hydra
   :init
   (defhydra hydra-ibuffer-main (:color pink :hint nil)
@@ -887,7 +915,104 @@
     ("/" ibuffer-filter-disable "disable")
     ("b" hydra-ibuffer-main/body "back" :color blue))
   ; (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
-  (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body))
+  (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
+
+  (use-package windmove
+    :demand t)
+  (defun hydra-move-splitter-left (arg)
+    "Move window splitter left."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+      (windmove-find-other-window 'right))
+    (shrink-window-horizontally arg)
+    (enlarge-window-horizontally arg)))
+
+  (defun hydra-move-splitter-right (arg)
+    "Move window splitter right."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+      (windmove-find-other-window 'right))
+    (enlarge-window-horizontally arg)
+    (shrink-window-horizontally arg)))
+
+  (defun hydra-move-splitter-up (arg)
+    "Move window splitter up."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+      (windmove-find-other-window 'up))
+    (enlarge-window arg)
+    (shrink-window arg)))
+
+  (defun hydra-move-splitter-down (arg)
+    "Move window splitter down."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+      (windmove-find-other-window 'up))
+    (shrink-window arg)
+    (enlarge-window arg)))
+
+  (global-set-key
+   (kbd "C-c w")
+   (defhydra hydra-window ()
+     "
+     Movement^^        ^Split^         ^Switch^		^Resize^
+     ----------------------------------------------------------------
+     _h_ ←        	_v_ertical       	_b_uffer		 _q_ X←
+     _j_ ↓        	_x_ horizontal	  _f_ind files _w_ X↓
+     _k_ ↑        	_z_ undo      	  _a_ce 1		   _e_ X↑
+     _l_ →        	_Z_ reset      	  _s_wap		   _r_ X→
+     _F_ollow		    _D_lt Other   	  _S_ave		   max_i_mize
+     _SPC_ cancel	  _o_nly this   	  _d_elete	
+     "
+     ("h" windmove-left )
+     ("j" windmove-down )
+     ("k" windmove-up )
+     ("l" windmove-right )
+     ("q" hydra-move-splitter-left)
+     ("w" hydra-move-splitter-down)
+     ("e" hydra-move-splitter-up)
+     ("r" hydra-move-splitter-right)
+     ("b" helm-mini)
+     ("f" helm-find-files)
+     ("F" follow-mode)
+     ("a" (lambda ()
+            (interactive)
+            (ace-window 1)
+            (add-hook 'ace-window-end-once-hook
+                      'hydra-window/body))
+      )
+     ("v" (lambda ()
+            (interactive)
+            (split-window-right)
+            (windmove-right))
+      )
+     ("x" (lambda ()
+            (interactive)
+            (split-window-below)
+            (windmove-down))
+      )
+     ("s" (lambda ()
+            (interactive)
+            (ace-window 4)
+            (add-hook 'ace-window-end-once-hook
+                      'hydra-window/body)))
+     ("S" save-buffer)
+     ("d" delete-window)
+     ("D" (lambda ()
+            (interactive)
+            (ace-window 16)
+            (add-hook 'ace-window-end-once-hook
+                      'hydra-window/body))
+      )
+     ("o" delete-other-windows)
+     ("i" ace-maximize-window)
+     ("z" (progn
+            (winner-undo)
+            (setq this-command 'winner-undo))
+      )
+     ("Z" winner-redo)
+     ("SPC" nil)
+     )))
 
 (use-package ace-window
   :bind (("C-x o" . ace-window))
@@ -920,6 +1045,13 @@
 (use-package vimrc-mode
   :mode ("\\.vim\\(rc\\)?\\'" . vimrc-mode))
 
+;; ===================================================================
+;; flycheck-mode
+(use-package flycheck
+  ;; :ensure t
+  :demand t
+  :if (not window-system))
+  
 ;; ===================================================================
 ;; python-mode
 ;; ===================================================================
@@ -1012,7 +1144,10 @@
 ;; ==================================================================
 (use-package matlab-mode
   :mode ("\\.m\\'" . matlab-mode)
-  :defer t)
+  :config
+  (setq matlab-indent-level 4)
+  (setq matlab-indent-function-body nil)
+  (autoload 'matlab-shell "matlab" "Interactive Matlab mode." t))
 
 ;; =======================================================================
 ;; Web-mode
@@ -1167,6 +1302,16 @@
 (dolist (mode-hook '(org-mode-hook
                      LaTeX-mode-hook))
   (add-hook mode-hook 'turn-on-auto-fill))
+;; ==================================================================
+;; setup the org-tree-slide mode
+;; control functions
+;; org-tree-slide-move-next-tree (C->)
+;; org-tree-slide-move-previous-tree (C-<)
+;; org-tree-slide-content (C-x s c)
+(use-package org-tree-slide
+  :bind
+  (("<f8>" . org-tree-slide-mode)
+   ("S-<f8>" . org-tree-slide-skip-done-toggle)))
 
 ;; ==================================================================
 ;; Latex
@@ -1175,6 +1320,33 @@
   :ensure auctex
   :config
   (setq LaTeX-item-indent 0))
+
+;; ==================================================================
+;; flyspell
+;; check the spelling on the fly
+(use-package flyspell
+  :ensure t
+  :diminish ""
+  :init
+  ;; Enable spell check in program comments
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  ;; Enable spell check in plain text / org-mode
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  (setq flyspell-issue-welcome-flag nil)
+  (setq flyspell-issue-message-flag nil)
+
+  ;; ignore repeated words
+  (setq flyspell-mark-duplications-flag nil)
+
+  (when (string-equal 'gnu/linux system-type)
+    (setq-default ispell-program-name "/usr/bin/aspell"))
+  (setq-default ispell-list-command "list"))
+
+;; ==================================================================
+;; writegood-mode
+(use-package writegood-mode)
+
 ;; ==================================================================
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
@@ -1195,3 +1367,4 @@
 ;;              of the last one
 ;; (load-file "directory/file.el")
 ;; (defcustom variable ... ) = a function to declare a customizable variable
+;; window-system = this is a window system
