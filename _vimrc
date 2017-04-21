@@ -40,6 +40,7 @@ set ignorecase
 set smartcase
 set incsearch        " search as characters are entered
 set hlsearch         " Enable search highlight
+set wrapscan         " when searching till the end, wrap around to the beginning
 
 " When opening a new line and no filetype-specific indenting is enabled, keep
 " the same indent as the line you're currently on. Useful for READMEs, etc.
@@ -81,3 +82,18 @@ endif
 call plug#begin('~/vimfiles/plugged')
 Plug 'mbbill/undotree'
 call plug#end() 
+
+" NerdTree: Display your file system as a tree, enabling you to easily explore
+" and open various files and directories.
+
+" NerdCommenter: Easily toggle the comment status of various amounts of code
+" based on your key mappings.
+
+" Snipmate: Glide through often-typed code, or snippets, that you can quickly
+" insert into your file. Update variables as you type.
+
+" Ctrl-P: Find full paths to files, buffers, and tags. Open multiple files at
+" once and create new files or directories.
+
+" Syntastic: Check your syntax and be notified about errors before compiling
+" your code or executing your script.

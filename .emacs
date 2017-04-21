@@ -239,6 +239,7 @@
 ;; Code folding
 ;; do not know how to use origami yet
 ;; in C mode
+
 (dolist (mode-hook '(c-mode-common-hook
                      python-mode-hook
                      emacs-lisp-mode-hook))
@@ -384,8 +385,7 @@
 ;; highlight the cursor position when it moves suddenly
 (use-package beacon
   :demand t
-  :diminish t
-  ; :diminish beacon-mode
+  :diminish beacon-mode
   :bind (("C-c b b" . beacon-blink))
   :config
   (beacon-mode 1)
@@ -416,16 +416,19 @@
   :demand t
   :config
   (load-theme 'zenburn t)
+  ;; background of linum attribute will inherit from the
+  ;; background of the text editor
   (set-face-attribute 'linum nil
-                      :foreground  "#8FB28F"
+                      :foreground "#8FB28F"
                       :background "#3F3F3F"
-                      :bold nil))
+                      :bold nil
+                      :underline nil))
 
 ;; =======================================================================
 ;; Powerline
 ;; =======================================================================
 ;; (use-package powerline
-;;   :ensure t
+;;   :demand t
 ;;   :config
 ;;   (powerline-default-theme))
 
@@ -601,7 +604,10 @@
 ;; https://writequit.org/denver-emacs/presentations/2016-03-01-helm.html
 
 (use-package helm
-  ;; :diminish (helm-mode)
+  ;; :if (or (> emacs-major-version 24)
+  ;;         (>= emacs-minor-version 5))
+  :if (not (version< emacs-version "24.4"))
+  :diminish (helm-mode)
   :init
   (progn
     (require 'helm-config)
@@ -652,6 +658,7 @@
 ;; highlight-indentation
 ;; =======================================================================
 (use-package highlight-indentation
+  :disabled t
   :config
   (set-face-background 'highlight-indentation-face "#555555")
   (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
@@ -663,6 +670,18 @@
   (add-hook 'java-mode-hook 'highlight-indentation-current-column-mode)
   (add-hook 'js2-mode-hook 'highlight-indentation-current-column-mode))
 
+;; ===================================================================
+;; hightlight indentation
+(use-package highlight-indent-guides
+  :demand t
+  :config 
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-auto-enabled nil)
+
+  (set-face-background 'highlight-indent-guides-odd-face "darkgray")
+  (set-face-background 'highlight-indent-guides-even-face "dimgray")
+  (set-face-foreground 'highlight-indent-guides-character-face "dimgray"))
 ;; =======================================================================
 ;; fic-mode TODO BUG FIXME(owner)
 ;; =======================================================================
@@ -788,8 +807,9 @@
   )
 
 (use-package counsel
-  ;; :disabled (and (>= emacs-major-version 24)
-  ;;                (>= emacs-minor-version 4))
+  ;; :if (and (>= emacs-major-version 24)
+  ;;          (>= emacs-minor-version 4))
+  :if (not (version< emacs-version "24.4"))
   :bind
   (;("C-x C-f" . counsel-find-file)
    ("M-x" . counsel-M-x)))
@@ -824,6 +844,7 @@
   (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
   
 (use-package hydra
+  :demand t
   :init
   (defhydra hydra-ibuffer-main (:color pink :hint nil)
     "
@@ -919,6 +940,7 @@
 
   (use-package windmove
     :demand t)
+  
   (defun hydra-move-splitter-left (arg)
     "Move window splitter left."
     (interactive "p")
@@ -1025,6 +1047,7 @@
 ;; conjunction with hideshow.el which is a part of GNU Emacs since
 ;; version 20.
 (use-package hideshowvis
+  :diminish hs-minor-mode
   :init
   (dolist (hook (list 'emacs-lisp-mode-hook
                       'c++-mode-hook
@@ -1048,10 +1071,13 @@
 ;; ===================================================================
 ;; flycheck-mode
 (use-package flycheck
-  ;; :ensure t
   :demand t
   :if (not window-system))
-  
+
+;; ==================================================================
+;; Gitignore mode
+(use-package gitignore-mode)
+
 ;; ===================================================================
 ;; python-mode
 ;; ===================================================================
@@ -1177,10 +1203,6 @@
   ;; highlight the current column with
   (setq web-mode-enable-current-column-highlight t))
 
-;; ==================================================================
-;; Gitignore mode
-(use-package gitignore-mode)
-
 ;; ======================================================================
 ;; Racket Mode https://github.com/greghendershott/racket-mode
 ;; prevents emacs from showing 'lambda' as 'λ'
@@ -1231,14 +1253,23 @@
   (("\\.S\\'" . asm-mode)
    ("\\.asm\\'" . asm-mode))
   :config
-  (setq asm-indent-level 2))
+  (setq asm-indent-level 4))
+
+;; ==================================================================
+;; YAML mode
+(use-package yaml-mode
+  :mode
+  ("\\.yml\\'" . yaml-mode)
+  :config
+  ;; remap the ENTER key to newline-and-indent
+  (define-key yaml-mode-map "\C-m" 'newline-and-indent))
 
 ;; ==================================================================
 ;; Org mode customization
 (use-package org
   :bind
   (("C-c a" . org-agenda))
-  :mode ("\\.org\\'" . org)
+  :mode ("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
   :config
   ;; hide the structural markers in the org-mode
   (setq org-hide-emphasis-markers t)
@@ -1326,8 +1357,11 @@
 ;; check the spelling on the fly
 (use-package flyspell
   :ensure t
-  :diminish ""
-  :init
+  ;; :diminish ""
+  :config
+  ;; remove/remap the minor-mode key map 
+  (define-key flyspell-mode-map (kbd "C-;") nil)
+  
   ;; Enable spell check in program comments
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
   ;; Enable spell check in plain text / org-mode
@@ -1341,7 +1375,8 @@
 
   (when (string-equal 'gnu/linux system-type)
     (setq-default ispell-program-name "/usr/bin/aspell"))
-  (setq-default ispell-list-command "list"))
+  (setq-default ispell-list-command "list")
+  )
 
 ;; ==================================================================
 ;; writegood-mode
