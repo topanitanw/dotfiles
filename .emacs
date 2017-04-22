@@ -1,7 +1,9 @@
-;; nesc and zenburn are two customized packages
+;; nesc is only customized packages
 ;; Modified Emacs should be downloaded from http://vgoulet.act.ulaval.ca/en/.
+;; 
 ;; emacs for window users
 ;; http://gregorygrubbs.com/emacs/10-tips-emacs-windows/
+;; 
 ;; emacs tutorial
 ;; http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/
 ;; popwin https://emacs.stackexchange.com/questions/459/how-to-automatically-kill-helm-buffers-i-dont-need
@@ -9,9 +11,11 @@
 ;; https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#13-mode-line
 ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/#fnref:2
 ;; https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
-;; cheatsheet https://github.com/gnperdue/CheatSheets/blob/master/Emacs.markdown
-;; cheatsheet https://caiorss.github.io/Emacs-Elisp-Programming/Keybindings.html
-;; cheatsheet http://www.unexpected-vortices.com/emacs/quick-ref.html
+;;
+;; cheatsheet
+;; https://github.com/gnperdue/CheatSheets/blob/master/Emacs.markdown
+;; https://caiorss.github.io/Emacs-Elisp-Programming/Keybindings.html
+;; http://www.unexpected-vortices.com/emacs/quick-ref.html
 ;; =======================================================================
 ;; ## Basic Settings
 ;; Use (setq ...) to set value locally to a buffer
@@ -140,16 +144,17 @@
 ;; set the c-style indentation to ellemtel
 (setq-default c-default-style "ellemtel"
               c-basic-offset 2)
+
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
 (c-set-offset 'access-label '/)
 ;; set the indent of all other elements in the class definition to equal
 ;; the c-basic-offset
 (c-set-offset 'inclass      2)
+
 ;; Automatic(electric) Indentation
 (global-set-key (kbd "RET") 'newline-and-indent)
 ;; (define-key global-map (kbd "RET") 'newline-and-indent)
-(when (and (>= emacs-major-version 24)
-           (>= emacs-minor-version 4))
+(when (not (version< emacs-version "24.4"))
   (electric-indent-mode +1))
 
 ;; activate the auto-fill-mode as a minor mode when opening a text
@@ -604,8 +609,7 @@
 ;; https://writequit.org/denver-emacs/presentations/2016-03-01-helm.html
 
 (use-package helm
-  ;; :if (or (> emacs-major-version 24)
-  ;;         (>= emacs-minor-version 5))
+  ;; disabled if emacs version is before 24.4
   :if (not (version< emacs-version "24.4"))
   :diminish (helm-mode)
   :init
@@ -1077,6 +1081,8 @@
 ;; ==================================================================
 ;; Gitignore mode
 (use-package gitignore-mode)
+;; git commit message mode
+(use-package git-commit)
 
 ;; ===================================================================
 ;; python-mode
@@ -1403,3 +1409,6 @@
 ;; (load-file "directory/file.el")
 ;; (defcustom variable ... ) = a function to declare a customizable variable
 ;; window-system = this is a window system
+
+;; ==================================================================
+

@@ -1,26 +1,49 @@
-" Use gVim settings
+"" Use gVim settings
 set nocompatible 	   " Use gVim defaults
+
+" how to install vim-plug
+" https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
+if empty(glob('~/vimfiles/autoload/plug.vim'))
+  silent !curl -fLo ~/vimfiles/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
+  " Note: in window you might need to create a folder ~/vimfiles/plugged
+  " manually
+endif
+
+call plug#begin('~/vimfiles/plugged')
+Plug 'Zenburn'
+Plug 'mbbill/undotree'
+Plug 'itchyny/lightline.vim'
+call plug#end()
 
 " GUI
 "" set zenburn color scheme
 let g:zenburn_force_dark_Background = 1
-colorscheme zenburn
+colors zenburn
+let g:lightline = {
+      \ 'colorscheme': 'default',
+      \ }
 
 "" set the default font and font size
 set guifont=Dejavu\ Sans\ Mono:h12
 
-set number           " enable line number
-set ruler            " Show the line and column number (cursor position)
-set showmatch        " highlight matching [{()}]
-syntax on            " set syntax highlight 
-set showcmd          " show incomplete command in bottom bar
-set lazyredraw       " redraw only when we need to.
+set number              " enable line number
+set ruler               " Show the line and column number (cursor position)
+set cursorline          " highlight the current line
+set showmatch           " highlight matching [{()}]
+syntax on               " set syntax highlight 
+set showcmd             " show incomplete command in bottom bar
+set lazyredraw          " redraw only when we need to.
 set modeline
 set modelines=1
 
 " Edit
 "" all backspacing over everything in insert mode
 set backspace=indent,eol,start
+set wildmenu            " visual autocomplete for command menu 
+set encoding=utf-8      " The encoding displayed.
+set fileencoding=utf-8  " The encoding written to file.
 
 " Indentation
 "" Attempt to determine the type of a file based on its name and possibly its
@@ -31,6 +54,7 @@ filetype plugin indent on
 set autoindent
 set backspace=2 	   " Allow backspacing over everything in insert mode
 set tabstop=2        " each tab has 2_spaces equivalent width
+set softtabstop=4    " number of spaces in tab when editing
 set shiftwidth=2     " Indentation width when using >> and << re-indentation
 set expandtab 		   " Tabs are expanded to spaces
 
@@ -46,7 +70,6 @@ set wrapscan         " when searching till the end, wrap around to the beginning
 " the same indent as the line you're currently on. Useful for READMEs, etc.
 
 set vb
-set viminfo+=n$VIM/_viminfo
 set noerrorbells
 set showcmd         " display incomplete commands
 if has('mouse')
@@ -64,24 +87,13 @@ behave mswin
 
 "Set the status line options. Make it show more information.
 set laststatus=2     " Display the status line
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\[POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
 
 "nesc syntax highlight 
 augroup filetypedetect 
   au! BufRead,BufNewFile *nc setfiletype nc 
 augroup END
 
-" how to install vim-plug
-" https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
-if empty(glob('~/vimfiles/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall | source $MYVIMRC
-endif
 
-call plug#begin('~/vimfiles/plugged')
-Plug 'mbbill/undotree'
-call plug#end() 
 
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.
@@ -97,3 +109,8 @@ call plug#end()
 
 " Syntastic: Check your syntax and be notified about errors before compiling
 " your code or executing your script.
+
+
+
+" Reference 
+" https://dougblack.io/words/a-good-vimrc.html til folding
