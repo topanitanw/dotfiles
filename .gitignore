@@ -7,8 +7,6 @@
 !.emacs
 !.emacs-v1
 !_vimrc
-!vimfiles/
+!.vimrc
 !README.txt
 !profile-dotemacs.el
-!.emacs.d/themes/zenburn-theme.el
-!.emacs.d/themes/towombat.el

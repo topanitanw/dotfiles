@@ -3,25 +3,24 @@ set nocompatible 	   " Use gVim defaults
 
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
-if empty(glob('~/vimfiles/autoload/plug.vim'))
-  silent !curl -fLo ~/vimfiles/autoload/plug.vim --create-dirs
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall | source $MYVIMRC
   " Note: in window you might need to create a folder ~/vimfiles/plugged
   " manually
 endif
 
-call plug#begin('~/vimfiles/plugged')
-Plug 'Zenburn'
+call plug#begin('~/.vim/plugged')
+Plug 'vim-scripts/Zenburn'
 Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
-Plug 'valloric/youcompleteme'
 call plug#end()
 
 " GUI
 "" set zenburn color scheme
 let g:zenburn_force_dark_Background = 1
-colors zenburn
+colorscheme zenburn
 let g:lightline = {
       \ 'colorscheme': 'default',
       \ }
@@ -38,6 +37,15 @@ set showcmd             " show incomplete command in bottom bar
 set lazyredraw          " redraw only when we need to.
 set modeline
 set modelines=1
+
+if has("gui_running")
+"  set guioptions -= m   "Menu bar
+"  set guioptions -= T   "Tool bar
+endif
+
+" from here https://sunaku.github.io/vim-256color-bce.html
+set term=screen-256color 
+set t_ut=
 
 " Edit
 "" all backspacing over everything in insert mode
