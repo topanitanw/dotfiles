@@ -404,6 +404,54 @@
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
 ;; =======================================================================
+;; which keys
+;; =======================================================================
+(use-package which-key
+  :demand t
+  :init
+  (which-key-mode)
+  :config
+  ;; after the which key window shows up, press C-h
+  ;; to switch pages.
+  ;; to call the helper character press C-h C-h
+  (setq which-key-use-C-h-commands nil)
+;  (setq which-key-use-C-h-commands nil)
+  ; (setq which-key-popup-type 'minibuffer)
+  (setq which-key-popup-type 'side-window)
+  ;; location of which-key window. valid values: top, bottom, left, right, 
+  ;; or a list of any of the two. If it's a list, which-key will always try
+  ;; the first location first. It will go to the second location if there is
+  ;; not enough room to display any keys in the first location
+  (setq which-key-side-window-location 'bottom)
+
+  ;; max width of which-key window, when displayed at left or right.
+  ;; valid values: number of columns (integer), or percentage out of current
+  ;; frame's width (float larger than 0 and smaller than 1)
+  (setq which-key-side-window-max-width 0.33)
+
+  ;; max height of which-key window, when displayed at top or bottom.
+  ;; valid values: number of lines (integer), or percentage out of current
+  ;; frame's height (float larger than 0 and smaller than 1)
+  (setq which-key-side-window-max-height 0.25)
+
+  ;; Set the time delay (in seconds) for the which-key popup to appear. A value of
+  ;; zero might cause issues so a non-zero value is recommended.
+  (setq which-key-idle-delay 1.0)
+
+  ;; Set the special keys. These are automatically truncated to one character and
+  ;; have which-key-special-key-face applied. Disabled by default. An example
+  ;; setting is
+  ;; (setq which-key-special-keys '("SPC" "TAB" "RET" "ESC" "DEL"))
+  (setq which-key-special-keys nil)
+
+  ;; Show the key prefix on the left, top, or bottom (nil means hide the prefix).
+  ;; The prefix consists of the keys you have typed so far. which-key also shows
+  ;; the page information along with the prefix.
+  (setq which-key-show-prefix 'left)
+
+  ;; Set to t to show the count of keys shown vs. total keys in the mode line.
+  (setq which-key-show-remaining-keys nil))
+;; =======================================================================
 ;; Emacs theme setup
 ;; =======================================================================
 ;; (setq custom-safe-themes t)
@@ -1131,6 +1179,7 @@
               (setq tab-width space-tap-offset)
               ; set the indentation width for python
               (setq python-indent space-tap-offset)
+              (setq python-indent-offset space-tap-offset)
               (setq electric-indent-chars '(?\n))))
   ;; Ignoring electric indentation
   (defun electric-indent-ignore-python (char)
@@ -1163,8 +1212,8 @@
   :mode "\\.java\\'" ; ("\\.py\\'" . python-mode)
   :config
   (add-hook 'java-mode-hook (lambda ()
-                              (setq c-basic-offset 2
-                                    tab-width 2
+                              (setq c-basic-offset space-tap-offset
+                                    tab-width space-tap-offset
                                     indent-tabs-mode nil))))
 
 ;; ==================================================================
@@ -1183,8 +1232,8 @@
   :config
   (add-hook 'ruby-mode-hook (lambda ()
                               (setq indent-tabs-mode nil
-                                    tab-width 2
-                                    ruby-indent-level 2)))
+                                    tab-width space-tap-offset
+                                    ruby-indent-level space-tap-offset)))
   (add-hook 'ruby-mode-hook 'robe-mode))
 
 ;; ==================================================================
@@ -1255,6 +1304,8 @@
 ;; =======================================================================
 ;; racket mode setup
 (use-package racket-mode
+  :bind
+  (("C-c r" . racket-run))
   :init
   (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
   (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
