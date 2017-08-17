@@ -17,6 +17,14 @@
 ;; https://caiorss.github.io/Emacs-Elisp-Programming/Keybindings.html
 ;; http://www.unexpected-vortices.com/emacs/quick-ref.html
 ;; =======================================================================
+(setq use-spacemacs nil) ; or nil
+(when use-spacemacs
+  (setq user-emacs-directory "~/.spacemacs.d/") ; default to ~/.emacs.d
+  (load (expand-file-name "init.el" user-emacs-directory))
+  (with-current-buffer " *load*"
+    (goto-char (point-max))))
+
+;; =======================================================================
 ;; ## Basic Settings
 ;; Use (setq ...) to set value locally to a buffer
 ;; Use (setq-default ...) to set value globally
@@ -661,17 +669,19 @@
 ;; =======================================================================
 ;; evil
 ;; =======================================================================
-;; (use-package evil
-;;   :demand t
-;;   :config
-;;   (evil-mode 1))
+(use-package evil
+  :demand t
+  :config
+  (evil-mode 1)
+  ; (add-to-list 'evil-emacs-state flycheck-error-list-mode)
+  (add-to-list 'evil-emacs-state occur-mode)) 
 
 ;; =======================================================================
 ;; helm
 ;; =======================================================================
 (use-package helm
   ;; disabled if emacs version is before 24.4
-  :if (not (version< emacs-version "24.4"))
+  :if (version< "24.4" emacs-version) 
   :diminish (helm-mode)
   :init
   (progn
@@ -1153,7 +1163,7 @@
 ;; ===================================================================
 ;; flycheck-mode
 (use-package flycheck
-  :demand t
+  ;:demand t
   :if (not window-system))
 
 ;; ==================================================================
