@@ -418,7 +418,7 @@
 ;  (setq which-key-use-C-h-commands nil)
   ; (setq which-key-popup-type 'minibuffer)
   (setq which-key-popup-type 'side-window)
-  ;; location of which-key window. valid values: top, bottom, left, right, 
+  ;; location of which-key window. valid values: top, bottom, left, right,
   ;; or a list of any of the two. If it's a list, which-key will always try
   ;; the first location first. It will go to the second location if there is
   ;; not enough room to display any keys in the first location
@@ -751,7 +751,7 @@
   (set-face-background 'highlight-indent-guides-even-face "dimgray")
   (set-face-foreground 'highlight-indent-guides-character-face "dimgray"))
 ;; =======================================================================
-;; fic-mode TODO BUG FIXME(owner)
+;; fic-mode TODO BUG FIXME CLEANUP (owner)
 ;; =======================================================================
 (use-package fic-mode
   :init
@@ -762,7 +762,9 @@
             (add-hook 'java-mode-hook 'fic-mode)
             (add-hook 'python-mode-hook 'fic-mode)
             (add-hook 'c++-mode-hook 'fic-mode)
-            (add-hook 'emacs-lisp-mode-hook 'fic-mode))))
+            (add-hook 'emacs-lisp-mode-hook 'fic-mode)))
+  :config
+  (push "CLEANUP" fic-highlighted-words))
 
 ;; =======================================================================
 ;; rainbow-mode red '#ffffff'
