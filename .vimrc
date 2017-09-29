@@ -44,9 +44,11 @@ if has("gui_running")
 "  set guioptions -= T   "Tool bar
 endif
 
+" fixing the vim background color erase issue
 " from here https://sunaku.github.io/vim-256color-bce.html
-set term=screen-256color 
+set term=screen-256color
 set t_ut=
+set t_Co=256
 
 " Edit
 "" all backspacing over everything in insert mode
@@ -62,6 +64,7 @@ set fileencoding=utf-8  " The encoding written to file.
 filetype plugin indent on
 
 set autoindent
+set smartindent
 set backspace=2 	   " Allow backspacing over everything in insert mode
 set tabstop=2        " each tab has 2_spaces equivalent width
 set softtabstop=4    " number of spaces in tab when editing

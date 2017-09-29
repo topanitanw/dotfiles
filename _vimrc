@@ -21,7 +21,7 @@ call plug#end()
 " GUI
 "" set zenburn color scheme
 let g:zenburn_force_dark_Background = 1
-colors zenburn
+colorscheme zenburn
 let g:lightline = {
       \ 'colorscheme': 'default',
       \ }
@@ -38,6 +38,12 @@ set showcmd             " show incomplete command in bottom bar
 set lazyredraw          " redraw only when we need to.
 set modeline
 set modelines=1
+
+" fixing the vim background color erase issue
+" from here https://sunaku.github.io/vim-256color-bce.html
+set term=screen-256color
+set t_ut=
+set t_Co=256
 
 " Edit
 "" all backspacing over everything in insert mode

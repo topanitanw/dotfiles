@@ -17,7 +17,7 @@
 ;; https://caiorss.github.io/Emacs-Elisp-Programming/Keybindings.html
 ;; http://www.unexpected-vortices.com/emacs/quick-ref.html
 ;; =======================================================================
-(setq use-spacemacs nil) ; or nil
+(setq use-spacemacs nil) ; t or nil
 (when use-spacemacs
   (setq user-emacs-directory "~/.spacemacs.d/") ; default to ~/.emacs.d
   (load (expand-file-name "init.el" user-emacs-directory))
@@ -57,7 +57,8 @@
 (setq-default scroll-step 1)
 
 ;; support mouse wheel scrolling
-(mouse-wheel-mode t)
+(when (require 'mwheel nil 'noerror)
+  (mouse-wheel-mode t))
 
 ;; scroll down one line at a time
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
@@ -274,6 +275,10 @@
     (erase-buffer)
     (eshell-send-input)))
 
+(setq eshell-prompt-function
+      (lambda nil
+        (concat "\n" (eshell/pwd) "\n$ ")))
+
 (defun shell/clear ()
   "Clear the shell buffer."
   (interactive)
@@ -365,8 +370,8 @@
 ;; marmalade is another third-party package manager. Marmalade tends to
 ;; be more stable, due to the requirement that developers explicitely
 ;; upload new versions of their packages.
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+;; (add-to-list 'package-archives
+;;              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
@@ -671,10 +676,18 @@
 ;; =======================================================================
 (use-package evil
   :demand t
-  :config
+  :init
   (evil-mode 1)
-  ; (add-to-list 'evil-emacs-state flycheck-error-list-mode)
-  (add-to-list 'evil-emacs-state occur-mode)) 
+  :config
+  (setq evil-toggle-key "")
+  (add-to-list 'evil-emacs-state-modes 'flycheck-error-list-mode)
+  (add-to-list 'evil-emacs-state-modes 'occur-mode)
+  ;; C-z to suspend-frame in evil normal state and evil emacs state
+  (define-key evil-normal-state-map (kbd "C-z") 'suspend-frame)
+  (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
+  ;; define :ls, :buffers to open ibuffer
+  (evil-ex-define-cmd "ls" 'ibuffer)
+  (evil-ex-define-cmd "buffers" 'ibuffer))  
 
 ;; =======================================================================
 ;; helm
@@ -761,19 +774,24 @@
   (set-face-background 'highlight-indent-guides-even-face "dimgray")
   (set-face-foreground 'highlight-indent-guides-character-face "dimgray"))
 ;; =======================================================================
-;; fic-mode TODO BUG FIXME(owner)
+;; fic-mode TODO BUG FIXME CLEANUP CHECKING(owner)
 ;; =======================================================================
 (use-package fic-mode
   :init
   (if (>= emacs-major-version 24)
-      (add-hook 'prog-mode-hook 'fic-mode)
-      (prog (add-hook 'c-mode-hook 'fic-mode)
-            (add-hook 'nesc-mode-hook 'fic-mode)
-            (add-hook 'java-mode-hook 'fic-mode)
-            (add-hook 'python-mode-hook 'fic-mode)
-            (add-hook 'c++-mode-hook 'fic-mode)
-            (add-hook 'emacs-lisp-mode-hook 'fic-mode))))
-
+      (progn (add-hook 'prog-mode-hook 'fic-mode)
+             (add-hook 'LaTeX-mode-hook 'fic-mode))
+      (progn (add-hook 'c-mode-hook 'fic-mode)
+             (add-hook 'nesc-mode-hook 'fic-mode)
+             (add-hook 'java-mode-hook 'fic-mode)
+             (add-hook 'python-mode-hook 'fic-mode)
+             (add-hook 'c++-mode-hook 'fic-mode)
+             (add-hook 'emacs-lisp-mode-hook 'fic-mode)
+             (add-hook 'LaTeX-mode-hook 'fic-mode)))
+  :config
+  (dolist (word '("TODO" "CLEANUP" "CHECKING"))
+    (when (not (member word fic-highlighted-words))
+      (push word fic-highlighted-words))))
 ;; =======================================================================
 ;; rainbow-mode red '#ffffff'
 ;; =======================================================================
@@ -828,7 +846,9 @@
       (let ( (length (length colors)) )
         ;;(message (concat "i " (number-to-string i) " length " (number-to-string length)))
         (while (<= i length)
-          (let ( (rainbow-var-name (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))
+          (let ( (rainbow-var-name (concat "rainbow-delimiters-depth-"
+                                           (number-to-string i)
+                                           "-face"))
                  (col (nth i colors)) )
             ;; (message (concat rainbow-var-name " => " col))
             (set-face-foreground (intern rainbow-var-name) col))
@@ -876,7 +896,7 @@
 ;; =======================================================================
 (use-package swiper
   :bind
-  (("C-s" . swiper))
+  (("C-c s" . swiper))
   :init
   ;; (ivy-mode 1)
   ;; (setq ivy-display-style 'fancy)
@@ -1361,6 +1381,15 @@
   )
 
 ;; ==================================================================
+;; Scala
+(use-package scala-mode
+  :interpreter
+  ("scala" . scala-mode)
+  :config
+  (setq prettify-symbols-alist scala-prettify-symbols-alist)
+  (prettify-symbols-mode))
+
+;; ==================================================================
 ;; YAML mode
 ;; C-x TAB = indent the region/line
 ;; C-n C-x $ = fold lines that indented more than n spaces
@@ -1502,6 +1531,7 @@
 
 ;; ==================================================================
 ;; ## Emacs Lisp
+;; (member 1 (cons 1 (cons 2 '()))) -> return (1)
 ;; (display-grpahic-p) = check whether emacs is on the terminal mode or not
 ;; (interactive) = it will call this function if we press M-x function-name
 ;; function name = mode-name/what-to-type -> read what we type in that mode
