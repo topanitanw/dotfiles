@@ -45,10 +45,19 @@
                     :width 'normal)
 
 ;; select the coding style of the emacs
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 (cond ((string-equal system-type "windows-nt") (prefer-coding-system 'utf-8-dos))
       ((string-equal system-type "darwin") (prefer-coding-system 'utf-8-mac))
       ((string-equal system-type "gnu/linux") (prefer-coding-system 'utf-8-unix))
       (t (prefer-coding-system 'utf-8-auto)))
+
+(when (eq system-type 'darwin) ;; mac specific settings
+  (setq mac-option-key-is-meta nil
+        mac-command-key-is-meta nil
+        mac-command-modifier 'none
+        mac-option-modifier 'none)
+  (global-set-key [kp-delete] 'delete-char)) ;; sets fn-delete to be right-delete       
 
 ;; disable the alarm bell
 (setq-default visible-bell 1)
@@ -1323,7 +1332,10 @@
 ;; ======================================================================
 ;; Racket Mode https://github.com/greghendershott/racket-mode
 ;; prevents emacs from showing 'lambda' as 'λ'
-(when (version< "24.4" emacs-version)
+;; in window, only lampda will change to a symbol, but in mac,
+;; the logical operators in python will be shown as symbols ex or => v.
+(when (and (version< "24.4" emacs-version)
+           (window-system))
   (global-prettify-symbols-mode 1))
 
 ;; (if a   =>  (if a
