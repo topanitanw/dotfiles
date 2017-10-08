@@ -47,16 +47,37 @@
 ;; select the coding style of the emacs
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(cond ((string-equal system-type "windows-nt") (prefer-coding-system 'utf-8-dos))
-      ((string-equal system-type "darwin") (prefer-coding-system 'utf-8-mac))
-      ((string-equal system-type "gnu/linux") (prefer-coding-system 'utf-8-unix))
+(cond ((string-equal system-type "windows-nt")
+       (prefer-coding-system 'utf-8-dos))
+      ((string-equal system-type "darwin")
+       (prefer-coding-system 'utf-8-mac))
+      ((string-equal system-type "gnu/linux")
+       (prefer-coding-system 'utf-8-unix))
       (t (prefer-coding-system 'utf-8-auto)))
 
 (when (eq system-type 'darwin) ;; mac specific settings
-  (setq mac-option-key-is-meta nil
-        mac-command-key-is-meta nil
-        mac-command-modifier 'none
-        mac-option-modifier 'none)
+  (set-keyboard-coding-system nil)
+  (set-face-attribute 'default nil :height 160)
+  (set-face-attribute 'mode-line nil :height 160)
+  ;; for emacs on terminal in mac, to copy to and paste from clipboard
+  ;; M-| pbcopy and M-| pbpaste commands or set these new commmands.
+  (defun pbcopy ()
+    (interactive)
+    (call-process-region (point) (mark) "pbcopy")
+    (setq deactivate-mark t))
+
+  (defun pbpaste ()
+    (interactive)
+    (call-process-region (point) (if mark-active (mark) (point)) "pbpaste" t t))
+
+  (defun pbcut ()
+    (interactive)
+    (pbcopy)
+    (delete-region (region-beginning) (region-end)))
+
+  (global-set-key (kbd "C-c c") 'pbcopy)
+  (global-set-key (kbd "C-c v") 'pbpaste)
+  (global-set-key (kbd "C-c x") 'pbcut)
   (global-set-key [kp-delete] 'delete-char)) ;; sets fn-delete to be right-delete       
 
 ;; disable the alarm bell
@@ -694,6 +715,8 @@
   ;; C-z to suspend-frame in evil normal state and evil emacs state
   (define-key evil-normal-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
+  ;; enable TAB to indent in the vistual mode
+  (define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
   ;; define :ls, :buffers to open ibuffer
   (evil-ex-define-cmd "ls" 'ibuffer)
   (evil-ex-define-cmd "buffers" 'ibuffer))  
