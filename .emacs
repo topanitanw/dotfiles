@@ -1518,10 +1518,14 @@
    ("S-<f8>" . org-tree-slide-skip-done-toggle)))
 
 ;; ==================================================================
+;; apple script
+;; syntax highlight for apple script
+(use-package apples-mode
+  :mode ("\\.\\(applescri\\|sc\\)pt\\'" . apples-mode))
+;; ==================================================================
 ;; Latex
 ;; get 2 spaces indentation for the \item
 (use-package auctex
-  :ensure t
   :mode ("\\.tex\\'" . latex-mode)
   :init
   (add-hook 'LaTeX-mode-hook #'flyspell-mode)
@@ -1531,7 +1535,6 @@
 ;; flyspell
 ;; check the spelling on the fly
 (use-package flyspell
-  :ensure t
   ;; :diminish ""
   :config
   ;; remove/remap the minor-mode key map
