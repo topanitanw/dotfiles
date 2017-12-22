@@ -1,4 +1,3 @@
-
 "" Use gVim settings
 set nocompatible 	   " Use gVim defaults
 
@@ -16,6 +15,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'vim-scripts/Zenburn'
 Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
+Plug 'scrooloose/syntastic'
 call plug#end()
 
 " GUI
@@ -24,7 +24,14 @@ let g:zenburn_force_dark_Background = 1
 colorscheme zenburn
 let g:lightline = {
       \ 'colorscheme': 'default',
+      \ 'component_function': { 
+      \     'filename': 'LightLineFilename'
       \ }
+      \ }
+
+function! LightLineFilename() 
+  return expand('%')
+endfunction
 
 "" set the default font and font size
 set guifont=Dejavu\ Sans\ Mono:h12
@@ -44,11 +51,13 @@ if has("gui_running")
 "  set guioptions -= T   "Tool bar
 endif
 
-" fixing the vim background color erase issue
 " from here https://sunaku.github.io/vim-256color-bce.html
-set term=screen-256color
+set term=screen-256color 
 set t_ut=
-set t_Co=256
+
+" code representation
+"" folding
+set foldmethod=syntax
 
 " Edit
 "" all backspacing over everything in insert mode
@@ -64,7 +73,6 @@ set fileencoding=utf-8  " The encoding written to file.
 filetype plugin indent on
 
 set autoindent
-set smartindent
 set backspace=2 	   " Allow backspacing over everything in insert mode
 set tabstop=2        " each tab has 2_spaces equivalent width
 set softtabstop=4    " number of spaces in tab when editing

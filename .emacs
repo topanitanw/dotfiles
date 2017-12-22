@@ -1584,3 +1584,17 @@
 ;; window-system = this is a window system
 
 ;; ==================================================================
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (apples-mode scala-mode evil zenburn-theme yaml-mode writegood-mode which-key web-mode vimrc-mode use-package undo-tree sml-mode robe rainbow-mode racket-mode org-tree-slide multiple-cursors matlab-mode markdown-mode ido-vertical-mode hydra highlight-numbers highlight-indent-guides hideshowvis helm gitignore-mode git-commit flycheck fic-mode drag-stuff diminish counsel company-web company-math company-c-headers company-anaconda bm beacon auctex arduino-mode ace-window))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
