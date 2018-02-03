@@ -1,13 +1,4 @@
 # blacklist files/folders in the same directory as the .gitignore file
 /*
-*~
+*.swp
 
-# But not these files
-!.gitignore
-!.emacs
-!.emacs-v1
-!_vimrc
-!.vimrc
-!README.txt
-!profile-dotemacs.el
-!.emacs.d/nesC/*
