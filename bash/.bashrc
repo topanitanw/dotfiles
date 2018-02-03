@@ -14,6 +14,12 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# git compltion for bash
+if [ ! -f ~/git-completion.bash ]; then 
+  wget https://github.com/git/git/blob/master/contrib/completion/git-completion.bash
+fi
+source ~/git-comletion.bash
+
 # change the shell prompt
 if [ $(id -u) -eq 0 ]; then # you are root, set red colour prompt
   PS1="\\[$(tput setaf 1)\\]\\u@\\h:\\w #\\[$(tput sgr0)\\]"
@@ -28,7 +34,6 @@ if [ "$TERM" == "xterm" ]; then
 fi
 
 # User specific aliases and functions
-
 # enable color support of ls and grep
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)" ;
@@ -56,9 +61,11 @@ alias rmbc="rm *.bc;";
 alias rmswp="rm .*.swp; rm *~;";
 alias mii="make isoimage;";
 alias mmcf="make menuconfig;";
+
+        
 # Minet setup
 # export PATH=$PATH:/home/pwa732/my_folder/TA/340W2017/p1/minet-netclass
-export PATH=$PATH:/home/pwa732/my_folder/TA/340W2017/p1/machel/minet-netclass-w15/
+# export PATH=$PATH:/home/pwa732/my_folder/TA/340W2017/p1/machel/minet-netclass-w15/
 
 # # user specific environment and startup programs
 # export PATH=~/CAT/bin:$PATH
