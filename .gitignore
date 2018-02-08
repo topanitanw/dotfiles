@@ -1,4 +1,3 @@
 # blacklist files/folders in the same directory as the .gitignore file
-/*
 *.swp
 
