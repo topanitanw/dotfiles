@@ -114,7 +114,9 @@ augroup filetypedetect
   au! BufRead,BufNewFile *nc setfiletype nc 
 augroup END
 
-
+" key mapping 
+nnoremap <SPACE> <Nop>
+let mapleader=" "
 
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.

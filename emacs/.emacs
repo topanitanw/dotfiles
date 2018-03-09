@@ -35,8 +35,9 @@
 (set-keyboard-coding-system 'utf-8)
 
 (when (eq system-type 'windows-nt)
-;; (set-frame-font "DejaVu Sans Mono-13");; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
-;; (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
+  ;; (set-frame-font "DejaVu Sans Mono-13")
+  ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
+  ;; (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
   (set-face-attribute 'default nil
                       :family "DejaVu Sans Mono"
                       :height 130
@@ -1590,6 +1591,9 @@
 
   (when (string-equal 'gnu/linux system-type)
     (setq-default ispell-program-name "/usr/bin/aspell"))
+
+  (when (string-equal system-type "darwin")
+    (setq-default ispell-program-name "/usr/local/bin/ispell"))
   (setq-default ispell-list-command "list")
   )
 
