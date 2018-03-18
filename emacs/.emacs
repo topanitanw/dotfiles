@@ -1243,6 +1243,21 @@
   'interactive)
 
 ;; ==================================================================
+;; neotree
+;; ==================================================================
+;; need to reconfig for evil node
+;; n and p: next and previous
+;; H: toggle to display the hidden files
+;; A: minimize and maximize the neotree buffer
+;; TAB or SPC or RET: fold/unfold files in a directory
+;; g: refresh files
+(use-package neotree
+  :bind (("C-c n" . 'neotree-toggle))
+  :config
+  (setq neo-theme (if (display-graphic-p)
+                      'icon
+                      'arrow)))
+;; ==================================================================
 ;; vimrc-mode
 (use-package vimrc-mode
   :mode ("\\.vim\\(rc\\)?\\'" . vimrc-mode))
@@ -1626,7 +1641,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (apples-mode scala-mode evil zenburn-theme yaml-mode writegood-mode which-key web-mode vimrc-mode use-package undo-tree sml-mode robe rainbow-mode racket-mode org-tree-slide multiple-cursors matlab-mode markdown-mode ido-vertical-mode hydra highlight-numbers highlight-indent-guides hideshowvis helm gitignore-mode git-commit flycheck fic-mode drag-stuff diminish counsel company-web company-math company-c-headers company-anaconda bm beacon auctex arduino-mode ace-window))))
+    (neotree neo-tree apples-mode scala-mode evil zenburn-theme yaml-mode writegood-mode which-key web-mode vimrc-mode use-package undo-tree sml-mode robe rainbow-mode racket-mode org-tree-slide multiple-cursors matlab-mode markdown-mode ido-vertical-mode hydra highlight-numbers highlight-indent-guides hideshowvis helm gitignore-mode git-commit flycheck fic-mode drag-stuff diminish counsel company-web company-math company-c-headers company-anaconda bm beacon auctex arduino-mode ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
