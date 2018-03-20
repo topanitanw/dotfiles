@@ -30,23 +30,26 @@
 ;; Use (setq-default ...) to set value globally
 ;; set the default font
 ;; (set-frame-font Fontname-Size)
-;; (set-frame-font "DejaVu Sans Mono-13");; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
-;; (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
-(set-face-attribute 'default nil
-                    :family "DejaVu Sans Mono"
-                    :height 130
-                    :weight 'normal
-                    :width 'normal)
-
-(set-face-attribute 'mode-line nil
-                    :family "DejaVu Sans Mono"
-                    :height 130
-                    :weight 'normal
-                    :width 'normal)
-
 ;; select the coding style of the emacs
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
+
+(when (eq system-type 'windows-nt)
+  ;; (set-frame-font "DejaVu Sans Mono-13")
+  ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
+  ;; (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
+  (set-face-attribute 'default nil
+                      :family "DejaVu Sans Mono"
+                      :height 130
+                      :weight 'normal
+                      :width 'normal)
+
+  (set-face-attribute 'mode-line nil
+                      :family "DejaVu Sans Mono"
+                      :height 130
+                      :weight 'normal
+                      :width 'normal)
+)
 
 (cond ((string-equal system-type "windows-nt")
        (prefer-coding-system 'utf-8-dos))
@@ -84,8 +87,8 @@
   ;; set the ispell path to the emacs for mac machines
   (setq ispell-program-name "/usr/local/bin/ispell")
   ;; set the alt key to be the option key
-  (setq mac-option-modifier 'alt)
-  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'alt)
 
   (prefer-coding-system 'utf-8)
   ;; set the background mode 
@@ -1243,6 +1246,7 @@
   'interactive)
 
 ;; ==================================================================
+<<<<<<< HEAD
 ;; neotree
 ;; ==================================================================
 ;; need to reconfig for evil node
@@ -1603,6 +1607,8 @@
 
   (when (string-equal 'gnu/linux system-type)
     (setq-default ispell-program-name "/usr/bin/aspell"))
+  (when (string-equal system-type "darwin")
+    (setq-default ispell-program-name "/usr/local/bin/ispell"))
   (setq-default ispell-list-command "list")
   )
 
@@ -1634,17 +1640,3 @@
 ;; window-system = this is a window system
 
 ;; ==================================================================
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (neotree neo-tree apples-mode scala-mode evil zenburn-theme yaml-mode writegood-mode which-key web-mode vimrc-mode use-package undo-tree sml-mode robe rainbow-mode racket-mode org-tree-slide multiple-cursors matlab-mode markdown-mode ido-vertical-mode hydra highlight-numbers highlight-indent-guides hideshowvis helm gitignore-mode git-commit flycheck fic-mode drag-stuff diminish counsel company-web company-math company-c-headers company-anaconda bm beacon auctex arduino-mode ace-window))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

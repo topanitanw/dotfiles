@@ -7,7 +7,6 @@ case $- in
 esac
 
 echo "reading ~/.bashrc"
-
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -48,6 +47,8 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 alias source_bash="source ~/.bashrc;";
+alias llvm_cat="cd ~/my_folder/496F2017/CAT-c;";
+alias cd_496="cd ~/my_folder/496F2017/;";
 alias mclmck="make clean; make check;";
 alias mclm="make clean; make;";
 alias mcl="make clean;";
@@ -70,6 +71,18 @@ alias ll="ls -la";
 # Minet setup
 # export PATH=$PATH:/home/pwa732/my_folder/TA/340W2017/p1/minet-netclass
 # export PATH=$PATH:/home/pwa732/my_folder/TA/340W2017/p1/machel/minet-netclass-w15/
+alias mbcO0="clang -I../misc -O0 -emit-llvm -c program.c -o program.bc;";
+alias mall="make all;";
+alias rme="./run_me.sh;";
+alias rm="rm -i";
+alias rmll="rm *.ll;";
+alias rmbc="rm *.bc;";
+alias rmswp="rm .*.swp; rm *~;";
+alias mii="make isoimage;";
+alias mmcf="make menuconfig;";
+# Minet setup
+# export PATH=$PATH:/home/pwa732/my_folder/TA/340W2017/p1/minet-netclass
+export PATH=$PATH:/home/pwa732/my_folder/TA/340W2017/p1/machel/minet-netclass-w15/
 
 # # user specific environment and startup programs
 # export PATH=~/CAT/bin:$PATH
