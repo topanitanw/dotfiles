@@ -3,19 +3,20 @@ set nocompatible 	   " Use gVim defaults
 
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
-if empty(glob('~/vimfiles/autoload/plug.vim'))
-  silent !curl -fLo ~/vimfiles/autoload/plug.vim --create-dirs
+if empty(glob('vimfiles/autoload/plug.vim'))
+  silent !curl -fLo vimfiles/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall | source $MYVIMRC
-  " Note: in window you might need to create a folder ~/vimfiles/plugged
+  " Note: in window you might need to create a folder vimfiles/plugged
   " manually
 endif
 
-call plug#begin('~/vimfiles/plugged')
-Plug 'Zenburn'
+call plug#begin('vimfiles/plugged')
+Plug 'vim-scripts/Zenburn'
 Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
-Plug 'valloric/youcompleteme'
+" Plug 'valloric/youcompleteme'
+Plug 'scrooloose/syntastic'
 call plug#end()
 
 " GUI
@@ -24,7 +25,15 @@ let g:zenburn_force_dark_Background = 1
 colorscheme zenburn
 let g:lightline = {
       \ 'colorscheme': 'default',
+      \ 'component_function': { 
+      \     'filename': 'LightLineFilename'
       \ }
+      \ }
+
+function! LightLineFilename() 
+  return expand('%')
+endfunction
+
 
 "" set the default font and font size
 set guifont=Dejavu\ Sans\ Mono:h12
