@@ -50,7 +50,7 @@ set modelines=1
 
 " fixing the vim background color erase issue
 " from here https://sunaku.github.io/vim-256color-bce.html
-set term=screen-256color
+set term=xterm " screen-256color
 set t_ut=
 set t_Co=256
 
