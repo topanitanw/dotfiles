@@ -3,15 +3,29 @@ set nocompatible 	   " Use gVim defaults
 
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if !exists("g:os")
+   if has("win64") || has("win32") || has("win16")
+      let g:os = "Windows"
+      " gvim, g:os = Windows
+      let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
+      let g:plug_dir = 'vimfiles/plugged'
+   else
+      let g:os = substitute(system('uname'), '\n', '', '')
+      " for bash window subsystem, g:os = 'Linux'
+      let g:autoload_plugvim = "~/.vim/autoload/plug.vim"
+      let g:plug_dir = "~/.vim/plugged"
+   endif
+endif
+
+if empty(glob(g:autoload_plugvim))
+  execute "!curl -fLo " . g:autoload_plugvim . " --create-dirs " .
+    \ "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
   autocmd VimEnter * PlugInstall | source $MYVIMRC
-  " Note: in window you might need to create a folder ~/vimfiles/plugged
+  " Note: in window you might need to create a folder vimfiles/plugged
   " manually
 endif
 
-call plug#begin('~/.vim/plugged')
+call plug#begin(g:plug_dir)
 Plug 'vim-scripts/Zenburn'
 Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
@@ -47,13 +61,18 @@ set modeline
 set modelines=1
 
 if has("gui_running")
-"  set guioptions -= m   "Menu bar
-"  set guioptions -= T   "Tool bar
+"  set guioptions -= m   "remove Menu bar
+"  set guioptions -= T   "remove Tool bar
 endif
 
 " from here https://sunaku.github.io/vim-256color-bce.html
-set term=screen-256color 
+if g:os == "Windows" 
+   set term=xterm " screen-256color
+else
+   set term=screen-256color
+endif
 set t_ut=
+set t_Co=256
 
 " code representation
 "" folding
@@ -104,7 +123,9 @@ set nobackup         " Cancel the backup files
 
 " this line below is specific to MS Windows machines and should be removed 
 " for other systems
-behave mswin
+if g:os == "Windows"
+   behave mswin
+endif   
 
 "Set the status line options. Make it show more information.
 set laststatus=2     " Display the status line
@@ -113,7 +134,6 @@ set laststatus=2     " Display the status line
 augroup filetypedetect 
   au! BufRead,BufNewFile *nc setfiletype nc 
 augroup END
-
 
 " key mapping 
 nnoremap <SPACE> <Nop>
