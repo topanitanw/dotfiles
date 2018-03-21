@@ -93,7 +93,19 @@
   (prefer-coding-system 'utf-8)
   ;; set the background mode 
   (setq frame-background-mode 'light)
-)
+
+  ;; mouse setup with iterm2
+  (setq mouse-wheel-follow-mouse 't)
+  (require 'mouse) ;; needed for iterm2 compatibility
+  (global-set-key [mouse-4] '(lambda ()
+                               (interactive)
+                               (scroll-down 1)))
+  (global-set-key [mouse-5] '(lambda ()
+                               (interactive)
+                               (scroll-up 1)))
+  (setq mouse-sel-mode t)
+  (defun track-mouse (e))
+  )
 
 ;; disable the alarm bell
 (setq-default visible-bell 1)
@@ -107,6 +119,9 @@
 
 ;; scroll down one line at a time
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+
+;; make emacs respond to mouse clicks on terminal
+(xterm-mouse-mode 1)
 
 ;; M-x linum-mode to display line number
 (global-linum-mode 1)
@@ -248,9 +263,6 @@
 
 ;; Set the emacs-grep to highlight the matching words
 (setq grep-highlight-matches t)
-
-;; make emacs respond to mouse clicks on terminal
-(xterm-mouse-mode 1)
 
 ;; Change "yes or no" to "y or n"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -1246,7 +1258,6 @@
   'interactive)
 
 ;; ==================================================================
-<<<<<<< HEAD
 ;; neotree
 ;; ==================================================================
 ;; need to reconfig for evil node
