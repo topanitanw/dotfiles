@@ -10,14 +10,32 @@ echo "reading ~/.bashrc"
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# create a directory to keep the shell related files
+if [ ! -d ~/shell_files ]; then
+  mkdir ~/shell_files
+fi
+
+if [ ! -f ~/shell_files/git-completion.bash ]; then
+  cd ~/shell_files
+  wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+fi 
+source ~/git-completion.bash
+
+if [ ! -f ~/shell_files/git-prompt.sh ]; then
+  cd ~/shell_files
+  wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+fi
+source ~/git-prompt.sh
+
 # change the shell prompt
 if [ $(id -u) -eq 0 ]; then # you are root, set red colour prompt
-  PS1="\\[$(tput setaf 1)\\]\\u@\\h:\\w #\\[$(tput sgr0)\\]"
+  PS1="\\[$(tput setaf 1)\\]\\u@\\h:\\w \n#\\[$(tput sgr0)\\]"
 else # normal
   PS1='\s \e[1;32;40m(\e[m \e[1;31m\u\e[m@\e[1;30m\h\e[m: \e[0;36m\w\e[m \e[1;32;40m)\e[m \n$ '
 fi

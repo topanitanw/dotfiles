@@ -742,6 +742,7 @@
   (setq evil-toggle-key "")
   (add-to-list 'evil-emacs-state-modes 'flycheck-error-list-mode)
   (add-to-list 'evil-emacs-state-modes 'occur-mode)
+  (add-to-list 'evil-emacs-state-modes 'neotree-mode)
   ;; C-z to suspend-frame in evil normal state and evil emacs state
   (define-key evil-normal-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
