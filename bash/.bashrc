@@ -22,16 +22,20 @@ if [ ! -d ~/shell_files ]; then
 fi
 
 if [ ! -f ~/shell_files/git-completion.bash ]; then
+  pushd .
   cd ~/shell_files
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+  popd
 fi 
-source ~/git-completion.bash
+source ~/shell_files/git-completion.bash
 
 if [ ! -f ~/shell_files/git-prompt.sh ]; then
+  pushd .
   cd ~/shell_files
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+  popd
 fi
-source ~/git-prompt.sh
+source ~/shell_files/git-prompt.sh
 
 # change the shell prompt
 if [ $(id -u) -eq 0 ]; then # you are root, set red colour prompt
