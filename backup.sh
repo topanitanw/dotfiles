@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 SRC_DIR="/Users/panitanw"
 

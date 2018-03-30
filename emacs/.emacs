@@ -34,6 +34,11 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
+;; save the custom file separately
+(setq custom-file "~/.emacs-custom.el")
+(when (file-exists-p custom-file)
+  (load custom-file))
+
 (when (eq system-type 'windows-nt)
   ;; (set-frame-font "DejaVu Sans Mono-13")
   ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
@@ -60,7 +65,6 @@
       (t (prefer-coding-system 'utf-8-auto)))
 
 (when (eq system-type 'darwin) ;; mac specific settings
-  (set-keyboard-coding-system nil)
   (set-face-attribute 'default nil :height 160)
   (set-face-attribute 'mode-line nil :height 160)
   ;; for emacs on terminal in mac, to copy to and paste from clipboard
@@ -123,6 +127,7 @@
 ;; make emacs respond to mouse clicks on terminal
 (xterm-mouse-mode 1)
 
+;; TODO: might need to install the nlinum package
 ;; M-x linum-mode to display line number
 (global-linum-mode 1)
 ;; this package of displaying line numbers runs very slowly.
@@ -604,9 +609,9 @@
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance))
   ;; call the function named company-select-next when tab is pressed
-  (define-key company-active-map [tab] 'company-select-next)
+  ;; (define-key company-active-map [tab] 'company-select-next)
+  (define-key company-active-map (kbd "TAB") 'company-select-next)
   (rename-minor-mode "company" company-mode "Com"))
-
 
 (use-package company-math
   :after company
