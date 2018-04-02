@@ -26,10 +26,11 @@ if empty(glob(g:autoload_plugvim))
 endif
 
 call plug#begin(g:plug_dir)
-Plug 'vim-scripts/Zenburn'
+Plug 'vim-scripts/Zenburn' 
 Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
-Plug 'scrooloose/syntastic'
+Plug 'scrooloose/syntastic'   " check syntactical errors
+Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
 call plug#end()
 
 " GUI
@@ -38,9 +39,14 @@ let g:zenburn_force_dark_Background = 1
 colorscheme zenburn
 let g:lightline = {
       \ 'colorscheme': 'default',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'filename', 'readonly', 'modified', 'gitbranch' ] ]
+      \ },
       \ 'component_function': { 
-      \     'filename': 'LightLineFilename'
-      \ }
+      \   'filename': 'LightLineFilename',
+      \   'gitbranch': 'gitbranch#name'
+      \ },
       \ }
 
 function! LightLineFilename() 
