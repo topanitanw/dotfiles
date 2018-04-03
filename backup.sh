@@ -11,3 +11,4 @@ fsync ${SRC_DIR}/.vimrc vim/.vimrc
 fsync ${SRC_DIR}/.bashrc bash/.bashrc 
 fsync ${SRC_DIR}/.bash_profile bash/.bash_profile 
 fsync ${SRC_DIR}/.inputrc bash/.inputrc
+fsync ${SRC_DIR}/.tmux.conf .tmux.conf 
