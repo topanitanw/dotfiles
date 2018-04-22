@@ -561,8 +561,8 @@
 
   
 (use-package telephone-line
-  ;; :demand t
-  :disabled
+  :demand t
+  ;:disabled
   :config
   (setq telephone-line-evil-use-short-tag t
         telephone-line-primary-left-separator telephone-line-flat
