@@ -773,28 +773,12 @@
   ;; C-z to suspend-frame in evil normal state and evil emacs state
   (define-key evil-normal-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
+  (define-key evil-insert-state-map (kbd "C-z") 'suspend-frame)
   ;; enable TAB to indent in the vistual mode
   (define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
   ;; define :ls, :buffers to open ibuffer
   (evil-ex-define-cmd "ls" 'ibuffer)
   (evil-ex-define-cmd "buffers" 'ibuffer))  
-
-;; (use-package telephone-line
-;;   :demand t
-;;   :init
-;;   (telephone-line-mode 1)
-;;   :config
-;;   (setq telephone-line-lhs
-;;       '((evil   . (telephone-line-evil-tag-segment))
-;;         (accent . (telephone-line-vc-segment
-;;                    telephone-line-erc-modified-channels-segment
-;;                    telephone-line-process-segment))
-;;         (nil    . (telephone-line-minor-mode-segment
-;;                    telephone-line-buffer-segment))))
-;; (setq telephone-line-rhs
-;;       '((nil    . (telephone-line-misc-info-segment))
-;;         (accent . (telephone-line-major-mode-segment))
-;;         (evil   . (telephone-line-airline-position-segment)))))
 
 ;; =======================================================================
 ;; helm
