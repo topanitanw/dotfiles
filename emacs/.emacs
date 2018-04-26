@@ -127,15 +127,21 @@
 ;; make emacs respond to mouse clicks on terminal
 (xterm-mouse-mode 1)
 
-;; TODO: might need to install the nlinum package
-;; M-x linum-mode to display line number
-(global-linum-mode 1)
-;; this package of displaying line numbers runs very slowly.
-
 ;; set the format and spaces of the linenumber
 (if (display-graphic-p)
     (setq linum-format "%3d \u2502")
     (setq linum-format "%3d |"))
+
+(if (display-graphic-p)
+    (setq nlinum-format "%3d \u2502")
+    (setq nlinum-format "%3d |"))
+
+;; TODO: might need to install the nlinum package
+;; M-x linum-mode to display line number
+;; (global-linum-mode 1)
+;; this package of displaying line numbers runs very slowly.
+
+(global-nlinum-mode 1)
 
 ;; M-x hl-line-mode to highlight the current line
 ;; (global-hl-line-mode 1)
@@ -213,13 +219,28 @@
 (defvar space-tap-offset 2 "the number of spaces per tap")
 
 ;; Indentation Setup
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width space-tap-offset)
 
-;; set the c-style indentation to ellemtel
-(setq-default c-default-style "ellemtel"
-              c-basic-offset space-tap-offset)
+(defun my-coding-style ()
+  (interactive)
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width space-tap-offset)
 
+  ;; set the c-style indentation to ellemtel
+  (setq-default c-default-style "ellemtel"
+                c-basic-offset space-tap-offset)
+  )
+(my-coding-style)
+
+(defun kdev-coding-style ()
+  (interactive)
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 8)
+
+  ;; set the c-style indentation to ellemtel
+  (setq-default c-default-style "linux"
+                c-basic-offset 4)
+  )
+  
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
 (c-set-offset 'access-label '/)
 ;; set the indent of all other elements in the class definition to equal

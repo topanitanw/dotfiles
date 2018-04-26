@@ -1,14 +1,17 @@
 #!/bin/bash -x
 
-SRC_DIR="/Users/panitanw"
+WIN_DST_DIR="~/"
+MAC_DST_DIR="/Users/panitanw"
+LINUX_DST_DIR="/home/panitanw"
+DST_DIR=${LINUX_DST_DIR}
 
 function fsync {
 	rsync $1 $2
 }
 
-fsync ${SRC_DIR}/.emacs emacs/.emacs 
-fsync ${SRC_DIR}/.vimrc vim/.vimrc 
-fsync ${SRC_DIR}/.bashrc bash/.bashrc 
-fsync ${SRC_DIR}/.bash_profile bash/.bash_profile 
-fsync ${SRC_DIR}/.inputrc bash/.inputrc
-fsync ${SRC_DIR}/.tmux.conf .tmux.conf 
+fsync ${DST_DIR}/.emacs emacs/.emacs 
+fsync ${DST_DIR}/.vimrc vim/.vimrc 
+fsync ${DST_DIR}/.bashrc bash/.bashrc 
+fsync ${DST_DIR}/.bash_profile bash/.bash_profile 
+fsync ${DST_DIR}/.inputrc bash/.inputrc
+fsync ${DST_DIR}/.tmux.conf .tmux.conf 
