@@ -2,7 +2,8 @@
 
 WIN_DST_DIR="~/"
 MAC_DST_DIR="/Users/panitanw"
-DST_DIR=${WIN_DST_DIR}
+LINUX_DST_DIR="/home/panitanw"
+DST_DIR=${LINUX_DST_DIR}
 
 function fsync {
 	rsync $1 $2

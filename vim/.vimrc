@@ -116,6 +116,9 @@ set wrapscan         " when searching till the end, wrap around to the beginning
 " the same indent as the line you're currently on. Useful for READMEs, etc.
 
 set vb
+
+" ETC
+"" General configurations
 set noerrorbells
 set showcmd         " display incomplete commands
 if has('mouse')
@@ -125,7 +128,7 @@ set history=1000
 set undolevels=1000
 
 set nobackup         " Cancel the backup files
-
+set spell spelllang=en_us  " check the spelling of words z= correct those words
 
 " this line below is specific to MS Windows machines and should be removed 
 " for other systems
