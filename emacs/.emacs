@@ -560,8 +560,30 @@
 ;;   (powerline-default-theme))
 
   
-;; (require 'telephone-line-config)
-;; (telephone-line-evil-config)
+(use-package telephone-line
+  :demand t
+  ;:disabled
+  :config
+  (setq telephone-line-evil-use-short-tag t
+        telephone-line-primary-left-separator telephone-line-flat
+        telephone-line-secondary-left-separator telephone-line-nil
+        telephone-line-primary-right-separator telephone-line-flat
+        telephone-line-secondary-right-separator telephone-line-nil
+        )
+  (setq telephone-line-lhs
+        '((evil   . (telephone-line-evil-tag-segment))
+          (accent . (telephone-line-buffer-segment
+                     telephone-line-process-segment))
+          (nil    . (telephone-line-vc-segment))))
+  (setq telephone-line-rhs
+        '((nil    . (telephone-line-misc-info-segment
+                     telephone-line-minor-mode-segment))
+          (accent . (telephone-line-misc-info-segment
+                     telephone-line-major-mode-segment))
+          (evil   . (telephone-line-airline-position-segment))))
+  ;; (telephone-line-evil-config)
+  (telephone-line-mode 1))
+
 ;; =======================================================================
 ;; Diminish
 ;; =======================================================================
@@ -1275,9 +1297,12 @@
 (use-package neotree
   :bind (("C-c n" . 'neotree-toggle))
   :config
-  (setq neo-theme (if (display-graphic-p)
-                      'icon
-                      'arrow)))
+  ;; (setq neo-theme (if (display-graphic-p)
+  ;;                     'icons
+  ;;                     'arrow))
+  )
+
+(use-package all-the-icons)
 ;; ==================================================================
 ;; vimrc-mode
 (use-package vimrc-mode
