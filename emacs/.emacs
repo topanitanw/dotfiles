@@ -132,19 +132,10 @@
     (setq linum-format "%3d \u2502")
     (setq linum-format "%3d |"))
 
-(if (display-graphic-p)
-    (setq nlinum-format "%3d \u2502")
-    (setq nlinum-format "%3d |"))
-
 ;; TODO: might need to install the nlinum package
 ;; M-x linum-mode to display line number
 ;; (global-linum-mode 1)
 ;; this package of displaying line numbers runs very slowly.
-
-(global-nlinum-mode 1)
-
-;; M-x hl-line-mode to highlight the current line
-;; (global-hl-line-mode 1)
 
 ;; Set any color as the background face of the current line
 ;; (set-face-background 'hl-line "#3e4446") ;; "#3e4446"
@@ -477,6 +468,19 @@
   (setq-default use-package-always-defer t
                 use-package-always-ensure t))
 (require 'bind-key)
+
+;; =======================================================================
+;; Nlinum
+;; =======================================================================
+(use-package nlinum
+  :demand t
+  :config
+  (if (display-graphic-p)
+      (setq nlinum-format "%3d \u2502")
+    (setq nlinum-format "%3d |"))
+
+  (nlinum-mode)
+)
 ;; =======================================================================
 ;; Beacon Mode
 ;; =======================================================================
