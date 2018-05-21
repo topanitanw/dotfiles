@@ -31,6 +31,10 @@ Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
 Plug 'scrooloose/syntastic'   " check syntactical errors
 Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
+Plug 'tmhedberg/SimpylFold'   " fold in python
+Plug 'vim-scripts/indentpython.vim' " indent in python
+Plug 'Valloric/YouCompleteMe'
+Plug 'scrooloose/nerdtree'     " display file tree
 call plug#end()
 
 " GUI
@@ -100,7 +104,7 @@ filetype plugin indent on
 set autoindent
 set backspace=2 	   " Allow backspacing over everything in insert mode
 set tabstop=2        " each tab has 2_spaces equivalent width
-set softtabstop=4    " number of spaces in tab when editing
+set softtabstop=2    " number of spaces in tab when editing
 set shiftwidth=2     " Indentation width when using >> and << re-indentation
 set expandtab 		   " Tabs are expanded to spaces
 
@@ -116,9 +120,6 @@ set wrapscan         " when searching till the end, wrap around to the beginning
 " the same indent as the line you're currently on. Useful for READMEs, etc.
 
 set vb
-
-" ETC
-"" General configurations
 set noerrorbells
 set showcmd         " display incomplete commands
 if has('mouse')
@@ -128,7 +129,7 @@ set history=1000
 set undolevels=1000
 
 set nobackup         " Cancel the backup files
-set spell spelllang=en_us  " check the spelling of words z= correct those words
+
 
 " this line below is specific to MS Windows machines and should be removed 
 " for other systems
@@ -148,8 +149,24 @@ augroup END
 nnoremap <SPACE> <Nop>
 let mapleader=" "
 
+au BufNewFile,BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+    \ set textwidth=79
+    \ set expandtab
+    \ set autoindent
+    \ set fileformat=unix
+
+
+" SimpylFold: folding the python code
+let g:SimpylFold_docstring_preview=1
+
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.
+map <C-n> :NERDTreeToggle<CR>
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
 
 " NerdCommenter: Easily toggle the comment status of various amounts of code
 " based on your key mappings.
