@@ -7,14 +7,28 @@ if !exists("g:os")
    if has("win64") || has("win32") || has("win16")
       let g:os = "Windows"
       " gvim, g:os = Windows
-      let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
-      let g:plug_dir = 'vimfiles/plugged'
    else
       let g:os = substitute(system('uname'), '\n', '', '')
       " for bash window subsystem, g:os = 'Linux'
-      let g:autoload_plugvim = "~/.vim/autoload/plug.vim"
-      let g:plug_dir = "~/.vim/plugged"
    endif
+endif
+
+if g:os == "Windows"
+  if !has('nvim')
+    " as of 05/24/2018 Neovim on Windows is experimental so skip it.
+    let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
+    let g:plug_dir = 'vimfiles/plugged'
+  endif 
+else 
+  if has('nvim')
+    let g:autoload_plugvim = "~/.local/share/nvim/site/autoload/plug.vim"
+    let g:plug_dir = "~/.local/share/nvim/plugged"
+    let g:editor_root=expand("~/.config/nvim")
+  else
+    let g:autoload_plugvim = "~/.vim/autoload/plug.vim"
+    let g:plug_dir = "~/.vim/plugged"
+    let g:editor_root=expand("~/.vim")
+  endif
 endif
 
 if empty(glob(g:autoload_plugvim))
@@ -78,7 +92,7 @@ endif
 " from here https://sunaku.github.io/vim-256color-bce.html
 if g:os == "Windows" 
    set term=xterm " screen-256color
-else
+elseif !has('nvim')
    set term=screen-256color
 endif
 set t_ut=

@@ -65,7 +65,7 @@
       (t (prefer-coding-system 'utf-8-auto)))
 
 (when (eq system-type 'darwin) ;; mac specific settings
-  (set-face-attribute 'default nil :height 160)
+  (set-face-attribute 'default nil :height 150)
   (set-face-attribute 'mode-line nil :height 160)
   ;; for emacs on terminal in mac, to copy to and paste from clipboard
   ;; M-| pbcopy and M-| pbpaste commands or set these new commmands.
@@ -651,13 +651,23 @@
         company-selection-wrap-around t
         ;; make the text completion output case-sensitive
         company-dabbrev-downcase nil ;; set it globally
-        company-minimum-prefix-length 2
+        ;; need to type at least 3 characters until the autocompletion starts
+        company-minimum-prefix-length 3
         ;; weight by frequency
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance))
+
   ;; call the function named company-select-next when tab is pressed
   ;; (define-key company-active-map [tab] 'company-select-next)
-  (define-key company-active-map (kbd "TAB") 'company-select-next)
+  ;; (define-key company-active-map (kbd "TAB") 'company-select-next)
+
+  ;; press S-TAB to select the previous option 
+  (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
+  (define-key company-active-map (kbd "<backtab>") 'company-select-previous)
+
+  ;; press tab to complete the common characters and cycle to the next option
+  (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
   (rename-minor-mode "company" company-mode "Com"))
 
 (use-package company-math
@@ -788,6 +798,7 @@
 ;; =======================================================================
 (use-package evil
   :demand t
+  ;; :disabled
   :init
   (evil-mode 1)
   :config
@@ -799,8 +810,7 @@
   (define-key evil-normal-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-insert-state-map (kbd "C-z") 'suspend-frame)
-  ;; enable TAB to indent in the vistual mode
-  (define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
+
   ;; define :ls, :buffers to open ibuffer
   (evil-ex-define-cmd "ls" 'ibuffer)
   (evil-ex-define-cmd "buffers" 'ibuffer))  
@@ -1340,13 +1350,14 @@
   ;; (:map python-mode
   ;;  ("RET"  .  set-newline-and-indent))
   :config
+  (defvar python-space-offset 4 "the number of spaces per tap")
   (add-hook 'python-mode-hook
             (lambda ()
               (setq indent-tabs-mode nil) ; disable tab mode
-              (setq tab-width space-tap-offset)
+              (setq tab-width python-space-offset)
               ; set the indentation width for python
-              (setq python-indent space-tap-offset)
-              (setq python-indent-offset space-tap-offset)
+              (setq python-indent python-space-offset)
+              (setq python-indent-offset python-space-offset)
               (setq electric-indent-chars '(?\n))))
   ;; Ignoring electric indentation
   (defun electric-indent-ignore-python (char)
