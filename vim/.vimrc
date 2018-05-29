@@ -21,13 +21,13 @@ if g:os == "Windows"
   endif 
 else 
   if has('nvim')
-    let g:autoload_plugvim = "~/.local/share/nvim/site/autoload/plug.vim"
-    let g:plug_dir = "~/.local/share/nvim/plugged"
-    let g:editor_root=expand("~/.config/nvim")
+    let g:autoload_plugvim = expand("~/.local/share/nvim/site/autoload/plug.vim")
+    let g:plug_dir = expand("~/.local/share/nvim/plugged")
+    let g:editor_root= expand("~/.config/nvim")
   else
-    let g:autoload_plugvim = "~/.vim/autoload/plug.vim"
-    let g:plug_dir = "~/.vim/plugged"
-    let g:editor_root=expand("~/.vim")
+    let g:autoload_plugvim = expand("~/.vim/autoload/plug.vim")
+    let g:plug_dir = expand("~/.vim/plugged")
+    let g:editor_root = expand("~/.vim")
   endif
 endif
 

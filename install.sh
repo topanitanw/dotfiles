@@ -1,9 +1,9 @@
 #!/bin/bash
 
-WIN_DST_DIR="~/"
+WIN_BASH_DST_DIR="/home/panitanw"
 MAC_DST_DIR="/Users/panitanw"
 LINUX_DST_DIR="/home/panitanw"
-DST_DIR=${MAC_DST_DIR}
+DST_DIR=${WIN_BASH_DST_DIR}
 
 function fsync {
 	rsync $1 $2
