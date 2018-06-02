@@ -1,4 +1,4 @@
-;; nesc is the only one customized package
+; nesc is the only one customized package
 ;; Modified Emacs should be downloaded from http://vgoulet.act.ulaval.ca/en/.
 ;;
 ;; emacs for window users
@@ -65,7 +65,11 @@
       (t (prefer-coding-system 'utf-8-auto)))
 
 (when (eq system-type 'darwin) ;; mac specific settings
-  (set-face-attribute 'default nil :height 150)
+  (set-face-attribute 'default nil
+                      :family "DejaVu Sans Mono"
+                      :height 150
+                      :weight 'normal
+                      :width 'normal)
   (set-face-attribute 'mode-line nil :height 160)
   ;; for emacs on terminal in mac, to copy to and paste from clipboard
   ;; M-| pbcopy and M-| pbpaste commands or set these new commmands.
@@ -474,12 +478,13 @@
 ;; =======================================================================
 (use-package nlinum
   :demand t
+  :init
+  (add-hook 'prog-mode-hook 'nlinum-mode)
+
   :config
   (if (display-graphic-p)
       (setq nlinum-format "%3d \u2502")
-    (setq nlinum-format "%3d |"))
-
-  (nlinum-mode)
+      (setq nlinum-format "%3d |"))
 )
 ;; =======================================================================
 ;; Beacon Mode
@@ -686,7 +691,7 @@
 
 (use-package company-anaconda
   :after company
-  :config
+  :init
   (add-to-list 'company-backends 'company-anaconda)
   (add-to-list 'python-mode-hook 'anaconda-mode)
   (rename-minor-mode "company-anaconda" company-anaconda "Com-Ana"))
@@ -1033,13 +1038,14 @@
 ;; =======================================================================
 ;; Counsel
 ;; =======================================================================
-(use-package counsel
-  ;; :if (and (>= emacs-major-version 24)
-  ;;          (>= emacs-minor-version 4))
-  :if (version< "24.4" emacs-version)
-  :bind
-  (;("C-x C-f" . counsel-find-file)
-   ("M-x" . counsel-M-x)))
+;; helm-M-x is better in the case that it lists the history commands.
+;; (use-package counsel
+;;   ;; :if (and (>= emacs-major-version 24)
+;;   ;;          (>= emacs-minor-version 4))
+;;   :if (version< "24.4" emacs-version)
+;;   :bind
+;;   (;("C-x C-f" . counsel-find-file)
+;;    ("M-x" . counsel-M-x)))
 
 ;; =======================================================================
 ;; Avy
@@ -1065,7 +1071,6 @@
 ;; a built-in package in emacs
 ;; make the buffer unique
 (use-package uniquify
-  :ensure nil
   :config
   (setq uniquify-buffer-name-style 'forward)
   (setq uniquify-separator "/")
@@ -1331,7 +1336,10 @@
 ;; flycheck-mode
 (use-package flycheck
   ;:demand t
-  :if (not window-system))
+  :if (not window-system)
+  :init
+  (global-flycheck-mode)
+  )
 
 ;; ==================================================================
 ;; Gitignore mode
@@ -1358,7 +1366,11 @@
               ; set the indentation width for python
               (setq python-indent python-space-offset)
               (setq python-indent-offset python-space-offset)
-              (setq electric-indent-chars '(?\n))))
+              (setq electric-indent-chars '(?\n))
+              (setq flycheck-python-pylint-executable "pylint3")
+              (setq flycheck-python-pylint-executable "/usr/local/anaconda3/bin/pylint")
+              (setq flycheck-pylintrc "~/.pylintrc")
+            ))
   ;; Ignoring electric indentation
   (defun electric-indent-ignore-python (char)
     "Ignore electric indentation for python-mode"
