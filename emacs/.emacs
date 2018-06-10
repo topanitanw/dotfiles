@@ -228,12 +228,12 @@
 
 (defun kdev-coding-style ()
   (interactive)
-  (setq-default indent-tabs-mode nil)
-  (setq-default tab-width 8)
+  (setq-local indent-tabs-mode nil)
+  (setq-local tab-width 8)
 
   ;; set the c-style indentation to ellemtel
-  (setq-default c-default-style "linux"
-                c-basic-offset 4)
+  (setq-local c-default-style "linux"
+              c-basic-offset 4)
   )
   
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
