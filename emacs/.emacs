@@ -456,9 +456,10 @@
 
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 ;; initialize package.el
-(setq package-enable-at-startup nil)
 (package-initialize)
+(setq package-enable-at-startup nil)
 ;; =======================================================================
 ;; use-package
 ;; =======================================================================
@@ -591,6 +592,7 @@
 
   
 (use-package telephone-line
+  :if (>= emacs-major-version 25)
   :demand t
   ;:disabled
   :config
@@ -1071,6 +1073,7 @@
 ;; a built-in package in emacs
 ;; make the buffer unique
 (use-package uniquify
+  :ensure nil
   :config
   (setq uniquify-buffer-name-style 'forward)
   (setq uniquify-separator "/")
@@ -1690,7 +1693,26 @@
 ;; writegood-mode
 (use-package writegood-mode)
 
+
 ;; ==================================================================
+;; emacs speak statistics
+;; ==================================================================
+; Set up ESS, i.e. Statistics in Emacs, R, Stata, etc.
+(use-package ess-site
+  :ensure ess
+  :mode
+  (("\\.R$" . R-mode))
+  :config
+  (ess-toggle-underscore nil) ; http://stackoverflow.com/questions/2531372/how-to-stop-emacs-from-replacing-underbar-with-in-ess-mode
+  (setq ess-fancy-comments nil) ; http://stackoverflow.com/questions/780796/emacs-ess-mode-tabbing-for-comment-region
+  ; Make ESS use RStudio's indenting style
+  (add-hook 'ess-mode-hook (lambda() (ess-set-style 'RStudio)))
+  ; Make ESS use more horizontal screen
+  ; http://stackoverflow.com/questions/12520543/how-do-i-get-my-r-buffer-in-emacs-to-occupy-more-horizontal-space
+  (add-hook 'ess-R-post-run-hook 'ess-execute-screen-options) 
+  (define-key inferior-ess-mode-map "\C-cw" 'ess-execute-screen-options)
+  ; Add path to Stata to Emacs' exec-path so that Stata can be found
+  (setq exec-path (append exec-path '("/usr/local/stata14")))) 
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil (lambda ()
