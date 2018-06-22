@@ -163,6 +163,15 @@ augroup END
 nnoremap <SPACE> <Nop>
 let mapleader=" "
 
+" yank to clipboard
+if has("clipboard")
+  set clipboard=unnamed " copy to the system clipboard
+
+  if has("unnamedplus") " X11 support
+    set clipboard+=unnamedplus
+  endif
+endif
+
 au BufNewFile,BufRead *.py
     \ set tabstop=4
     \ set softtabstop=4
@@ -198,3 +207,6 @@ let g:NERDTreeDirArrowCollapsible = '▾'
 
 " Reference 
 " https://dougblack.io/words/a-good-vimrc.html til folding
+"
+"
+
