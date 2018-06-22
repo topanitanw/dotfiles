@@ -49,12 +49,14 @@ Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'vim-scripts/indentpython.vim' " indent in python
 Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdtree'     " display file tree
+Plug 'miyakogi/conoline.vim'
 call plug#end()
 
 " GUI
 "" set zenburn color scheme
 let g:zenburn_force_dark_Background = 1
 colorscheme zenburn
+
 let g:lightline = {
       \ 'colorscheme': 'default',
       \ 'active': {
@@ -98,6 +100,9 @@ endif
 set t_ut=
 set t_Co=256
 
+"" set the cursor of all modes to be a block
+set guicursor=a:block
+
 " code representation
 "" folding
 set foldmethod=syntax
@@ -116,12 +121,23 @@ set fileencoding=utf-8  " The encoding written to file.
 filetype plugin indent on
 
 set autoindent
-set backspace=2 	   " Allow backspacing over everything in insert mode
-set tabstop=2        " each tab has 2_spaces equivalent width
-set softtabstop=2    " number of spaces in tab when editing
-set shiftwidth=2     " Indentation width when using >> and << re-indentation
 set expandtab 		   " Tabs are expanded to spaces
+set backspace=2 	   " Allow backspacing over everything in insert mode
+set cino+=(0         " Change the indentation of the function arguments
 
+function! CodingStyleMine ()
+  set tabstop=2        " each tab has 2_spaces equivalent width
+  set softtabstop=2    " number of spaces in tab when editing
+  set shiftwidth=2     " Indentation width when using >> and << re-indentation
+endfunction
+call CodingStyleMine()
+
+function! CodingStyleCompany ()
+  set tabstop=3        " each tab has 2_spaces equivalent width
+  set softtabstop=3    " number of spaces in tab when editing
+  set shiftwidth=3     " Indentation width when using >> and << re-indentation
+endfunction
+   
 " Search
 "" Use case insensitive search, except when using capital letters
 set ignorecase
@@ -137,7 +153,7 @@ set vb
 set noerrorbells
 set showcmd         " display incomplete commands
 if has('mouse')
-   set mouse=a
+   set mouse=r
 endif   
 set history=1000
 set undolevels=1000
@@ -154,11 +170,6 @@ endif
 "Set the status line options. Make it show more information.
 set laststatus=2     " Display the status line
 
-"nesc syntax highlight 
-augroup filetypedetect 
-  au! BufRead,BufNewFile *nc setfiletype nc 
-augroup END
-
 " key mapping 
 nnoremap <SPACE> <Nop>
 let mapleader=" "
@@ -172,6 +183,12 @@ if has("clipboard")
   endif
 endif
 
+" nesc syntax highlight 
+augroup filetypedetect 
+  au! BufRead,BufNewFile *nc setfiletype nc 
+augroup END
+
+" python mode setting
 au BufNewFile,BufRead *.py
     \ set tabstop=4
     \ set softtabstop=4
@@ -181,7 +198,7 @@ au BufNewFile,BufRead *.py
     \ set autoindent
     \ set fileformat=unix
 
-
+"---------------------------------------------------------------------- 
 " SimpylFold: folding the python code
 let g:SimpylFold_docstring_preview=1
 
@@ -202,11 +219,14 @@ let g:NERDTreeDirArrowCollapsible = '▾'
 
 " Syntastic: Check your syntax and be notified about errors before compiling
 " your code or executing your script.
+let g:syntastic_c_checkers=['make','gcc']
+let g:syntastic_c_include_dirs = [g:c_include_company . 'public', g:c_include_company . 'private']
 
-
+" Conoline This plugin highlights the line of the cursor, only in the current window.
+let g:conoline_auto_enable = 1
+"" use the color in the colorscheme
+let g:conoline_use_colorscheme_default_normal=1
+let g:conoline_use_colorscheme_default_insert=1
 
 " Reference 
 " https://dougblack.io/words/a-good-vimrc.html til folding
-"
-"
-
