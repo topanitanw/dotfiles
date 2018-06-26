@@ -141,12 +141,14 @@
 ;; (global-linum-mode 1)
 ;; this package of displaying line numbers runs very slowly.
 
+;; enable the highlight current line
+(global-hl-line-mode +1)
+;; To keep syntax highlighting in the current line:
+(set-face-foreground 'highlight nil)
 ;; Set any color as the background face of the current line
-;; (set-face-background 'hl-line "#3e4446") ;; "#3e4446"
+(set-face-background 'hl-line "#3e4446") ;; "#3e4446"
 ;; (set-face-background hl-line-face "gray13") ;; SeaGreen4 gray13
 
-;; To keep syntax highlighting in the current line:
-;; (set-face-foreground 'highlight nil)
 
 ;; Enable column-number-mode in the mode line
 (setq column-number-mode t)
