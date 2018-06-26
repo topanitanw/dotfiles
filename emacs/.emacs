@@ -590,11 +590,16 @@
 ;;   :config
 ;;   (powerline-default-theme))
 
+(use-package powerline-evil
+  :if (< emacs-major-version 25)
+  :demand t
+  :config
+  (powerline-evil-vim-color-theme))
   
 (use-package telephone-line
   :if (>= emacs-major-version 25)
   :demand t
-  ;:disabled
+  ;; :disabled
   :config
   (setq telephone-line-evil-use-short-tag t
         telephone-line-primary-left-separator telephone-line-flat
