@@ -1,6 +1,7 @@
 "" Use gVim settings
 set nocompatible 	   " Use gVim defaults
 
+"---------------------------------------------------------------------- 
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
 if !exists("g:os")
@@ -50,8 +51,11 @@ Plug 'vim-scripts/indentpython.vim' " indent in python
 Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdtree'     " display file tree
 Plug 'miyakogi/conoline.vim'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-session'      " save and restore vim sessions
 call plug#end()
 
+"---------------------------------------------------------------------- 
 " GUI
 "" set zenburn color scheme
 let g:zenburn_force_dark_Background = 1
@@ -103,10 +107,12 @@ set t_Co=256
 "" set the cursor of all modes to be a block
 set guicursor=a:block
 
+"---------------------------------------------------------------------- 
 " code representation
 "" folding
 set foldmethod=syntax
 
+"---------------------------------------------------------------------- 
 " Edit
 "" all backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -114,6 +120,7 @@ set wildmenu            " visual autocomplete for command menu
 set encoding=utf-8      " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
 
+"---------------------------------------------------------------------- 
 " Indentation
 "" Attempt to determine the type of a file based on its name and possibly its
 "" contents. Use this to allow intelligent auto-indenting for each filetype,
@@ -132,12 +139,14 @@ function! CodingStyleMine ()
 endfunction
 call CodingStyleMine()
 
-function! CodingStyleCompany ()
+function! CodingStyleCtf ()
   set tabstop=3        " each tab has 2_spaces equivalent width
   set softtabstop=3    " number of spaces in tab when editing
   set shiftwidth=3     " Indentation width when using >> and << re-indentation
+  set textwidth=79
 endfunction
    
+"---------------------------------------------------------------------- 
 " Search
 "" Use case insensitive search, except when using capital letters
 set ignorecase
@@ -170,6 +179,7 @@ endif
 "Set the status line options. Make it show more information.
 set laststatus=2     " Display the status line
 
+"---------------------------------------------------------------------- 
 " key mapping 
 nnoremap <SPACE> <Nop>
 let mapleader=" "
@@ -183,6 +193,16 @@ if has("clipboard")
   endif
 endif
 
+"---------------------------------------------------------------------- 
+" auto command 
+"----------------------------------------------------------------------
+au BufNewFile,BufRead *.h setf c
+au BufNewFile,BufRead *.mk setf make
+au BufNewFile,BufRead *.sc setf make
+
+"---------------------------------------------------------------------- 
+" mode related setup
+"----------------------------------------------------------------------
 " nesc syntax highlight 
 augroup filetypedetect 
   au! BufRead,BufNewFile *nc setfiletype nc 
@@ -199,6 +219,8 @@ au BufNewFile,BufRead *.py
     \ set fileformat=unix
 
 "---------------------------------------------------------------------- 
+" package related setup
+"----------------------------------------------------------------------
 " SimpylFold: folding the python code
 let g:SimpylFold_docstring_preview=1
 
@@ -207,6 +229,7 @@ let g:SimpylFold_docstring_preview=1
 map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
+let NERDTreeShowHidden=1
 
 " NerdCommenter: Easily toggle the comment status of various amounts of code
 " based on your key mappings.
@@ -219,8 +242,8 @@ let g:NERDTreeDirArrowCollapsible = '▾'
 
 " Syntastic: Check your syntax and be notified about errors before compiling
 " your code or executing your script.
-let g:syntastic_c_checkers=['make','gcc']
-let g:syntastic_c_include_dirs = [g:c_include_company . 'public', g:c_include_company . 'private']
+"" load a machine specific vimrc file
+source ~/.vim/.vimrc_machine_specific
 
 " Conoline This plugin highlights the line of the cursor, only in the current window.
 let g:conoline_auto_enable = 1

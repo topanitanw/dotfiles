@@ -216,28 +216,37 @@
 (defvar space-tap-offset 2 "the number of spaces per tap")
 
 ;; Indentation Setup
+(defun coding-style-mine ()
+  "My coding style."
+│ (interactive)
+│ (setq-default indent-tabs-mode nil)
+│ (setq-default tab-width space-tap-offset)
 
-(defun my-coding-style ()
-  (interactive)
-  (setq-default indent-tabs-mode nil)
-  (setq-default tab-width space-tap-offset)
+│ ;; set the c-style indentation to ellemtel
+│ (setq-default c-default-style "ellemtel"
+│ │             c-basic-offset space-tap-offset)
+│ )
+(coding-style-mine)
 
-  ;; set the c-style indentation to ellemtel
-  (setq-default c-default-style "ellemtel"
-                c-basic-offset space-tap-offset)
-  )
-(my-coding-style)
+(defun coding-style-nk ()
+│ (interactive)
+│ (setq-default indent-tabs-mode nil)
+│ (setq-default tab-width 8)
 
-(defun kdev-coding-style ()
-  (interactive)
-  (setq-default indent-tabs-mode nil)
-  (setq-default tab-width 8)
+│ ;; set the c-style indentation to ellemtel
+│ (setq-default c-default-style "linux"
+│ │           c-basic-offset 4)
+│ )
 
-  ;; set the c-style indentation to ellemtel
-  (setq-default c-default-style "linux"
-                c-basic-offset 4)
-  )
-  
+(defun coding-style-ctf ()
+│ (interactive)
+│ (setq-default indent-tabs-mode nil)
+│ (setq-default tab-width 3)
+
+│ ;; set the c-style indentation to ellemtel
+│ (setq-default c-default-style "ellemtel"
+│ │             c-basic-offset 3)
+│ )
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
 (c-set-offset 'access-label '/)
 ;; set the indent of all other elements in the class definition to equal
@@ -703,7 +712,7 @@
   :init
   (add-to-list 'company-backends 'company-anaconda)
   (add-to-list 'python-mode-hook 'anaconda-mode)
-  (rename-minor-mode "company-anaconda" company-anaconda "Com-Ana"))
+  (rename-minor-mode "company-anaconda" anaconda-mode "Com-Ana"))
 
 (use-package company-c-headers
   :after company
