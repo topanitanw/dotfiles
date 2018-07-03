@@ -607,6 +607,9 @@
   :config
   (powerline-evil-vim-color-theme))
   
+;; =======================================================================
+;; telephone line  
+;; =======================================================================
 (use-package telephone-line
   :if (>= emacs-major-version 25)
   :demand t
@@ -1729,6 +1732,31 @@
   (define-key inferior-ess-mode-map "\C-cw" 'ess-execute-screen-options)
   ; Add path to Stata to Emacs' exec-path so that Stata can be found
   (setq exec-path (append exec-path '("/usr/local/stata14")))) 
+
+
+;; save minibuffer history similar to saving the command line history
+(savehist-mode t)
+(setq savehist-file "~/.emacs.d/savehist")
+
+(defun save-defaults ()
+  (desktop-save desktop-dirname)
+  (savehist-save)
+  (bookmark-save))
+
+(defun save-histories ()
+  (let ((buf (current-buffer)))
+    (save-excursion
+      (dolist (b (buffer-list))
+        (switch-to-buffer b)
+        (save-history)))
+    (switch-to-buffer buf)))
+
+;; M-x save RET to save 
+(defun save ()
+  (interactive)
+  (save-desktop)
+  (save-defaults)
+  (save-histories))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil (lambda ()
