@@ -218,35 +218,35 @@
 ;; Indentation Setup
 (defun coding-style-mine ()
   "My coding style."
-│ (interactive)
-│ (setq-default indent-tabs-mode nil)
-│ (setq-default tab-width space-tap-offset)
+  (interactive)
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width space-tap-offset)
 
-│ ;; set the c-style indentation to ellemtel
-│ (setq-default c-default-style "ellemtel"
-│ │             c-basic-offset space-tap-offset)
-│ )
+  ;; set the c-style indentation to ellemtel
+  (setq-default c-default-style "ellemtel"
+                c-basic-offset space-tap-offset)
+  )
 (coding-style-mine)
 
 (defun coding-style-nk ()
-│ (interactive)
-│ (setq-default indent-tabs-mode nil)
-│ (setq-default tab-width 8)
+  (interactive)
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 8)
 
-│ ;; set the c-style indentation to ellemtel
-│ (setq-default c-default-style "linux"
-│ │           c-basic-offset 4)
-│ )
+  ;; set the c-style indentation to ellemtel
+  (setq-default c-default-style "linux"
+                c-basic-offset 4)
+  )
 
 (defun coding-style-ctf ()
-│ (interactive)
-│ (setq-default indent-tabs-mode nil)
-│ (setq-default tab-width 3)
+  (interactive)
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 3)
 
-│ ;; set the c-style indentation to ellemtel
-│ (setq-default c-default-style "ellemtel"
-│ │             c-basic-offset 3)
-│ )
+  ;; set the c-style indentation to ellemtel
+  (setq-default c-default-style "ellemtel"
+                c-basic-offset 3)
+  )
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
 (c-set-offset 'access-label '/)
 ;; set the indent of all other elements in the class definition to equal
@@ -1729,6 +1729,15 @@
   (define-key inferior-ess-mode-map "\C-cw" 'ess-execute-screen-options)
   ; Add path to Stata to Emacs' exec-path so that Stata can be found
   (setq exec-path (append exec-path '("/usr/local/stata14")))) 
+
+(use-package desktop+
+  :demand t)
+
+;; save minibuffer history 
+(savehist-mode 1)
+(setq savehist-file "~/.emacs.d/tmp/savehist")
+;; save other variables 
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil (lambda ()
