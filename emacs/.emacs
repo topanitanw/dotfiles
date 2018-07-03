@@ -607,6 +607,9 @@
   :config
   (powerline-evil-vim-color-theme))
   
+;; =======================================================================
+;; telephone line  
+;; =======================================================================
 (use-package telephone-line
   :if (>= emacs-major-version 25)
   :demand t
@@ -1735,9 +1738,28 @@
 
 ;; save minibuffer history 
 (savehist-mode 1)
-(setq savehist-file "~/.emacs.d/tmp/savehist")
 ;; save other variables 
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+
+(defun save-defaults ()
+  (desktop-save desktop-dirname)
+  (savehist-save)
+  (bookmark-save))
+
+(defun save-histories ()
+  (let ((buf (current-buffer)))
+    (save-excursion
+      (dolist (b (buffer-list))
+        (switch-to-buffer b)
+        (save-history)))
+    (switch-to-buffer buf)))
+
+;; M-x save RET to save 
+(defun save ()
+  (interactive)
+  (save-desktop)
+  (save-defaults)
+  (save-histories))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil (lambda ()
