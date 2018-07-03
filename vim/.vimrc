@@ -164,11 +164,14 @@ set showcmd         " display incomplete commands
 if has('mouse')
    set mouse=r
 endif   
+set nobackup         " Cancel the backup files
 set history=1000
 set undolevels=1000
-
-set nobackup         " Cancel the backup files
-
+set undofile         " maintain undo history between sessions
+if !isdirectory("~/.vim/undo/")
+  call mkdir("~/.vim/undo/", "p")
+endif
+set undodir="~/.vim/undo/"
 
 " this line below is specific to MS Windows machines and should be removed 
 " for other systems

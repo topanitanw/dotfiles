@@ -439,6 +439,43 @@
 ;;    - C-q C-M RET
 ;;    - RET
 ;;    - ! (replace the entire file)
+
+;; save minibuffer history 
+(savehist-mode 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+
+(when (not (file-directory-p "~/.emacs.d/tmp"))
+  (make-directory "~/.emacs.d/tmp"))
+(setq savehist-file "~/.emacs.d/tmp/savehist")
+
+(setq save-interprogram-paste-before-kill t)
+(setq select-enable-clipboard t)
+(setq mouse-drag-copy-region t)
+
+;; save other variables
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+(defun save-defaults ()
+  (desktop-save desktop-dirname)
+  (savehist-save)
+  (bookmark-save))
+
+(defun save-histories ()
+  (let ((buf (current-buffer)))
+    (save-excursion
+      (dolist (b (buffer-list))
+        (switch-to-buffer b)
+        (save-history)))
+    (switch-to-buffer buf)))
+
+;; M-x save RET to save 
+(defun save ()
+  (interactive)
+  (save-desktop)
+  (save-defaults)
+  (save-histories))
 ;; =======================================================================
 ;; =======================================================================
 ;; ## Package Installation
@@ -1733,33 +1770,13 @@
   ; Add path to Stata to Emacs' exec-path so that Stata can be found
   (setq exec-path (append exec-path '("/usr/local/stata14")))) 
 
+;; ==================================================================
+;; desktop plus 
+;; ==================================================================
+;; the file will be saved in the ~/.emacs.d/desktops/
 (use-package desktop+
   :demand t)
 
-;; save minibuffer history 
-(savehist-mode 1)
-;; save other variables 
-(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-
-(defun save-defaults ()
-  (desktop-save desktop-dirname)
-  (savehist-save)
-  (bookmark-save))
-
-(defun save-histories ()
-  (let ((buf (current-buffer)))
-    (save-excursion
-      (dolist (b (buffer-list))
-        (switch-to-buffer b)
-        (save-history)))
-    (switch-to-buffer buf)))
-
-;; M-x save RET to save 
-(defun save ()
-  (interactive)
-  (save-desktop)
-  (save-defaults)
-  (save-histories))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil (lambda ()
