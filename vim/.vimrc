@@ -51,8 +51,9 @@ Plug 'vim-scripts/indentpython.vim' " indent in python
 Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdtree'     " display file tree
 Plug 'miyakogi/conoline.vim'
-Plug 'xolox/vim-misc'
+Plug 'xolox/vim-misc'         " prereq of vim-session
 Plug 'xolox/vim-session'      " save and restore vim sessions
+Plug 'scrooloose/nerdcommenter' 
 call plug#end()
 
 "---------------------------------------------------------------------- 
@@ -83,7 +84,7 @@ set guifont=Dejavu\ Sans\ Mono:h12
 set number              " enable line number
 set ruler               " Show the line and column number (cursor position)
 set cursorline          " highlight the current line
-set showmatch           " highlight matching [{()}]
+set showmatch           " highlight matching braces [{()}]
 syntax on               " set syntax highlight 
 set showcmd             " show incomplete command in bottom bar
 set lazyredraw          " redraw only when we need to.
@@ -119,7 +120,9 @@ set backspace=indent,eol,start
 set wildmenu            " visual autocomplete for command menu 
 set encoding=utf-8      " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
-
+set termencoding=utf-8
+" intelligent comments
+set comments=sl:/*,mb:\ *,elx:\ */
 "---------------------------------------------------------------------- 
 " Indentation
 "" Attempt to determine the type of a file based on its name and possibly its
@@ -236,6 +239,7 @@ let NERDTreeShowHidden=1
 
 " NerdCommenter: Easily toggle the comment status of various amounts of code
 " based on your key mappings.
+" http://spf13.com/post/vim-plugins-nerd-commenter/
 
 " Snipmate: Glide through often-typed code, or snippets, that you can quickly
 " insert into your file. Update variables as you type.

@@ -247,6 +247,21 @@
   (setq-default c-default-style "ellemtel"
                 c-basic-offset 3)
   )
+
+(defun coding-style-linux ()
+  "C mode with adjusted defaults for use with the Linux
+kernel."
+  (interactive)
+  (c-mode)
+  (setq c-indent-level 8)
+  (setq c-brace-imaginary-offset 0)
+  (setq c-brace-offset -8)
+  (setq c-argdecl-indent 8)
+  (setq c-label-offset -8)
+  (setq c-continued-statement-offset 8)
+  (setq indent-tabs-mode nil)
+  (setq tab-width 8))
+
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
 (c-set-offset 'access-label '/)
 ;; set the indent of all other elements in the class definition to equal
@@ -476,6 +491,16 @@
   (save-desktop)
   (save-defaults)
   (save-histories))
+
+(setq save-interprogram-paste-before-kill t)
+(setq x-select-enable-clipboard t)
+(setq mouse-drag-copy-region t)
+(setq show-trailing-whitespace t)
+;; highlight the text longer than 80 characters on a line
+(setq-default whitespace-line-column 80
+│             whitespace-style       '(face lines-tail))
+(add-hook 'prog-mode-hook #'whitespace-mode)
+(setq-default show-trailing-whitespace t)
 ;; =======================================================================
 ;; =======================================================================
 ;; ## Package Installation
@@ -652,6 +677,8 @@
   :demand t
   ;; :disabled
   :config
+  ;; if there are error messages in the message buffer,
+  ;; change the telephone-line-flat to telephone-line-nil
   (setq telephone-line-evil-use-short-tag t
         telephone-line-primary-left-separator telephone-line-flat
         telephone-line-secondary-left-separator telephone-line-nil
@@ -865,6 +892,8 @@
   :init
   (evil-mode 1)
   :config
+  (setq evil-search-wrap t
+        evil-regexp-search t)
   (setq evil-toggle-key "")
   (add-to-list 'evil-emacs-state-modes 'flycheck-error-list-mode)
   (add-to-list 'evil-emacs-state-modes 'occur-mode)
@@ -878,6 +907,14 @@
   (evil-ex-define-cmd "ls" 'ibuffer)
   (evil-ex-define-cmd "buffers" 'ibuffer))  
 
+;; =======================================================================
+;; evil-leader
+;; =======================================================================
+(use-package evil-leader
+    :config
+    :after (evil)
+    (global-evil-leader-mode)
+    (evil-leader/set-leader "<SPC>")) 
 ;; =======================================================================
 ;; helm
 ;; =======================================================================
