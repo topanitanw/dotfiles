@@ -11,6 +11,7 @@ if !exists("g:os")
    else
       let g:os = substitute(system('uname'), '\n', '', '')
       " for bash window subsystem, g:os = 'Linux'
+      " for mac osx, g:os = 'Darwin'
    endif
 endif
 
@@ -20,8 +21,11 @@ if g:os == "Windows"
     let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
     let g:plug_dir = 'vimfiles/plugged'
   endif 
-else 
+endif 
+
+if g:os == "Darwin"
   if has('nvim')
+    " if init.vim is set properly, this true condition is not required.
     let g:autoload_plugvim = expand("~/.local/share/nvim/site/autoload/plug.vim")
     let g:plug_dir = expand("~/.local/share/nvim/plugged")
     let g:editor_root= expand("~/.config/nvim")
@@ -171,8 +175,8 @@ set nobackup         " Cancel the backup files
 set history=1000
 set undolevels=1000
 set undofile         " maintain undo history between sessions
-if !isdirectory("~/.vim/undo/")
-  call mkdir("~/.vim/undo/", "p")
+if !isdirectory(expand("~/.vim/undo/"))
+  call mkdir(expand("~/.vim/undo/"), "p")
 endif
 set undodir="~/.vim/undo/"
 
