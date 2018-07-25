@@ -23,17 +23,16 @@ if g:os == "Windows"
   endif 
 endif 
 
-if g:os == "Darwin"
-  if has('nvim')
-    " if init.vim is set properly, this true condition is not required.
-    let g:autoload_plugvim = expand("~/.local/share/nvim/site/autoload/plug.vim")
-    let g:plug_dir = expand("~/.local/share/nvim/plugged")
-    let g:editor_root= expand("~/.config/nvim")
-  else
+if g:os == "Darwin" || g:os == "Linux"
+  "if has('nvim')
+    "let g:autoload_plugvim = expand("~/.local/share/nvim/site/autoload/plug.vim")
+    "let g:plug_dir = expand("~/.local/share/nvim/plugged")
+    "let g:editor_root= expand("~/.config/nvim")
+  "else
     let g:autoload_plugvim = expand("~/.vim/autoload/plug.vim")
     let g:plug_dir = expand("~/.vim/plugged")
     let g:editor_root = expand("~/.vim")
-  endif
+  "endif
 endif
 
 if empty(glob(g:autoload_plugvim))
@@ -175,10 +174,13 @@ set nobackup         " Cancel the backup files
 set history=1000
 set undolevels=1000
 set undofile         " maintain undo history between sessions
-if !isdirectory(expand("~/.vim/undo/"))
-  call mkdir(expand("~/.vim/undo/"), "p")
+
+let g:undo_dir=expand("~/.vim/undo/")
+echo "g:undo_dir " . g:undo_dir
+if !isdirectory(g:undo_dir)
+  call mkdir(g:undo_dir, "p")
 endif
-set undodir="~/.vim/undo/"
+set undodir=g:undo_dir
 
 " this line below is specific to MS Windows machines and should be removed 
 " for other systems
@@ -218,15 +220,15 @@ augroup filetypedetect
   au! BufRead,BufNewFile *nc setfiletype nc 
 augroup END
 
-" python mode setting
-au BufNewFile,BufRead *.py
-    \ set tabstop=4
-    \ set softtabstop=4
-    \ set shiftwidth=4
-    \ set textwidth=79
-    \ set expandtab
-    \ set autoindent
-    \ set fileformat=unix
+" " python mode setting
+" au BufNewFile,BufRead *.py
+"     \ set tabstop=4
+"     \ set softtabstop=4
+"     \ set shiftwidth=4
+"     \ set textwidth=79
+"     \ set expandtab
+"     \ set autoindent
+"     \ set fileformat=unix
 
 "---------------------------------------------------------------------- 
 " package related setup
@@ -254,7 +256,9 @@ let NERDTreeShowHidden=1
 " Syntastic: Check your syntax and be notified about errors before compiling
 " your code or executing your script.
 "" load a machine specific vimrc file
-source ~/.vim/.vimrc_machine_specific
+if !empty(glob("~/.vimrc_machine_specific"))
+  source ~/.vimrc_machine_specific
+endif
 
 " Conoline This plugin highlights the line of the cursor, only in the current window.
 let g:conoline_auto_enable = 1

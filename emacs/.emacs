@@ -143,11 +143,6 @@
 
 ;; enable the highlight current line
 (global-hl-line-mode +1)
-;; To keep syntax highlighting in the current line:
-(set-face-foreground 'highlight nil)
-;; Set any color as the background face of the current line
-(set-face-background 'hl-line "#3e4446") ;; "#3e4446"
-;; (set-face-background hl-line-face "gray13") ;; SeaGreen4 gray13
 
 
 ;; Enable column-number-mode in the mode line
@@ -496,9 +491,10 @@ kernel."
 (setq x-select-enable-clipboard t)
 (setq mouse-drag-copy-region t)
 (setq show-trailing-whitespace t)
-;; highlight the text longer than 80 characters on a line
+;; highlight the only part of the text longer than 80 characters on a line
+;; highlight the trailing whitespaces 
 (setq-default whitespace-line-column 80
-│             whitespace-style       '(face lines-tail))
+│             whitespace-style       '(face lines-tail trailing))
 (add-hook 'prog-mode-hook #'whitespace-mode)
 (setq-default show-trailing-whitespace t)
 ;; =======================================================================
@@ -654,6 +650,11 @@ kernel."
                       :height 130
                       :bold nil
                       :underline nil)
+  ;; To keep syntax highlighting in the current line:
+  (set-face-foreground 'highlight nil)
+  ;; Set any color as the background face of the current line
+  (set-face-background 'hl-line "#3e4446") ;; "#3e4446"
+  ;; (set-face-background hl-line-face "gray13") ;; SeaGreen4 gray13
   )
 ;; =======================================================================
 ;; Powerline
@@ -674,8 +675,6 @@ kernel."
 ;; =======================================================================
 (use-package telephone-line
   :if (>= emacs-major-version 25)
-  :demand t
-  ;; :disabled
   :config
   ;; if there are error messages in the message buffer,
   ;; change the telephone-line-flat to telephone-line-nil
@@ -890,6 +889,7 @@ kernel."
   :demand t
   ;; :disabled
   :init
+  (setq evil-want-abbrev-expand-on-insert-exit nil)
   (evil-mode 1)
   :config
   (setq evil-search-wrap t
@@ -913,8 +913,12 @@ kernel."
 (use-package evil-leader
     :config
     :after (evil)
+    :demand t
     (global-evil-leader-mode)
-    (evil-leader/set-leader "<SPC>")) 
+    (evil-leader/set-leader "<SPC>")
+    (evil-leader/set-key "a l" 'avy-goto-line)
+    (evil-leader/set-key "a c" 'avy-goto-char-2)
+    )
 ;; =======================================================================
 ;; helm
 ;; =======================================================================
@@ -1003,6 +1007,7 @@ kernel."
 ;; fic-mode TODO BUG FIXME CLEANUP CHECKING(owner)
 ;; =======================================================================
 (use-package fic-mode
+  :demand t
   :init
   (if (>= emacs-major-version 24)
       (progn (add-hook 'prog-mode-hook 'fic-mode)
