@@ -90,8 +90,8 @@
   (global-set-key (kbd "C-c c") 'pbcopy)
   (global-set-key (kbd "C-c v") 'pbpaste)
   (global-set-key (kbd "C-c x") 'pbcut)
-  ;; sets fn-delete to be right-delete 
-  (global-set-key [kp-delete] 'delete-char) 
+  ;; sets fn-delete to be right-delete
+  (global-set-key [kp-delete] 'delete-char)
   ;; set the ispell path to the emacs for mac machines
   (setq ispell-program-name "/usr/local/bin/ispell")
   ;; set the alt key to be the option key
@@ -99,7 +99,7 @@
   (setq mac-command-modifier 'alt)
 
   (prefer-coding-system 'utf-8)
-  ;; set the background mode 
+  ;; set the background mode
   (setq frame-background-mode 'light)
 
   ;; mouse setup with iterm2
@@ -450,7 +450,7 @@ kernel."
 ;;    - RET
 ;;    - ! (replace the entire file)
 
-;; save minibuffer history 
+;; save minibuffer history
 (savehist-mode 1)
 (setq history-length t)
 (setq history-delete-duplicates t)
@@ -480,7 +480,7 @@ kernel."
         (save-history)))
     (switch-to-buffer buf)))
 
-;; M-x save RET to save 
+;; M-x save RET to save
 (defun save ()
   (interactive)
   (save-desktop)
@@ -490,13 +490,11 @@ kernel."
 (setq save-interprogram-paste-before-kill t)
 (setq x-select-enable-clipboard t)
 (setq mouse-drag-copy-region t)
-(setq show-trailing-whitespace t)
 ;; highlight the only part of the text longer than 80 characters on a line
-;; highlight the trailing whitespaces 
-(setq-default whitespace-line-column 80
-│             whitespace-style       '(face lines-tail trailing))
+;; highlight the trailing whitespaces
+(setq-default whitespace-line-column 80)
+(setq whitespace-style '(face lines-tail trailing))
 (add-hook 'prog-mode-hook #'whitespace-mode)
-(setq-default show-trailing-whitespace t)
 ;; =======================================================================
 ;; =======================================================================
 ;; ## Package Installation
@@ -593,7 +591,7 @@ kernel."
 ;  (setq which-key-use-C-h-commands nil)
   ; (setq which-key-popup-type 'minibuffer)
   (setq which-key-popup-type 'side-window)
-  ;; location of which-key window. valid values: top, bottom, left, right, 
+  ;; location of which-key window. valid values: top, bottom, left, right,
   ;; or a list of any of the two. If it's a list, which-key will always try
   ;; the first location first. It will go to the second location if there is
   ;; not enough room to display any keys in the first location
@@ -669,12 +667,14 @@ kernel."
   :demand t
   :config
   (powerline-evil-vim-color-theme))
-  
+
 ;; =======================================================================
-;; telephone line  
+;; telephone line
 ;; =======================================================================
 (use-package telephone-line
   :if (>= emacs-major-version 25)
+  :demand t
+  ;; :disabled
   :config
   ;; if there are error messages in the message buffer,
   ;; change the telephone-line-flat to telephone-line-nil
@@ -750,7 +750,7 @@ kernel."
   ;; (define-key company-active-map [tab] 'company-select-next)
   ;; (define-key company-active-map (kbd "TAB") 'company-select-next)
 
-  ;; press S-TAB to select the previous option 
+  ;; press S-TAB to select the previous option
   (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
   (define-key company-active-map (kbd "<backtab>") 'company-select-previous)
 
@@ -905,15 +905,15 @@ kernel."
 
   ;; define :ls, :buffers to open ibuffer
   (evil-ex-define-cmd "ls" 'ibuffer)
-  (evil-ex-define-cmd "buffers" 'ibuffer))  
+  (evil-ex-define-cmd "buffers" 'ibuffer))
 
 ;; =======================================================================
 ;; evil-leader
 ;; =======================================================================
 (use-package evil-leader
-    :config
     :after (evil)
     :demand t
+    :config
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key "a l" 'avy-goto-line)
@@ -924,7 +924,7 @@ kernel."
 ;; =======================================================================
 (use-package helm
   ;; disabled if emacs version is before 24.4
-  :if (version< "24.4" emacs-version) 
+  :if (version< "24.4" emacs-version)
   :diminish (helm-mode)
   :init
   (progn
@@ -1807,13 +1807,13 @@ kernel."
   (add-hook 'ess-mode-hook (lambda() (ess-set-style 'RStudio)))
   ; Make ESS use more horizontal screen
   ; http://stackoverflow.com/questions/12520543/how-do-i-get-my-r-buffer-in-emacs-to-occupy-more-horizontal-space
-  (add-hook 'ess-R-post-run-hook 'ess-execute-screen-options) 
+  (add-hook 'ess-R-post-run-hook 'ess-execute-screen-options)
   (define-key inferior-ess-mode-map "\C-cw" 'ess-execute-screen-options)
   ; Add path to Stata to Emacs' exec-path so that Stata can be found
-  (setq exec-path (append exec-path '("/usr/local/stata14")))) 
+  (setq exec-path (append exec-path '("/usr/local/stata14"))))
 
 ;; ==================================================================
-;; desktop plus 
+;; desktop plus
 ;; ==================================================================
 ;; the file will be saved in the ~/.emacs.d/desktops/
 (use-package desktop+
