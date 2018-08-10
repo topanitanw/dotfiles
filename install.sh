@@ -1,10 +1,7 @@
 #!/bin/bash
 
-USERNAME="pwongseammat"
-WIN_BASH_DST_DIR="/home/${USERNAME}"
-MAC_DST_DIR="/Users/${USERNAME}"
-LINUX_DST_DIR="/home/${USERNAME}"
-DST_DIR="${MAC_DST_DIR}"
+DST_DIR="${HOME}"
+printf ${DST_DIR}
 
 function fsync {
 	rsync $1 $2
