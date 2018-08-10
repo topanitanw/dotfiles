@@ -51,12 +51,18 @@ Plug 'scrooloose/syntastic'   " check syntactical errors
 Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
 Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'vim-scripts/indentpython.vim' " indent in python
-Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdtree'     " display file tree
 Plug 'miyakogi/conoline.vim'
 Plug 'xolox/vim-misc'         " prereq of vim-session
 Plug 'xolox/vim-session'      " save and restore vim sessions
 Plug 'scrooloose/nerdcommenter' 
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
 call plug#end()
 
 "---------------------------------------------------------------------- 
@@ -178,7 +184,8 @@ set undofile         " maintain undo history between sessions
 let g:undo_dir=expand("~/.vim/undo/")
 echo "g:undo_dir " . g:undo_dir
 if !isdirectory(g:undo_dir)
-  call mkdir(g:undo_dir, "p")
+  call mkdir(string(g:undo_dir), "p")
+
 endif
 set undodir=g:undo_dir
 
@@ -260,11 +267,14 @@ if !empty(glob("~/.vimrc_machine_specific"))
   source ~/.vimrc_machine_specific
 endif
 
-" Conoline This plugin highlights the line of the cursor, only in the current window.
+" Conoline: This plugin highlights the line of the cursor, only in the current window.
 let g:conoline_auto_enable = 1
 "" use the color in the colorscheme
 let g:conoline_use_colorscheme_default_normal=1
 let g:conoline_use_colorscheme_default_insert=1
+
+" Deoplete: Autocomplete for vim8 and neovim
+let g:deoplete#enable_at_startup = 1
 
 " Reference 
 " https://dougblack.io/words/a-good-vimrc.html til folding

@@ -490,13 +490,12 @@ kernel."
 (setq save-interprogram-paste-before-kill t)
 (setq x-select-enable-clipboard t)
 (setq mouse-drag-copy-region t)
-(setq show-trailing-whitespace t)
+
 ;; highlight the only part of the text longer than 80 characters on a line
-;; highlight the trailing whitespaces 
-(setq-default whitespace-line-column 80
-│             whitespace-style       '(face lines-tail trailing))
+; highlight the trailing whitespaces 
+(setq-default whitespace-line-column 80)
+(setq whitespace-style '(face lines-tail trailing))
 (add-hook 'prog-mode-hook #'whitespace-mode)
-(setq-default show-trailing-whitespace t)
 ;; =======================================================================
 ;; =======================================================================
 ;; ## Package Installation
@@ -911,9 +910,9 @@ kernel."
 ;; evil-leader
 ;; =======================================================================
 (use-package evil-leader
-    :config
     :after (evil)
     :demand t
+    :config
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key "a l" 'avy-goto-line)
@@ -1767,6 +1766,7 @@ kernel."
   ;; :diminish ""
   :config
   ;; remove/remap the minor-mode key map
+	(rename-minor-mode "flyspell" flyspell-mode "FlyS")
   (define-key flyspell-mode-map (kbd "C-;") nil)
 
   ;; Enable spell check in program comments
