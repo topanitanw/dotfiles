@@ -679,10 +679,10 @@ kernel."
   ;; if there are error messages in the message buffer,
   ;; change the telephone-line-flat to telephone-line-nil
   (setq telephone-line-evil-use-short-tag t
-        telephone-line-primary-left-separator telephone-line-flat
-        telephone-line-secondary-left-separator telephone-line-nil
-        telephone-line-primary-right-separator telephone-line-flat
-        telephone-line-secondary-right-separator telephone-line-nil
+        telephone-line-primary-left-separator telephone-line-nil
+        ;; telephone-line-secondary-left-separator telephone-line-nil
+        telephone-line-primary-right-separator telephone-line-nil
+        ;; telephone-line-secondary-right-separator telephone-line-nil
         )
   (setq telephone-line-lhs
         '((evil   . (telephone-line-evil-tag-segment))
@@ -1767,6 +1767,7 @@ kernel."
   ;; :diminish ""
   :config
   ;; remove/remap the minor-mode key map
+	(rename-minor-mode "flyspell" flyspell-mode "FlyS")
   (define-key flyspell-mode-map (kbd "C-;") nil)
 
   ;; Enable spell check in program comments
@@ -1818,6 +1819,35 @@ kernel."
 ;; the file will be saved in the ~/.emacs.d/desktops/
 (use-package desktop+
   :demand t)
+
+(use-package xcscope)
+(use-package helm-cscope)
+
+(clear-abbrev-table global-abbrev-table)
+
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ("fh"
+     "/*
+ *-----------------------------------------------------------------------------
+ *
+ *
+ *-----------------------------------------------------------------------------
+ */")
+    ("cr"
+     "\
+/* **********************************************************
+ * Copyright (c) 2016 VMware, Inc.  All rights reserved.
+ * -- VMware Confidential
+ * **********************************************************/
+
+/*
+ * buffer-name --
+ *
+ *      XXX: Brief description of this file.
+ */")))
+(set-default 'abbrev-mode t)
+(setq save-abbrevs nil)
 
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
