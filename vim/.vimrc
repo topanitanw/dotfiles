@@ -1,7 +1,7 @@
 "" Use gVim settings
 set nocompatible 	   " Use gVim defaults
 
-"---------------------------------------------------------------------- 
+"----------------------------------------------------------------------
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
 if !exists("g:os")
@@ -20,8 +20,8 @@ if g:os == "Windows"
     " as of 05/24/2018 Neovim on Windows is experimental so skip it.
     let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
     let g:plug_dir = 'vimfiles/plugged'
-  endif 
-endif 
+  endif
+endif
 
 if g:os == "Darwin" || g:os == "Linux"
   "if has('nvim')
@@ -44,10 +44,10 @@ if empty(glob(g:autoload_plugvim))
 endif
 
 call plug#begin(g:plug_dir)
-Plug 'vim-scripts/Zenburn' 
+Plug 'vim-scripts/Zenburn'
 Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
-Plug 'scrooloose/syntastic'   " check syntactical errors
+" Plug 'scrooloose/syntastic'   " check syntactical errors
 Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
 Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'vim-scripts/indentpython.vim' " indent in python
@@ -55,7 +55,7 @@ Plug 'scrooloose/nerdtree'     " display file tree
 Plug 'miyakogi/conoline.vim'
 Plug 'xolox/vim-misc'         " prereq of vim-session
 Plug 'xolox/vim-session'      " save and restore vim sessions
-Plug 'scrooloose/nerdcommenter' 
+Plug 'scrooloose/nerdcommenter'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 else
@@ -65,7 +65,7 @@ else
 endif
 call plug#end()
 
-"---------------------------------------------------------------------- 
+"----------------------------------------------------------------------
 " GUI
 "" set zenburn color scheme
 let g:zenburn_force_dark_Background = 1
@@ -77,13 +77,13 @@ let g:lightline = {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'filename', 'readonly', 'modified', 'gitbranch' ] ]
       \ },
-      \ 'component_function': { 
+      \ 'component_function': {
       \   'filename': 'LightLineFilename',
       \   'gitbranch': 'gitbranch#name'
       \ },
       \ }
 
-function! LightLineFilename() 
+function! LightLineFilename()
   return expand('%')
 endfunction
 
@@ -94,7 +94,7 @@ set number              " enable line number
 set ruler               " Show the line and column number (cursor position)
 set cursorline          " highlight the current line
 set showmatch           " highlight matching braces [{()}]
-syntax on               " set syntax highlight 
+syntax on               " set syntax highlight
 set showcmd             " show incomplete command in bottom bar
 set lazyredraw          " redraw only when we need to.
 set modeline
@@ -106,7 +106,7 @@ if has("gui_running")
 endif
 
 " from here https://sunaku.github.io/vim-256color-bce.html
-if g:os == "Windows" 
+if g:os == "Windows"
    set term=xterm " screen-256color
 elseif !has('nvim')
    set term=screen-256color
@@ -117,22 +117,22 @@ set t_Co=256
 "" set the cursor of all modes to be a block
 set guicursor=a:block
 
-"---------------------------------------------------------------------- 
+"----------------------------------------------------------------------
 " code representation
 "" folding
 set foldmethod=syntax
 
-"---------------------------------------------------------------------- 
+"----------------------------------------------------------------------
 " Edit
 "" all backspacing over everything in insert mode
 set backspace=indent,eol,start
-set wildmenu            " visual autocomplete for command menu 
+set wildmenu            " visual autocomplete for command menu
 set encoding=utf-8      " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
 set termencoding=utf-8
 " intelligent comments
 set comments=sl:/*,mb:\ *,elx:\ */
-"---------------------------------------------------------------------- 
+"----------------------------------------------------------------------
 " Indentation
 "" Attempt to determine the type of a file based on its name and possibly its
 "" contents. Use this to allow intelligent auto-indenting for each filetype,
@@ -151,14 +151,14 @@ function! CodingStyleMine ()
 endfunction
 call CodingStyleMine()
 
-function! CodingStyleCtf ()
+function! CodingStyleCompany ()
   set tabstop=3        " each tab has 2_spaces equivalent width
   set softtabstop=3    " number of spaces in tab when editing
   set shiftwidth=3     " Indentation width when using >> and << re-indentation
   set textwidth=79
 endfunction
-   
-"---------------------------------------------------------------------- 
+
+"----------------------------------------------------------------------
 " Search
 "" Use case insensitive search, except when using capital letters
 set ignorecase
@@ -175,31 +175,32 @@ set noerrorbells
 set showcmd         " display incomplete commands
 if has('mouse')
    set mouse=r
-endif   
+endif
 set nobackup         " Cancel the backup files
 set history=1000
 set undolevels=1000
 set undofile         " maintain undo history between sessions
 
-let g:undo_dir=expand("~/.vim/undo/")
-echo "g:undo_dir " . g:undo_dir
-if !isdirectory(g:undo_dir)
-  call mkdir(string(g:undo_dir), "p")
+" does not create the folder in the .vim directory
+" let g:undo_dir=expand("~/.vim/undo/")
+" echo "g:undo_dir " . g:undo_dir
+" if !isdirectory(U)
+"   call mkdir(string(g:undo_dir), "p")
+"
+" endif
+" set undodir=g:undo_dir
 
-endif
-set undodir=g:undo_dir
-
-" this line below is specific to MS Windows machines and should be removed 
+" this line below is specific to MS Windows machines and should be removed
 " for other systems
 if g:os == "Windows"
    behave mswin
-endif   
+endif
 
 "Set the status line options. Make it show more information.
 set laststatus=2     " Display the status line
 
-"---------------------------------------------------------------------- 
-" key mapping 
+"----------------------------------------------------------------------
+" key mapping
 nnoremap <SPACE> <Nop>
 let mapleader=" "
 
@@ -212,19 +213,19 @@ if has("clipboard")
   endif
 endif
 
-"---------------------------------------------------------------------- 
-" auto command 
+"----------------------------------------------------------------------
+" auto command
 "----------------------------------------------------------------------
 au BufNewFile,BufRead *.h setf c
 au BufNewFile,BufRead *.mk setf make
 au BufNewFile,BufRead *.sc setf make
 
-"---------------------------------------------------------------------- 
+"----------------------------------------------------------------------
 " mode related setup
 "----------------------------------------------------------------------
-" nesc syntax highlight 
-augroup filetypedetect 
-  au! BufRead,BufNewFile *nc setfiletype nc 
+" nesc syntax highlight
+augroup filetypedetect
+  au! BufRead,BufNewFile *nc setfiletype nc
 augroup END
 
 " " python mode setting
@@ -237,7 +238,7 @@ augroup END
 "     \ set autoindent
 "     \ set fileformat=unix
 
-"---------------------------------------------------------------------- 
+"----------------------------------------------------------------------
 " package related setup
 "----------------------------------------------------------------------
 " SimpylFold: folding the python code
@@ -275,6 +276,8 @@ let g:conoline_use_colorscheme_default_insert=1
 
 " Deoplete: Autocomplete for vim8 and neovim
 let g:deoplete#enable_at_startup = 1
-
-" Reference 
+"" set tab and s-tab to choose the autocomplete word options
+inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+" Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding

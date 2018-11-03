@@ -891,6 +891,7 @@ kernel."
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil)
   (evil-mode 1)
+
   :config
   (setq evil-search-wrap t
         evil-regexp-search t)
@@ -903,6 +904,9 @@ kernel."
   (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-insert-state-map (kbd "C-z") 'suspend-frame)
 
+  ;; shift width for evil-mode users
+  ;; For the vim-like motions of ">>" and "<<"
+  (setq evil-shift-width space-tap-offset)
   ;; define :ls, :buffers to open ibuffer
   (evil-ex-define-cmd "ls" 'ibuffer)
   (evil-ex-define-cmd "buffers" 'ibuffer))
@@ -911,14 +915,14 @@ kernel."
 ;; evil-leader
 ;; =======================================================================
 (use-package evil-leader
-    :after (evil)
-    :demand t
-    :config
-    (global-evil-leader-mode)
-    (evil-leader/set-leader "<SPC>")
-    (evil-leader/set-key "a l" 'avy-goto-line)
-    (evil-leader/set-key "a c" 'avy-goto-char-2)
-    )
+  :after (evil)
+  :demand t
+  :config
+  (global-evil-leader-mode)
+  (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-key "a l" 'avy-goto-line)
+  (evil-leader/set-key "a c" 'avy-goto-char-2)
+  )
 ;; =======================================================================
 ;; helm
 ;; =======================================================================
