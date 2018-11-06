@@ -1,3 +1,4 @@
+#!/bin/bash
 # .bashrc
 
 # If not running interactively, don't do anything
@@ -16,26 +17,27 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-# create a directory to keep the shell related files
-if [ ! -d ~/shell_files ]; then
-  mkdir ~/shell_files
+SHELL_DIR="${HOME}/.shell_files"
+# create a keep the shell related files
+if [ ! -d "${SHELL_DIR}" ]; then
+  mkdir "${SHELL_DIR}"
 fi
 
-if [ ! -f ~/shell_files/git-completion.bash ]; then
+if [ ! -f ${SHELL_DIR}/git-completion.bash ]; then
   pushd .
-  cd ~/shell_files
+  cd ${SHELL_DIR}
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
   popd
-fi 
-source ~/shell_files/git-completion.bash
+fi
+source ${SHELL_DIR}/git-completion.bash
 
-if [ ! -f ~/shell_files/git-prompt.sh ]; then
+if [ ! -f ${SHELL_DIR}/git-prompt.sh ]; then
   pushd .
-  cd ~/shell_files
+  cd ${SHELL_DIR}
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
   popd
 fi
-source ~/shell_files/git-prompt.sh
+source ${SHELL_DIR}/git-prompt.sh
 
 # change the shell prompt
 if [ $(id -u) -eq 0 ]; then # you are root, set red colour prompt
@@ -93,7 +95,7 @@ alias rmswp="rm .*.swp; rm *~;";
 ## alias ls
 alias ll="ls -la";
 
-# project specific 
+# project specific
 alias rmll="rm *.ll;";
 alias rmbc="rm *.bc;";
 alias rme="./run_me.sh;";

@@ -2,7 +2,7 @@
 
 WIN_DST_DIR="~/"
 MAC_DST_DIR="/Users/panitanw"
-LINUX_DST_DIR="/homes/pwa732/"
+LINUX_DST_DIR="/homes/pwa732/panitanw"
 DST_DIR=${LINUX_DST_DIR}
 
 function fsync {

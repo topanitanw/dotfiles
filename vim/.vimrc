@@ -1,20 +1,38 @@
 "" Use gVim settings
 set nocompatible 	   " Use gVim defaults
 
+"----------------------------------------------------------------------
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
 if !exists("g:os")
    if has("win64") || has("win32") || has("win16")
       let g:os = "Windows"
       " gvim, g:os = Windows
-      let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
-      let g:plug_dir = 'vimfiles/plugged'
    else
       let g:os = substitute(system('uname'), '\n', '', '')
       " for bash window subsystem, g:os = 'Linux'
-      let g:autoload_plugvim = "~/.vim/autoload/plug.vim"
-      let g:plug_dir = "~/.vim/plugged"
+      " for mac osx, g:os = 'Darwin'
    endif
+endif
+
+if g:os == "Windows"
+  if !has('nvim')
+    " as of 05/24/2018 Neovim on Windows is experimental so skip it.
+    let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
+    let g:plug_dir = 'vimfiles/plugged'
+  endif
+endif
+
+if g:os == "Darwin" || g:os == "Linux"
+  "if has('nvim')
+    "let g:autoload_plugvim = expand("~/.local/share/nvim/site/autoload/plug.vim")
+    "let g:plug_dir = expand("~/.local/share/nvim/plugged")
+    "let g:editor_root= expand("~/.config/nvim")
+  "else
+    let g:autoload_plugvim = expand("~/.vim/autoload/plug.vim")
+    let g:plug_dir = expand("~/.vim/plugged")
+    let g:editor_root = expand("~/.vim")
+  "endif
 endif
 
 if empty(glob(g:autoload_plugvim))
@@ -26,34 +44,46 @@ if empty(glob(g:autoload_plugvim))
 endif
 
 call plug#begin(g:plug_dir)
-Plug 'vim-scripts/Zenburn' 
+Plug 'vim-scripts/Zenburn'
 Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
-Plug 'scrooloose/syntastic'   " check syntactical errors
+" Plug 'scrooloose/syntastic'   " check syntactical errors
 Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
 Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'vim-scripts/indentpython.vim' " indent in python
-Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdtree'     " display file tree
+Plug 'miyakogi/conoline.vim'
+Plug 'xolox/vim-misc'         " prereq of vim-session
+Plug 'xolox/vim-session'      " save and restore vim sessions
+Plug 'scrooloose/nerdcommenter'
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
 call plug#end()
 
+"----------------------------------------------------------------------
 " GUI
 "" set zenburn color scheme
 let g:zenburn_force_dark_Background = 1
 colorscheme zenburn
+
 let g:lightline = {
       \ 'colorscheme': 'default',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'filename', 'readonly', 'modified', 'gitbranch' ] ]
       \ },
-      \ 'component_function': { 
+      \ 'component_function': {
       \   'filename': 'LightLineFilename',
       \   'gitbranch': 'gitbranch#name'
       \ },
       \ }
 
-function! LightLineFilename() 
+function! LightLineFilename()
   return expand('%')
 endfunction
 
@@ -63,8 +93,8 @@ set guifont=Dejavu\ Sans\ Mono:h12
 set number              " enable line number
 set ruler               " Show the line and column number (cursor position)
 set cursorline          " highlight the current line
-set showmatch           " highlight matching [{()}]
-syntax on               " set syntax highlight 
+set showmatch           " highlight matching braces [{()}]
+syntax on               " set syntax highlight
 set showcmd             " show incomplete command in bottom bar
 set lazyredraw          " redraw only when we need to.
 set modeline
@@ -76,25 +106,33 @@ if has("gui_running")
 endif
 
 " from here https://sunaku.github.io/vim-256color-bce.html
-if g:os == "Windows" 
+if g:os == "Windows"
    set term=xterm " screen-256color
-else
+elseif !has('nvim')
    set term=screen-256color
 endif
 set t_ut=
 set t_Co=256
 
+"" set the cursor of all modes to be a block
+set guicursor=a:block
+
+"----------------------------------------------------------------------
 " code representation
 "" folding
 set foldmethod=syntax
 
+"----------------------------------------------------------------------
 " Edit
 "" all backspacing over everything in insert mode
 set backspace=indent,eol,start
-set wildmenu            " visual autocomplete for command menu 
+set wildmenu            " visual autocomplete for command menu
 set encoding=utf-8      " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
-
+set termencoding=utf-8
+" intelligent comments
+set comments=sl:/*,mb:\ *,elx:\ */
+"----------------------------------------------------------------------
 " Indentation
 "" Attempt to determine the type of a file based on its name and possibly its
 "" contents. Use this to allow intelligent auto-indenting for each filetype,
@@ -107,7 +145,23 @@ set tabstop=2        " each tab has 2_spaces equivalent width
 set softtabstop=2    " number of spaces in tab when editing
 set shiftwidth=2     " Indentation width when using >> and << re-indentation
 set expandtab 		   " Tabs are expanded to spaces
+set cino+=(0         " Change the indentation of the function arguments
 
+function! CodingStyleMine ()
+  set tabstop=2        " each tab has 2_spaces equivalent width
+  set softtabstop=2    " number of spaces in tab when editing
+  set shiftwidth=2     " Indentation width when using >> and << re-indentation
+endfunction
+call CodingStyleMine()
+
+function! CodingStyleCompany ()
+  set tabstop=3        " each tab has 2_spaces equivalent width
+  set softtabstop=3    " number of spaces in tab when editing
+  set shiftwidth=3     " Indentation width when using >> and << re-indentation
+  set textwidth=79
+endfunction
+
+"----------------------------------------------------------------------
 " Search
 "" Use case insensitive search, except when using capital letters
 set ignorecase
@@ -123,32 +177,39 @@ set vb
 set noerrorbells
 set showcmd         " display incomplete commands
 if has('mouse')
-   set mouse=a
-endif   
+   set mouse=r
+endif
+set nobackup         " Cancel the backup files
 set history=1000
 set undolevels=1000
+set undofile         " maintain undo history between sessions
 
 set nobackup         " Cancel the backup files
 
+" does not create the folder in the .vim directory
+" let g:undo_dir=expand("~/.vim/undo/")
+" echo "g:undo_dir " . g:undo_dir
+" if !isdirectory(U)
+"   call mkdir(string(g:undo_dir), "p")
+"
+" endif
+" set undodir=g:undo_dir
 
-" this line below is specific to MS Windows machines and should be removed 
+" this line below is specific to MS Windows machines and should be removed
 " for other systems
 if g:os == "Windows"
    behave mswin
-endif   
+endif
 
 "Set the status line options. Make it show more information.
 set laststatus=2     " Display the status line
 
-"nesc syntax highlight 
-augroup filetypedetect 
-  au! BufRead,BufNewFile *nc setfiletype nc 
-augroup END
-
-" key mapping 
+"----------------------------------------------------------------------
+" key mapping
 nnoremap <SPACE> <Nop>
 let mapleader=" "
 
+<<<<<<< HEAD
 au BufNewFile,BufRead *.py
     \ set tabstop=4
     \ set softtabstop=4
@@ -159,6 +220,44 @@ au BufNewFile,BufRead *.py
     \ set fileformat=unix
 
 
+=======
+" yank to clipboard
+if has("clipboard")
+  set clipboard=unnamed " copy to the system clipboard
+
+  if has("unnamedplus") " X11 support
+    set clipboard+=unnamedplus
+  endif
+endif
+
+"----------------------------------------------------------------------
+" auto command
+"----------------------------------------------------------------------
+au BufNewFile,BufRead *.h setf c
+au BufNewFile,BufRead *.mk setf make
+au BufNewFile,BufRead *.sc setf make
+
+"----------------------------------------------------------------------
+" mode related setup
+"----------------------------------------------------------------------
+" nesc syntax highlight
+augroup filetypedetect
+  au! BufRead,BufNewFile *nc setfiletype nc
+augroup END
+
+" " python mode setting
+" au BufNewFile,BufRead *.py
+"     \ set tabstop=4
+"     \ set softtabstop=4
+"     \ set shiftwidth=4
+"     \ set textwidth=79
+"     \ set expandtab
+"     \ set autoindent
+"     \ set fileformat=unix
+
+"----------------------------------------------------------------------
+" package related setup
+"----------------------------------------------------------------------
 " SimpylFold: folding the python code
 let g:SimpylFold_docstring_preview=1
 
@@ -168,8 +267,11 @@ map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
+let NERDTreeShowHidden=1
+
 " NerdCommenter: Easily toggle the comment status of various amounts of code
 " based on your key mappings.
+" http://spf13.com/post/vim-plugins-nerd-commenter/
 
 " Snipmate: Glide through often-typed code, or snippets, that you can quickly
 " insert into your file. Update variables as you type.
@@ -179,8 +281,21 @@ let g:NERDTreeDirArrowCollapsible = '▾'
 
 " Syntastic: Check your syntax and be notified about errors before compiling
 " your code or executing your script.
+"" load a machine specific vimrc file
+if !empty(glob("~/.vimrc_machine_specific"))
+  source ~/.vimrc_machine_specific
+endif
 
+" Conoline: This plugin highlights the line of the cursor, only in the current window.
+let g:conoline_auto_enable = 1
+"" use the color in the colorscheme
+let g:conoline_use_colorscheme_default_normal=1
+let g:conoline_use_colorscheme_default_insert=1
 
-
-" Reference 
+" Deoplete: Autocomplete for vim8 and neovim
+let g:deoplete#enable_at_startup = 1
+"" set tab and s-tab to choose the autocomplete word options
+inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+" Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding

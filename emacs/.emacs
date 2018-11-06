@@ -1,4 +1,4 @@
-;; nesc is the only one customized package
+; nesc is the only one customized package
 ;; Modified Emacs should be downloaded from http://vgoulet.act.ulaval.ca/en/.
 ;;
 ;; emacs for window users
@@ -65,7 +65,11 @@
       (t (prefer-coding-system 'utf-8-auto)))
 
 (when (eq system-type 'darwin) ;; mac specific settings
-  (set-face-attribute 'default nil :height 160)
+  (set-face-attribute 'default nil
+                      :family "DejaVu Sans Mono"
+                      :height 150
+                      :weight 'normal
+                      :width 'normal)
   (set-face-attribute 'mode-line nil :height 160)
   ;; for emacs on terminal in mac, to copy to and paste from clipboard
   ;; M-| pbcopy and M-| pbpaste commands or set these new commmands.
@@ -86,8 +90,8 @@
   (global-set-key (kbd "C-c c") 'pbcopy)
   (global-set-key (kbd "C-c v") 'pbpaste)
   (global-set-key (kbd "C-c x") 'pbcut)
-  ;; sets fn-delete to be right-delete 
-  (global-set-key [kp-delete] 'delete-char) 
+  ;; sets fn-delete to be right-delete
+  (global-set-key [kp-delete] 'delete-char)
   ;; set the ispell path to the emacs for mac machines
   (setq ispell-program-name "/usr/local/bin/ispell")
   ;; set the alt key to be the option key
@@ -95,7 +99,7 @@
   (setq mac-command-modifier 'alt)
 
   (prefer-coding-system 'utf-8)
-  ;; set the background mode 
+  ;; set the background mode
   (setq frame-background-mode 'light)
 
   ;; mouse setup with iterm2
@@ -137,12 +141,9 @@
 ;; (global-linum-mode 1)
 ;; this package of displaying line numbers runs very slowly.
 
-;; Set any color as the background face of the current line
-;; (set-face-background 'hl-line "#3e4446") ;; "#3e4446"
-;; (set-face-background hl-line-face "gray13") ;; SeaGreen4 gray13
+;; enable the highlight current line
+(global-hl-line-mode +1)
 
-;; To keep syntax highlighting in the current line:
-;; (set-face-foreground 'highlight nil)
 
 ;; Enable column-number-mode in the mode line
 (setq column-number-mode t)
@@ -210,8 +211,8 @@
 (defvar space-tap-offset 2 "the number of spaces per tap")
 
 ;; Indentation Setup
-
-(defun my-coding-style ()
+(defun coding-style-mine ()
+  "My coding style."
   (interactive)
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width space-tap-offset)
@@ -220,9 +221,9 @@
   (setq-default c-default-style "ellemtel"
                 c-basic-offset space-tap-offset)
   )
-(my-coding-style)
+(coding-style-mine)
 
-(defun kdev-coding-style ()
+(defun coding-style-nk ()
   (interactive)
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 8)
@@ -231,7 +232,31 @@
   (setq-default c-default-style "linux"
                 c-basic-offset 4)
   )
-  
+
+(defun coding-style-ctf ()
+  (interactive)
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 3)
+
+  ;; set the c-style indentation to ellemtel
+  (setq-default c-default-style "ellemtel"
+                c-basic-offset 3)
+  )
+
+(defun coding-style-linux ()
+  "C mode with adjusted defaults for use with the Linux
+kernel."
+  (interactive)
+  (c-mode)
+  (setq c-indent-level 8)
+  (setq c-brace-imaginary-offset 0)
+  (setq c-brace-offset -8)
+  (setq c-argdecl-indent 8)
+  (setq c-label-offset -8)
+  (setq c-continued-statement-offset 8)
+  (setq indent-tabs-mode nil)
+  (setq tab-width 8))
+
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
 (c-set-offset 'access-label '/)
 ;; set the indent of all other elements in the class definition to equal
@@ -424,6 +449,52 @@
 ;;    - C-q C-M RET
 ;;    - RET
 ;;    - ! (replace the entire file)
+
+;; save minibuffer history
+(savehist-mode 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+
+(when (not (file-directory-p "~/.emacs.d/tmp"))
+  (make-directory "~/.emacs.d/tmp"))
+(setq savehist-file "~/.emacs.d/tmp/savehist")
+
+(setq save-interprogram-paste-before-kill t)
+(setq select-enable-clipboard t)
+(setq mouse-drag-copy-region t)
+
+;; save other variables
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+(defun save-defaults ()
+  (desktop-save desktop-dirname)
+  (savehist-save)
+  (bookmark-save))
+
+(defun save-histories ()
+  (let ((buf (current-buffer)))
+    (save-excursion
+      (dolist (b (buffer-list))
+        (switch-to-buffer b)
+        (save-history)))
+    (switch-to-buffer buf)))
+
+;; M-x save RET to save
+(defun save ()
+  (interactive)
+  (save-desktop)
+  (save-defaults)
+  (save-histories))
+
+(setq save-interprogram-paste-before-kill t)
+(setq x-select-enable-clipboard t)
+(setq mouse-drag-copy-region t)
+;; highlight the only part of the text longer than 80 characters on a line
+;; highlight the trailing whitespaces
+(setq-default whitespace-line-column 80)
+(setq whitespace-style '(face lines-tail trailing))
+(add-hook 'prog-mode-hook #'whitespace-mode)
 ;; =======================================================================
 ;; =======================================================================
 ;; ## Package Installation
@@ -452,9 +523,10 @@
 
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 ;; initialize package.el
-(setq package-enable-at-startup nil)
 (package-initialize)
+(setq package-enable-at-startup nil)
 ;; =======================================================================
 ;; use-package
 ;; =======================================================================
@@ -474,12 +546,13 @@
 ;; =======================================================================
 (use-package nlinum
   :demand t
+  :init
+  (add-hook 'prog-mode-hook 'nlinum-mode)
+
   :config
   (if (display-graphic-p)
       (setq nlinum-format "%3d \u2502")
-    (setq nlinum-format "%3d |"))
-
-  (nlinum-mode)
+      (setq nlinum-format "%3d |"))
 )
 ;; =======================================================================
 ;; Beacon Mode
@@ -518,7 +591,7 @@
 ;  (setq which-key-use-C-h-commands nil)
   ; (setq which-key-popup-type 'minibuffer)
   (setq which-key-popup-type 'side-window)
-  ;; location of which-key window. valid values: top, bottom, left, right, 
+  ;; location of which-key window. valid values: top, bottom, left, right,
   ;; or a list of any of the two. If it's a list, which-key will always try
   ;; the first location first. It will go to the second location if there is
   ;; not enough room to display any keys in the first location
@@ -575,6 +648,11 @@
                       :height 130
                       :bold nil
                       :underline nil)
+  ;; To keep syntax highlighting in the current line:
+  (set-face-foreground 'highlight nil)
+  ;; Set any color as the background face of the current line
+  (set-face-background 'hl-line "#3e4446") ;; "#3e4446"
+  ;; (set-face-background hl-line-face "gray13") ;; SeaGreen4 gray13
   )
 ;; =======================================================================
 ;; Powerline
@@ -584,16 +662,27 @@
 ;;   :config
 ;;   (powerline-default-theme))
 
-  
-(use-package telephone-line
+(use-package powerline-evil
+  :if (< emacs-major-version 25)
   :demand t
-  ;:disabled
   :config
+  (powerline-evil-vim-color-theme))
+
+;; =======================================================================
+;; telephone line
+;; =======================================================================
+(use-package telephone-line
+  :if (>= emacs-major-version 25)
+  :demand t
+  ;; :disabled
+  :config
+  ;; if there are error messages in the message buffer,
+  ;; change the telephone-line-flat to telephone-line-nil
   (setq telephone-line-evil-use-short-tag t
-        telephone-line-primary-left-separator telephone-line-flat
-        telephone-line-secondary-left-separator telephone-line-nil
-        telephone-line-primary-right-separator telephone-line-flat
-        telephone-line-secondary-right-separator telephone-line-nil
+        telephone-line-primary-left-separator telephone-line-nil
+        ;; telephone-line-secondary-left-separator telephone-line-nil
+        telephone-line-primary-right-separator telephone-line-nil
+        ;; telephone-line-secondary-right-separator telephone-line-nil
         )
   (setq telephone-line-lhs
         '((evil   . (telephone-line-evil-tag-segment))
@@ -651,13 +740,23 @@
         company-selection-wrap-around t
         ;; make the text completion output case-sensitive
         company-dabbrev-downcase nil ;; set it globally
-        company-minimum-prefix-length 2
+        ;; need to type at least 3 characters until the autocompletion starts
+        company-minimum-prefix-length 3
         ;; weight by frequency
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance))
+
   ;; call the function named company-select-next when tab is pressed
   ;; (define-key company-active-map [tab] 'company-select-next)
-  (define-key company-active-map (kbd "TAB") 'company-select-next)
+  ;; (define-key company-active-map (kbd "TAB") 'company-select-next)
+
+  ;; press S-TAB to select the previous option
+  (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
+  (define-key company-active-map (kbd "<backtab>") 'company-select-previous)
+
+  ;; press tab to complete the common characters and cycle to the next option
+  (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
   (rename-minor-mode "company" company-mode "Com"))
 
 (use-package company-math
@@ -676,10 +775,10 @@
 
 (use-package company-anaconda
   :after company
-  :config
+  :init
   (add-to-list 'company-backends 'company-anaconda)
   (add-to-list 'python-mode-hook 'anaconda-mode)
-  (rename-minor-mode "company-anaconda" company-anaconda "Com-Ana"))
+  (rename-minor-mode "company-anaconda" anaconda-mode "Com-Ana"))
 
 (use-package company-c-headers
   :after company
@@ -788,9 +887,14 @@
 ;; =======================================================================
 (use-package evil
   :demand t
+  ;; :disabled
   :init
+  (setq evil-want-abbrev-expand-on-insert-exit nil)
   (evil-mode 1)
+
   :config
+  (setq evil-search-wrap t
+        evil-regexp-search t)
   (setq evil-toggle-key "")
   (add-to-list 'evil-emacs-state-modes 'flycheck-error-list-mode)
   (add-to-list 'evil-emacs-state-modes 'occur-mode)
@@ -799,18 +903,32 @@
   (define-key evil-normal-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-insert-state-map (kbd "C-z") 'suspend-frame)
-  ;; enable TAB to indent in the vistual mode
-  (define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
+
+  ;; shift width for evil-mode users
+  ;; For the vim-like motions of ">>" and "<<"
+  (setq evil-shift-width space-tap-offset)
   ;; define :ls, :buffers to open ibuffer
   (evil-ex-define-cmd "ls" 'ibuffer)
-  (evil-ex-define-cmd "buffers" 'ibuffer))  
+  (evil-ex-define-cmd "buffers" 'ibuffer))
 
+;; =======================================================================
+;; evil-leader
+;; =======================================================================
+(use-package evil-leader
+  :after (evil)
+  :demand t
+  :config
+  (global-evil-leader-mode)
+  (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-key "a l" 'avy-goto-line)
+  (evil-leader/set-key "a c" 'avy-goto-char-2)
+  )
 ;; =======================================================================
 ;; helm
 ;; =======================================================================
 (use-package helm
   ;; disabled if emacs version is before 24.4
-  :if (version< "24.4" emacs-version) 
+  :if (version< "24.4" emacs-version)
   :diminish (helm-mode)
   :init
   (progn
@@ -893,6 +1011,7 @@
 ;; fic-mode TODO BUG FIXME CLEANUP CHECKING(owner)
 ;; =======================================================================
 (use-package fic-mode
+  :demand t
   :init
   (if (>= emacs-major-version 24)
       (progn (add-hook 'prog-mode-hook 'fic-mode)
@@ -1023,13 +1142,14 @@
 ;; =======================================================================
 ;; Counsel
 ;; =======================================================================
-(use-package counsel
-  ;; :if (and (>= emacs-major-version 24)
-  ;;          (>= emacs-minor-version 4))
-  :if (version< "24.4" emacs-version)
-  :bind
-  (;("C-x C-f" . counsel-find-file)
-   ("M-x" . counsel-M-x)))
+;; helm-M-x is better in the case that it lists the history commands.
+;; (use-package counsel
+;;   ;; :if (and (>= emacs-major-version 24)
+;;   ;;          (>= emacs-minor-version 4))
+;;   :if (version< "24.4" emacs-version)
+;;   :bind
+;;   (;("C-x C-f" . counsel-find-file)
+;;    ("M-x" . counsel-M-x)))
 
 ;; =======================================================================
 ;; Avy
@@ -1321,7 +1441,10 @@
 ;; flycheck-mode
 (use-package flycheck
   ;:demand t
-  :if (not window-system))
+  :if (not window-system)
+  :init
+  (global-flycheck-mode)
+  )
 
 ;; ==================================================================
 ;; Gitignore mode
@@ -1340,14 +1463,19 @@
   ;; (:map python-mode
   ;;  ("RET"  .  set-newline-and-indent))
   :config
+  (defvar python-space-offset 4 "the number of spaces per tap")
   (add-hook 'python-mode-hook
             (lambda ()
               (setq indent-tabs-mode nil) ; disable tab mode
-              (setq tab-width space-tap-offset)
+              (setq tab-width python-space-offset)
               ; set the indentation width for python
-              (setq python-indent space-tap-offset)
-              (setq python-indent-offset space-tap-offset)
-              (setq electric-indent-chars '(?\n))))
+              (setq python-indent python-space-offset)
+              (setq python-indent-offset python-space-offset)
+              (setq electric-indent-chars '(?\n))
+              (setq flycheck-python-pylint-executable "pylint3")
+              (setq flycheck-python-pylint-executable "/usr/local/anaconda3/bin/pylint")
+              (setq flycheck-pylintrc "~/.pylintrc")
+            ))
   ;; Ignoring electric indentation
   (defun electric-indent-ignore-python (char)
     "Ignore electric indentation for python-mode"
@@ -1643,6 +1771,7 @@
   ;; :diminish ""
   :config
   ;; remove/remap the minor-mode key map
+	(rename-minor-mode "flyspell" flyspell-mode "FlyS")
   (define-key flyspell-mode-map (kbd "C-;") nil)
 
   ;; Enable spell check in program comments
@@ -1667,7 +1796,63 @@
 ;; writegood-mode
 (use-package writegood-mode)
 
+
 ;; ==================================================================
+;; emacs speak statistics
+;; ==================================================================
+; Set up ESS, i.e. Statistics in Emacs, R, Stata, etc.
+(use-package ess-site
+  :ensure ess
+  :mode
+  (("\\.R$" . R-mode))
+  :config
+  (ess-toggle-underscore nil) ; http://stackoverflow.com/questions/2531372/how-to-stop-emacs-from-replacing-underbar-with-in-ess-mode
+  (setq ess-fancy-comments nil) ; http://stackoverflow.com/questions/780796/emacs-ess-mode-tabbing-for-comment-region
+  ; Make ESS use RStudio's indenting style
+  (add-hook 'ess-mode-hook (lambda() (ess-set-style 'RStudio)))
+  ; Make ESS use more horizontal screen
+  ; http://stackoverflow.com/questions/12520543/how-do-i-get-my-r-buffer-in-emacs-to-occupy-more-horizontal-space
+  (add-hook 'ess-R-post-run-hook 'ess-execute-screen-options)
+  (define-key inferior-ess-mode-map "\C-cw" 'ess-execute-screen-options)
+  ; Add path to Stata to Emacs' exec-path so that Stata can be found
+  (setq exec-path (append exec-path '("/usr/local/stata14"))))
+
+;; ==================================================================
+;; desktop plus
+;; ==================================================================
+;; the file will be saved in the ~/.emacs.d/desktops/
+(use-package desktop+
+  :demand t)
+
+(use-package xcscope)
+(use-package helm-cscope)
+
+(clear-abbrev-table global-abbrev-table)
+
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ("fh"
+     "/*
+ *-----------------------------------------------------------------------------
+ *
+ *
+ *-----------------------------------------------------------------------------
+ */")
+    ("cr"
+     "\
+/* **********************************************************
+ * Copyright (c) 2016 VMware, Inc.  All rights reserved.
+ * -- VMware Confidential
+ * **********************************************************/
+
+/*
+ * buffer-name --
+ *
+ *      XXX: Brief description of this file.
+ */")))
+(set-default 'abbrev-mode t)
+(setq save-abbrevs nil)
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil (lambda ()
