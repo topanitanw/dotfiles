@@ -208,7 +208,7 @@
 ;; try this (require 'myplugin)
 
 ;; declare global variables to avoid the magic number
-(defvar space-tap-offset 2 "the number of spaces per tap")
+(defvar space-tap-offset 4 "the number of spaces per tap")
 
 ;; Indentation Setup
 (defun coding-style-mine ()
