@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DST_DIR="${HOME}"
-printf ${DST_DIR}
+printf "home directory: ${DST_DIR}\n"
 
 function fsync {
 	rsync $1 $2
@@ -25,5 +25,12 @@ if [ ! -d "${NVIM_DIR}" ]; then
   mkdir "${NVIM_DIR}"
 fi
 fsync init.vim "${NVIM_DIR}"
+
+JUPYTERNB_DIR="${DST_DIR}/.jupyter/nbconfig/"
+if [ ! -d "${JUPYTERNB_DIR}" ]; then
+  mkdir "${JUPYTERNB_DIR}"
+fi 
+fsync jupyter/notebook.json "${JUPYTERNB_DIR}"
+
 
 
