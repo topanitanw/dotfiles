@@ -1,9 +1,11 @@
 #!/bin/bash
 
+LABEL="[INSTALL]"
 DST_DIR="${HOME}"
-printf "home directory: ${DST_DIR}\n"
+printf "${LABEL} home directory: ${DST_DIR}\n"
 
 function fsync {
+  printf "${LABEL} ${1} ${2}\n"
 	rsync $1 $2
 }
 
@@ -24,7 +26,7 @@ NVIM_DIR="${CONFIG_DIR}/nvim"
 if [ ! -d "${NVIM_DIR}" ]; then
   mkdir "${NVIM_DIR}"
 fi
-fsync init.vim "${NVIM_DIR}"
+fsync vim/init.vim "${NVIM_DIR}"
 
 JUPYTERNB_DIR="${DST_DIR}/.jupyter/nbconfig/"
 if [ ! -d "${JUPYTERNB_DIR}" ]; then
@@ -32,5 +34,5 @@ if [ ! -d "${JUPYTERNB_DIR}" ]; then
 fi 
 fsync jupyter/notebook.json "${JUPYTERNB_DIR}"
 
-
+printf "${LABEL} done\n"
 

@@ -1,9 +1,11 @@
 #!/bin/bash -x
 
+LABEL="[INSTALL]"
 DST_DIR="${HOME}"
 printf "home directory: ${DST_DIR}\n"
 
 function fsync {
+  printf "${LABEL} ${1} ${2}\n"
 	rsync $1 $2
 }
 
@@ -24,3 +26,4 @@ JUPYTERNB_DIR="${DST_DIR}/.jupyter/nbconfig"
 if [ ! -d "${JUPYTERNB_DIR}" ]; then
   mkdir "${JUPYTERNB_DIR}/notebook.json" jupyter/notebook.json
 fi 
+printf "${LABEL} done\n"
