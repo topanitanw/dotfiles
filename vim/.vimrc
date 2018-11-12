@@ -294,8 +294,17 @@ let g:conoline_use_colorscheme_default_insert=1
 
 " Deoplete: Autocomplete for vim8 and neovim
 let g:deoplete#enable_at_startup = 1
+filetype plugin indent on
+syntax enable
+" let g:loaded_python3_provider=1
+" let g:python_host_prog = '/usr/local/bin/python'
+" let g:python3_host_prog = '/usr/local/bin/python3'
+
 "" set tab and s-tab to choose the autocomplete word options
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+
+" Sessions: save vim sessions 
+let g:sessions_autosave='no'
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
