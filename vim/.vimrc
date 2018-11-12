@@ -285,5 +285,8 @@ syntax enable
 "" set tab and s-tab to choose the autocomplete word options
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+
+" Sessions: save vim sessions 
+let g:sessions_autosave='no'
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
