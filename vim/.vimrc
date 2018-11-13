@@ -58,7 +58,10 @@ Plug 'xolox/vim-session'      " save and restore vim sessions
 Plug 'scrooloose/nerdcommenter'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
+endif
+
+if !has('nvim') && v:version >= 800 
+  echo v:version
   Plug 'Shougo/deoplete.nvim'
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
