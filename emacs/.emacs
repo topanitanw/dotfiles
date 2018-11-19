@@ -774,6 +774,7 @@ kernel."
   (add-to-list 'company-backends 'company-web-slim))
 
 (use-package company-anaconda
+  :if (>= emacs-major-version 25)
   :after company
   :init
   (add-to-list 'company-backends 'company-anaconda)
@@ -1450,7 +1451,8 @@ kernel."
 ;; Gitignore mode
 (use-package gitignore-mode)
 ;; git commit message mode
-(use-package git-commit)
+(use-package git-commit
+  :if (>= emacs-major-version 25))
 
 ;; ===================================================================
 ;; python-mode
@@ -1541,6 +1543,7 @@ kernel."
 ;; ==================================================================
 ;; Arduino mode
 (use-package arduino-mode
+  :if (>= emacs-major-version 25)
   :mode ("\\.\\(pde\\|ino\\)$" . arduino-mode)
   :config
   (add-hook 'arduino-mode-hook
