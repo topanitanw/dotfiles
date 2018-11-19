@@ -60,8 +60,7 @@ if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 endif
 
-if !has('nvim') && v:version >= 800 
-  echo v:version
+if !has('nvim') && (v:version >= 800)
   Plug 'Shougo/deoplete.nvim'
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
@@ -290,6 +289,7 @@ inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 
 " Sessions: save vim sessions 
-let g:sessions_autosave='no'
+let g:session_autosave='no'
+
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
