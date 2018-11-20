@@ -65,6 +65,7 @@ if !has('nvim') && (v:version >= 800)
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
+Plug 'ap/vim-buftabline'
 call plug#end()
 
 "----------------------------------------------------------------------
@@ -83,12 +84,25 @@ let g:lightline = {
       \   'filename': 'LightLineFilename',
       \   'gitbranch': 'gitbranch#name'
       \ },
+      \ 'tabline': {
+      \   'left': [ ['bufferline'] ]
+      \ }, 
+      \ 'component_expand': {
+      \   'bufferline': 'LightLineBufferline',
+      \ },
+      \ 'component_type': {
+      \   'bufferline': 'tabsel',
+      \ },
       \ }
 
 function! LightLineFilename()
   return expand('%')
 endfunction
 
+function! LightlineBufferline()
+  call bufferline#refresh_status()
+  return [ g:bufferline_status_info.before, g:bufferline_status_info.current, g:bufferline_status_info.after]
+endfunction
 "" set the default font and font size
 set guifont=Dejavu\ Sans\ Mono:h12
 
@@ -290,6 +304,12 @@ inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 
 " Sessions: save vim sessions 
 let g:session_autosave='no'
+let g:session_autoload='no'
+
+" Buftabline: display a list of buffers on the tab line
+" set hidden 
+nnoremap <C-N> :bnext<CR>
+nnoremap <C-P> :bprev<CR>
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
