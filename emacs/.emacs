@@ -493,7 +493,7 @@ kernel."
 ;; highlight the only part of the text longer than 80 characters on a line
 ;; highlight the trailing whitespaces
 (setq-default whitespace-line-column 80)
-(setq whitespace-style '(face lines-tail trailing))
+(setq whitespace-style '(face tabs tab-mark lines-tail trailing))
 (add-hook 'prog-mode-hook #'whitespace-mode)
 ;; =======================================================================
 ;; =======================================================================

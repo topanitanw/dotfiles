@@ -160,6 +160,7 @@ set expandtab 		   " Tabs are expanded to spaces
 set backspace=2 	   " Allow backspacing over everything in insert mode
 set cino+=(0         " Change the indentation of the function arguments
 
+let g:indent_width=4
 function! CodingStyleMine ()
   set tabstop=2        " each tab has 2_spaces equivalent width
   set softtabstop=2    " number of spaces in tab when editing
@@ -232,12 +233,17 @@ endif
 "----------------------------------------------------------------------
 " auto command
 "----------------------------------------------------------------------
-au BufNewFile,BufRead *.h setf c
-au BufNewFile,BufRead *.mk setf make
-au BufNewFile,BufRead *.sc setf make
+augroup filetype
+  autocmd BufNewFile,BufRead *.h set filetype=c
+  autocmd BufNewFile,BufRead *.mk set filetype=make
+  autocmd BufNewFile,BufRead *.sc set filetype=make
+  autocmd BufNewFile,BufRead *akefile.rules set filetype=make
+augroup END
 
 "----------------------------------------------------------------------
 " mode related setup
+"" in vim, mode (emacs) is filetype
+"" setting the make mode in vim is :set filetype=make
 "----------------------------------------------------------------------
 " nesc syntax highlight
 augroup filetypedetect
@@ -253,7 +259,11 @@ augroup END
 "     \ set expandtab
 "     \ set autoindent
 "     \ set fileformat=unix
-
+"
+" in makefiles, don't expand tabs to spaces, since actual tab characters are
+" needed, and have indentation at 8 chars to be sure that all indents are tabs
+" (despite the mappings later):
+autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 "----------------------------------------------------------------------
 " package related setup
 "----------------------------------------------------------------------
