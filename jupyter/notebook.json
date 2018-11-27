@@ -1,7 +1,8 @@
 {
   "Cell": {
     "cm_config": {
-      "lineNumbers": true
+      "lineNumbers": true,
+      "indentUnit": 4
     }
   }
 }

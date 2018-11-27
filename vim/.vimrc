@@ -162,9 +162,12 @@ set cino+=(0         " Change the indentation of the function arguments
 
 let g:indent_width=4
 function! CodingStyleMine ()
-  set tabstop=g:indent_width        " each tab has 2_spaces equivalent width
-  set softtabstop=g:indent_width    " number of spaces in tab when editing
-  set shiftwidth=g:indent_width     " Indentation width when using >> and << re-indentation
+  " each tab has 2_spaces equivalent width
+  execute "set tabstop=".g:indent_width        
+  " number of spaces in tab when editing
+  execute "set softtabstop=".g:indent_width    
+  " Indentation width when using >> and << re-indentation
+  execute "set shiftwidth=".g:indent_width     
 endfunction
 call CodingStyleMine()
 
@@ -200,10 +203,8 @@ set undofile         " maintain undo history between sessions
 
 " does not create the folder in the .vim directory
 " let g:undo_dir=expand("~/.vim/undo/")
-" echo "g:undo_dir " . g:undo_dir
-" if !isdirectory(U)
-"   call mkdir(string(g:undo_dir), "p")
-"
+" if !isdirectory()
+"   execute "call mkdir(".g:undo_dir.", \"p\")"
 " endif
 " set undodir=g:undo_dir
 
@@ -273,7 +274,7 @@ let g:SimpylFold_docstring_preview=1
 
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.
-map <C-n> :NERDTreeToggle<CR>
+map <<leader>-n> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 let NERDTreeShowHidden=1

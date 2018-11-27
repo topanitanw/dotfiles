@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-LABEL="[INSTALL]"
+LABEL="[BACKUP]"
 DST_DIR="${HOME}"
 printf "home directory: ${DST_DIR}\n"
 
