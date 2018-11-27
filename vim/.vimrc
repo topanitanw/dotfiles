@@ -162,9 +162,9 @@ set cino+=(0         " Change the indentation of the function arguments
 
 let g:indent_width=4
 function! CodingStyleMine ()
-  set tabstop=2        " each tab has 2_spaces equivalent width
-  set softtabstop=2    " number of spaces in tab when editing
-  set shiftwidth=2     " Indentation width when using >> and << re-indentation
+  set tabstop=g:indent_width        " each tab has 2_spaces equivalent width
+  set softtabstop=g:indent_width    " number of spaces in tab when editing
+  set shiftwidth=g:indent_width     " Indentation width when using >> and << re-indentation
 endfunction
 call CodingStyleMine()
 
@@ -247,7 +247,7 @@ augroup END
 "----------------------------------------------------------------------
 " nesc syntax highlight
 augroup filetypedetect
-  au! BufRead,BufNewFile *nc setfiletype nc
+  au! BufNewFile,BufRead *.nc set filetype=nc
 augroup END
 
 " " python mode setting
@@ -260,6 +260,7 @@ augroup END
 "     \ set autoindent
 "     \ set fileformat=unix
 "
+
 " in makefiles, don't expand tabs to spaces, since actual tab characters are
 " needed, and have indentation at 8 chars to be sure that all indents are tabs
 " (despite the mappings later):
