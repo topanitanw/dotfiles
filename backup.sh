@@ -5,8 +5,13 @@ DST_DIR="${HOME}"
 printf "home directory: ${DST_DIR}\n"
 
 function fsync {
-  printf "${LABEL} ${1} ${2}\n"
-	rsync $1 $2
+    # check if the file exists
+    if [ ! -f $1 ]; then
+        return 0
+    fi
+
+    printf "${LABEL} ${1} ${2}\n"
+    rsync $1 $2
 }
 
 fsync ${DST_DIR}/.emacs emacs/.emacs 
@@ -18,12 +23,9 @@ fsync ${DST_DIR}/.tmux.conf .tmux.conf
 
 CONFIG_DIR="${DST_DIR}/.config"
 NVIM_DIR="${CONFIG_DIR}/nvim"
-if [ ! -d "${NVIM_DIR}" ]; then
-  fsync "${NVIM_DIR}/init.vim" vim/init.vim 
-fi
+fsync "${NVIM_DIR}/init.vim" vim/init.vim 
 
 JUPYTERNB_DIR="${DST_DIR}/.jupyter/nbconfig"
-if [ ! -d "${JUPYTERNB_DIR}" ]; then
-  mkdir "${JUPYTERNB_DIR}/notebook.json" jupyter/notebook.json
-fi 
+fsync "${JUPYTERNB_DIR}/notebook.json" jupyter/notebook.json
+
 printf "${LABEL} done\n"

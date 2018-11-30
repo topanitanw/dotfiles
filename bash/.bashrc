@@ -19,9 +19,7 @@ fi
 
 SHELL_DIR="${HOME}/.shell_files"
 # create a keep the shell related files
-if [ ! -d "${SHELL_DIR}" ]; then
-  mkdir "${SHELL_DIR}"
-fi
+mkdir -p "${SHELL_DIR}"
 
 if [ ! -f ${SHELL_DIR}/git-completion.bash ]; then
   pushd .
@@ -53,6 +51,7 @@ if [ "$TERM" == "xterm" ]; then
 fi
 
 export CLICOLOR=1
+
 # highlight colors for the ls command
 # https://geoff.greer.fm/lscolors/
 export LSCOLORS=ExFxBxDxCxegedabagacad
@@ -67,39 +66,5 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto' ;
 fi
 
-# alias
-## common alias
-alias grep='grep --color=auto' ;
-alias fgrep='fgrep --color=auto' ;
-alias egrep='egrep --color=auto' ;
-alias pdfgrep='pdfgrep --color=auto';
-
-## personal alias
-alias source_bash="source ~/.bashrc;";
-alias llvm_cat="cd ~/my_folder/496F2017/CAT-c;";
-alias cd_496="cd ~/my_folder/496F2017/;";
-
-## alias make
-alias mclmck="make clean; make check;";
-alias mclm="make clean; make;";
-alias mcl="make clean;";
-alias mck="make check;";
-alias mall="make all;";
-alias mii="make isoimage;";
-alias mmcf="make menuconfig;";
-
-## alias rm
-alias rm="rm -i";
-alias rmswp="rm .*.swp; rm *~;";
-
-## alias ls
-alias ll="ls -la";
-
-# project specific
-alias rmll="rm *.ll;";
-alias rmbc="rm *.bc;";
-alias rme="./run_me.sh;";
-alias mbcO0="clang -I../misc -O0 -emit-llvm -c program.c -o program.bc;";
-
-# Anaconda 3.5
-export PATH=/usr/local/anaconda3/bin:"$PATH"
+source ~/.shell_files/private_machine_env.bash
+source ~/.shell_files/alias_command.bash
