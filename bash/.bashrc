@@ -66,5 +66,5 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto' ;
 fi
 
-source ~/.shell_files/private_machine_env.bash
-source ~/.shell_files/alias_command.bash
+source ~/.shell_files/private_environment.sh.sh
+source ~/.shell_files/alias_command.sh
