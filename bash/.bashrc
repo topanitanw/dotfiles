@@ -56,8 +56,7 @@ export CLICOLOR=1
 # https://geoff.greer.fm/lscolors/
 export LSCOLORS=ExFxBxDxCxegedabagacad
 
-# User specific aliases and functions
-
+# User specific aliases and functions 
 # enable color support of ls and grep
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)" ;
@@ -66,5 +65,16 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto' ;
 fi
 
-source ~/.shell_files/private_environment.sh.sh
-source ~/.shell_files/alias_command.sh
+PRIVATE_ENV=${SHELL_DIR}/private_environment.sh
+if [ ! -f ${PRIVATE_ENV} ]; then
+    source ${PRIVATE_ENV} 
+else 
+    printf "no ${PRIVATE_ENV}\n"
+fi 
+
+ALIAS_COM=${SHELL_DIR}/alias_command.sh
+if [ ! -f ${ALIAS_COM} ]; then 
+    source ~/.shell_files/alias_command.sh
+else
+    printf "no ${ALIAS_COM}\n"
+fi
