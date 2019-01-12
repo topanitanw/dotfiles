@@ -2,6 +2,7 @@
 
 LABEL="[INSTALL]"
 DST_DIR="${HOME}"
+
 printf "${LABEL} home directory: ${DST_DIR}\n"
 
 function fsync {
@@ -14,18 +15,21 @@ function fsync {
     rsync $1 $2
 }
 
+function cp_template {
+    # check if the file exists, do not copy.
+    if [ -f $2 ]; then
+        return 0
+    fi
+
+    printf "${LABEL} ${1} ${2}\n"
+    rsync $1 $2
+}
+
+
+##################################################
+# text editor
 fsync emacs/.emacs "${DST_DIR}"
 fsync vim/.vimrc "${DST_DIR}"
-fsync bash/.bashrc "${DST_DIR}"
-fsync bash/.bash_profile "${DST_DIR}"
-fsync bash/.inputrc "${DST_DIR}"
-
-SHELLFILES_DIR="${DST_DIR}/.shell_files"
-mkdir -p "${SHELLFILES_DIR}"
-fsync bash/alias_command.bash "${SHELLFILES_DIR}"
-
-fsync .tmux.conf "${DST_DIR}"
-fsync .pylintrc "${DST_DIR}"
 
 ##################################################
 # nvim config
@@ -36,6 +40,28 @@ NVIM_DIR="${CONFIG_DIR}/nvim"
 mkdir -p "${NVIM_DIR}"
 
 fsync vim/init.vim "${NVIM_DIR}"
+
+##################################################
+# bash shell file 
+fsync bash/.bashrc "${DST_DIR}"
+fsync bash/.bash_profile "${DST_DIR}"
+fsync bash/.inputrc "${DST_DIR}"
+
+SHELLFILES_DIR="${DST_DIR}/.shell_files"
+mkdir -p "${SHELLFILES_DIR}"
+
+cp_template bash/alias_command.sh \
+    "${SHELLFILES_DIR}"/alias_command.sh
+
+cp_template bash/private_environment.sh \
+    "${SHELLFILES_DIR}"/private_environment.sh
+
+# shell file 
+cp_template
+##################################################
+# etc
+fsync .tmux.conf "${DST_DIR}"
+fsync .pylintrc "${DST_DIR}"
 
 ##################################################
 # jupyter notebook
