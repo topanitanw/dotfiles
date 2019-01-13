@@ -27,7 +27,7 @@ if [ ! -f ${SHELL_DIR}/git-completion.bash ]; then
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
   popd
 fi
-source ${SHELL_DIR}/git-completion.bash
+check_source ${SHELL_DIR}/git-completion.bash
 
 if [ ! -f ${SHELL_DIR}/git-prompt.sh ]; then
   pushd .
@@ -35,7 +35,7 @@ if [ ! -f ${SHELL_DIR}/git-prompt.sh ]; then
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
   popd
 fi
-source ${SHELL_DIR}/git-prompt.sh
+check_source ${SHELL_DIR}/git-prompt.sh
 
 # change the shell prompt
 if [ $(id -u) -eq 0 ]; then # you are root, set red colour prompt
@@ -65,16 +65,11 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto' ;
 fi
 
-PRIVATE_ENV=${SHELL_DIR}/private_environment.sh
-if [ ! -f ${PRIVATE_ENV} ]; then
-    source ${PRIVATE_ENV} 
-else 
-    printf "no ${PRIVATE_ENV}\n"
-fi 
+FILE_PRIVATE_ENV=${SHELL_DIR}/private_environment.sh
+check_source ${FILE_PRIVATE_ENV}
 
-ALIAS_COM=${SHELL_DIR}/alias_command.sh
-if [ ! -f ${ALIAS_COM} ]; then 
-    source ~/.shell_files/alias_command.sh
-else
-    printf "no ${ALIAS_COM}\n"
-fi
+FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
+check_source ${FILE_ALIAS_COM}
+
+FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
+check_source ${FILE_BASH_FUNCTION}
