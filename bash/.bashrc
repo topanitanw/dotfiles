@@ -27,7 +27,7 @@ if [ ! -f ${SHELL_DIR}/git-completion.bash ]; then
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
   popd
 fi
-check_source ${SHELL_DIR}/git-completion.bash
+source ${SHELL_DIR}/git-completion.bash
 
 if [ ! -f ${SHELL_DIR}/git-prompt.sh ]; then
   pushd .
@@ -35,7 +35,7 @@ if [ ! -f ${SHELL_DIR}/git-prompt.sh ]; then
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
   popd
 fi
-check_source ${SHELL_DIR}/git-prompt.sh
+source ${SHELL_DIR}/git-prompt.sh
 
 # change the shell prompt
 if [ $(id -u) -eq 0 ]; then # you are root, set red colour prompt
@@ -65,11 +65,11 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto' ;
 fi
 
+FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
+source ${FILE_BASH_FUNCTION}
+
 FILE_PRIVATE_ENV=${SHELL_DIR}/private_environment.sh
 check_source ${FILE_PRIVATE_ENV}
 
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
-
-FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
-check_source ${FILE_BASH_FUNCTION}
