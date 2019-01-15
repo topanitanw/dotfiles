@@ -56,8 +56,9 @@ cp_template bash/alias_command.sh \
 cp_template bash/private_environment.sh \
     "${SHELLFILES_DIR}"/private_environment.sh
 
+fsync bash/bash_function.sh ${SHELLFILES_DIR}/bash_function.sh
+
 # shell file 
-cp_template
 ##################################################
 # etc
 fsync .tmux.conf "${DST_DIR}"

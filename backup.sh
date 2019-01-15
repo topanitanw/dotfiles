@@ -16,8 +16,11 @@ function fsync {
 
 fsync ${DST_DIR}/.emacs emacs/.emacs 
 fsync ${DST_DIR}/.vimrc vim/.vimrc 
+
 fsync ${DST_DIR}/.bashrc bash/.bashrc 
 fsync ${DST_DIR}/.bash_profile bash/.bash_profile 
+fsync ${DST_DIR}/.shell_files/bash_fuction.sh bash/bash_function.sh
+
 fsync ${DST_DIR}/.inputrc bash/.inputrc
 fsync ${DST_DIR}/.tmux.conf .tmux.conf 
 

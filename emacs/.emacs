@@ -43,6 +43,7 @@
   ;; (set-frame-font "DejaVu Sans Mono-13")
   ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
   ;; (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
+  (prefer-coding-system 'utf-8-dos)
   (set-face-attribute 'default nil
                       :family "DejaVu Sans Mono"
                       :height 130
@@ -56,13 +57,11 @@
                       :width 'normal)
 )
 
-(cond ((string-equal system-type "windows-nt")
-       (prefer-coding-system 'utf-8-dos))
-      ; ((string-equal system-type "darwin")
-      ; (prefer-coding-system 'utf-8-mac))
-      ((string-equal system-type "gnu/linux")
-       (prefer-coding-system 'utf-8-unix))
-      (t (prefer-coding-system 'utf-8-auto)))
+(when (eq system-type "gnu/linux")
+  (prefer-coding-system 'utf-8-unix)
+  ;; after copy Ctrl+c in Linux X11, you can paste by `yank' in emacs
+  (setq x-select-enable-clipboard t)
+)
 
 (when (eq system-type 'darwin) ;; mac specific settings
   (set-face-attribute 'default nil
@@ -220,6 +219,17 @@
   ;; set the c-style indentation to ellemtel
   (setq-default c-default-style "ellemtel"
                 c-basic-offset space-tap-offset)
+
+  ;; +   `c-basic-offset' times 1
+  ;; -   `c-basic-offset' times -1
+  ;; ++  `c-basic-offset' times 2
+  ;; --  `c-basic-offset' times -2
+  ;; *   `c-basic-offset' times 0.5
+  ;; /   `c-basic-offset' times -0.5
+  ;; access-label: private/public label
+  (c-set-offset 'access-label '/)
+  ;; inclass: line inside the class definition
+  (c-set-offset 'inclass '+)
   )
 (coding-style-mine)
 
@@ -495,6 +505,7 @@ kernel."
 (setq-default whitespace-line-column 80)
 (setq whitespace-style '(face tabs tab-mark lines-tail trailing))
 (add-hook 'prog-mode-hook #'whitespace-mode)
+
 ;; =======================================================================
 ;; =======================================================================
 ;; ## Package Installation
@@ -524,6 +535,7 @@ kernel."
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/") t)
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+
 ;; initialize package.el
 (package-initialize)
 (setq package-enable-at-startup nil)
