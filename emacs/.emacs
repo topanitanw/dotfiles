@@ -220,6 +220,7 @@
   (setq-default c-default-style "ellemtel"
                 c-basic-offset space-tap-offset)
 
+  ;;------------------------------------------------------------
   ;; +   `c-basic-offset' times 1
   ;; -   `c-basic-offset' times -1
   ;; ++  `c-basic-offset' times 2
@@ -1839,8 +1840,11 @@ kernel."
 (use-package desktop+
   :demand t)
 
-(use-package xcscope)
-(use-package helm-cscope)
+(use-package xcscope
+  :disable t)
+
+(use-package helm-cscope
+  :disable t)
 
 (clear-abbrev-table global-abbrev-table)
 

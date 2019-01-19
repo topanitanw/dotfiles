@@ -45,27 +45,33 @@ endif
 
 call plug#begin(g:plug_dir)
 Plug 'vim-scripts/Zenburn'
-Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
-" Plug 'scrooloose/syntastic'   " check syntactical errors
-Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
-Plug 'tmhedberg/SimpylFold'   " fold in python
-Plug 'vim-scripts/indentpython.vim' " indent in python
-Plug 'scrooloose/nerdtree'     " display file tree
-Plug 'miyakogi/conoline.vim'
-Plug 'xolox/vim-misc'         " prereq of vim-session
-Plug 'xolox/vim-session'      " save and restore vim sessions
-Plug 'scrooloose/nerdcommenter'
+Plug 'ap/vim-buftabline'        " display the buffer name on top of the screen
+Plug 'mbbill/undotree'
+
+if v:version >= 800
+    " Plug 'scrooloose/syntastic'   " check syntactical errors
+    Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
+    Plug 'tmhedberg/SimpylFold'   " fold in python
+    Plug 'vim-scripts/indentpython.vim' " indent in python
+    Plug 'scrooloose/nerdtree'     " display file tree
+    Plug 'miyakogi/conoline.vim'   " highlight the line of cursor
+    Plug 'xolox/vim-misc'         " prereq of vim-session
+    Plug 'xolox/vim-session'      " save and restore vim sessions
+    Plug 'scrooloose/nerdcommenter'
+endif
+
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 endif
 
 if !has('nvim') && (v:version >= 800)
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+else
+    Plug 'ajh17/VimCompleteMe'
 endif
-Plug 'ap/vim-buftabline'
 call plug#end()
 
 "----------------------------------------------------------------------
@@ -86,7 +92,7 @@ let g:lightline = {
       \ },
       \ 'tabline': {
       \   'left': [ ['bufferline'] ]
-      \ }, 
+      \ },
       \ 'component_expand': {
       \   'bufferline': 'LightLineBufferline',
       \ },
@@ -96,12 +102,12 @@ let g:lightline = {
       \ }
 
 function! LightLineFilename()
-  return expand('%')
+    return expand('%')
 endfunction
 
 function! LightlineBufferline()
-  call bufferline#refresh_status()
-  return [ g:bufferline_status_info.before, g:bufferline_status_info.current, g:bufferline_status_info.after]
+    call bufferline#refresh_status()
+    return [ g:bufferline_status_info.before, g:bufferline_status_info.current, g:bufferline_status_info.after]
 endfunction
 "" set the default font and font size
 set guifont=Dejavu\ Sans\ Mono:h12
@@ -123,9 +129,9 @@ endif
 
 " from here https://sunaku.github.io/vim-256color-bce.html
 if g:os == "Windows"
-   set term=xterm " screen-256color
+    set term=xterm " screen-256color
 elseif !has('nvim')
-   set term=screen-256color
+    set term=screen-256color
 endif
 set t_ut=
 set t_Co=256
@@ -162,12 +168,12 @@ set cino+=(0         " Change the indentation of the function arguments
 
 let g:indent_width=4
 function! CodingStyleMine ()
-  " each tab has 2_spaces equivalent width
-  execute "set tabstop=".g:indent_width        
-  " number of spaces in tab when editing
-  execute "set softtabstop=".g:indent_width    
-  " Indentation width when using >> and << re-indentation
-  execute "set shiftwidth=".g:indent_width     
+    " each tab has 2_spaces equivalent width
+    execute "set tabstop=".g:indent_width
+    " number of spaces in tab when editing
+    execute "set softtabstop=".g:indent_width
+    " Indentation width when using >> and << re-indentation
+    execute "set shiftwidth=".g:indent_width
 endfunction
 call CodingStyleMine()
 
@@ -235,10 +241,10 @@ endif
 " auto command
 "----------------------------------------------------------------------
 augroup filetype
-  autocmd BufNewFile,BufRead *.h set filetype=c
-  autocmd BufNewFile,BufRead *.mk set filetype=make
-  autocmd BufNewFile,BufRead *.sc set filetype=make
-  autocmd BufNewFile,BufRead *akefile.rules set filetype=make
+    autocmd BufNewFile,BufRead *.h set filetype=c
+    autocmd BufNewFile,BufRead *.mk set filetype=make
+    autocmd BufNewFile,BufRead *.sc set filetype=make
+    autocmd BufNewFile,BufRead *akefile.rules set filetype=make
 augroup END
 
 "----------------------------------------------------------------------
@@ -248,7 +254,7 @@ augroup END
 "----------------------------------------------------------------------
 " nesc syntax highlight
 augroup filetypedetect
-  au! BufNewFile,BufRead *.nc set filetype=nc
+    au! BufNewFile,BufRead *.nc set filetype=nc
 augroup END
 
 " " python mode setting
@@ -314,12 +320,12 @@ syntax enable
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 
-" Sessions: save vim sessions 
+" Sessions: save vim sessions
 let g:session_autosave='no'
 let g:session_autoload='no'
 
 " Buftabline: display a list of buffers on the tab line
-" set hidden 
+" set hidden
 nnoremap <C-N> :bnext<CR>
 nnoremap <C-P> :bprev<CR>
 
