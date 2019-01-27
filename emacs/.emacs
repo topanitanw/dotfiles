@@ -1859,15 +1859,8 @@ kernel."
  */")
     ("cr"
      "\
-/* **********************************************************
- * Copyright (c) 2016 VMware, Inc.  All rights reserved.
- * -- VMware Confidential
- * **********************************************************/
-
 /*
- * buffer-name --
- *
- *      XXX: Brief description of this file.
+ * 
  */")))
 (set-default 'abbrev-mode t)
 (setq save-abbrevs nil)
