@@ -1841,10 +1841,10 @@ kernel."
   :demand t)
 
 (use-package xcscope
-  :disable t)
+  :disabled t)
 
 (use-package helm-cscope
-  :disable t)
+  :disabled t)
 
 (clear-abbrev-table global-abbrev-table)
 
