@@ -109,6 +109,7 @@ function! LightlineBufferline()
     call bufferline#refresh_status()
     return [ g:bufferline_status_info.before, g:bufferline_status_info.current, g:bufferline_status_info.after]
 endfunction
+
 "" set the default font and font size
 set guifont=Dejavu\ Sans\ Mono:h12
 
@@ -139,6 +140,9 @@ set t_Co=256
 "" set the cursor of all modes to be a block
 set guicursor=a:block
 
+" Set the status line options. Make it show more information.
+set laststatus=2     " Display the status line
+
 "----------------------------------------------------------------------
 " code representation
 "" folding
@@ -154,6 +158,24 @@ set fileencoding=utf-8  " The encoding written to file.
 set termencoding=utf-8
 " intelligent comments
 set comments=sl:/*,mb:\ *,elx:\ */
+
+" a function to trim whitespace to use it like:
+" :call TrimWhitespace()
+function! TrimWhitespace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfun
+
+" yank to clipboard
+if has("clipboard")
+  set clipboard=unnamed " copy to the system clipboard
+
+  if has("unnamedplus") " X11 support
+    set clipboard+=unnamedplus
+  endif
+endif
+
 "----------------------------------------------------------------------
 " Indentation
 "" Attempt to determine the type of a file based on its name and possibly its
@@ -167,6 +189,7 @@ set backspace=2 	   " Allow backspacing over everything in insert mode
 set cino+=(0         " Change the indentation of the function arguments
 
 let g:indent_width=4
+
 function! CodingStyleMine ()
     " each tab has 2_spaces equivalent width
     execute "set tabstop=".g:indent_width
@@ -220,22 +243,15 @@ if g:os == "Windows"
    behave mswin
 endif
 
-"Set the status line options. Make it show more information.
-set laststatus=2     " Display the status line
+"----------------------------------------------------------------------
+" buffer/window management
+"" to define a command, a new command must start with an upper letter
+command Bc bp\|bd \#
 
 "----------------------------------------------------------------------
 " key mapping
 nnoremap <SPACE> <Nop>
 let mapleader=" "
-
-" yank to clipboard
-if has("clipboard")
-  set clipboard=unnamed " copy to the system clipboard
-
-  if has("unnamedplus") " X11 support
-    set clipboard+=unnamedplus
-  endif
-endif
 
 "----------------------------------------------------------------------
 " auto command
@@ -272,6 +288,7 @@ augroup END
 " needed, and have indentation at 8 chars to be sure that all indents are tabs
 " (despite the mappings later):
 autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
+
 "----------------------------------------------------------------------
 " package related setup
 "----------------------------------------------------------------------
