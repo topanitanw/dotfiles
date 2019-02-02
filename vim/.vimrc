@@ -61,16 +61,12 @@ if v:version >= 800
     Plug 'scrooloose/nerdcommenter'
 endif
 
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-endif
-
 if !has('nvim') && (v:version >= 800)
-    Plug 'Shougo/deoplete.nvim'
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
 else
-    Plug 'ajh17/VimCompleteMe'
+    Plug 'ajh17/VimCompletesMe'
 endif
 call plug#end()
 
@@ -188,6 +184,13 @@ set expandtab 		   " Tabs are expanded to spaces
 set backspace=2 	   " Allow backspacing over everything in insert mode
 set cino+=(0         " Change the indentation of the function arguments
 
+""" show the tab with >······
+set list
+set listchars=tab:>·
+
+""" highlight the tabs 
+" match Error /\t
+
 let g:indent_width=4
 
 function! CodingStyleMine ()
@@ -197,14 +200,15 @@ function! CodingStyleMine ()
     execute "set softtabstop=".g:indent_width
     " Indentation width when using >> and << re-indentation
     execute "set shiftwidth=".g:indent_width
+    set textwidth=79
 endfunction
 call CodingStyleMine()
 
 function! CodingStyleCompany ()
-  set tabstop=3        " each tab has 2_spaces equivalent width
-  set softtabstop=3    " number of spaces in tab when editing
-  set shiftwidth=3     " Indentation width when using >> and << re-indentation
-  set textwidth=79
+    set tabstop=3        " each tab has 2_spaces equivalent width
+    set softtabstop=3    " number of spaces in tab when editing
+    set shiftwidth=3     " Indentation width when using >> and << re-indentation
+    set textwidth=79
 endfunction
 
 "----------------------------------------------------------------------
