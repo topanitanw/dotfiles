@@ -180,6 +180,8 @@ endif
 filetype plugin indent on
 
 set autoindent
+""" once the setup is done, please type :retab to convert the existing files
+""" to the new settings.
 set expandtab 		   " Tabs are expanded to spaces
 set backspace=2 	   " Allow backspacing over everything in insert mode
 set cino+=(0         " Change the indentation of the function arguments
@@ -187,11 +189,12 @@ set cino+=(0         " Change the indentation of the function arguments
 """ show the tab with >······
 set list
 set listchars=tab:>·
-
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
 """ highlight the tabs 
 " match Error /\t
 
-let g:indent_width=4
+let g:indent_width=4  
 
 function! CodingStyleMine ()
     " each tab has 2_spaces equivalent width

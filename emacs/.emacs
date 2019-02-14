@@ -112,6 +112,11 @@
                                (scroll-up 1)))
   (setq mouse-sel-mode t)
   (defun track-mouse (e))
+
+  ;; add the pdflatex path
+  (setenv "PATH" (concat "/Library/TeX/texbin"
+                         ":"
+                         (getenv "PATH")))
   )
 
 ;; disable the alarm bell
