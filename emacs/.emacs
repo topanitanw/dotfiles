@@ -922,7 +922,7 @@ kernel."
   (define-key evil-normal-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-insert-state-map (kbd "C-z") 'suspend-frame)
-
+  (define-key evil-insert-state-map "jk" 'evil-normal-state)
   ;; shift width for evil-mode users
   ;; For the vim-like motions of ">>" and "<<"
   (setq evil-shift-width space-tap-offset)
@@ -942,6 +942,19 @@ kernel."
   (evil-leader/set-key "a l" 'avy-goto-line)
   (evil-leader/set-key "a c" 'avy-goto-char-2)
   )
+
+;; =======================================================================
+;; evil-escape
+;; =======================================================================
+(use-package evil-escape
+  :after (evil)
+  :demand t
+  :config
+  (evil-escape-mode)
+  (setq-default evil-escape-key-sequence "jk")
+  (setq-default evil-escape-delay 0.2))
+
+;; =======================================================================
 ;; =======================================================================
 ;; helm
 ;; =======================================================================

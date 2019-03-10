@@ -222,6 +222,7 @@ set smartcase
 set incsearch        " search as characters are entered
 set hlsearch         " Enable search highlight
 set wrapscan         " when searching till the end, wrap around to the beginning
+set magic            " can search with a special character
 
 " When opening a new line and no filetype-specific indenting is enabled, keep
 " the same indent as the line you're currently on. Useful for READMEs, etc.
@@ -259,6 +260,9 @@ command Bc bp\|bd \#
 " key mapping
 nnoremap <SPACE> <Nop>
 let mapleader=" "
+
+"" press jk to escape from the insert mode
+inoremap jk <Esc> 
 
 "----------------------------------------------------------------------
 " auto command
