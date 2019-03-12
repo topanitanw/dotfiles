@@ -922,7 +922,7 @@ kernel."
   (define-key evil-normal-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-emacs-state-map (kbd "C-z") 'suspend-frame)
   (define-key evil-insert-state-map (kbd "C-z") 'suspend-frame)
-  (define-key evil-insert-state-map "jk" 'evil-normal-state)
+
   ;; shift width for evil-mode users
   ;; For the vim-like motions of ">>" and "<<"
   (setq evil-shift-width space-tap-offset)
