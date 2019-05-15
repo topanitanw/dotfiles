@@ -48,6 +48,7 @@ Plug 'vim-scripts/Zenburn'
 Plug 'itchyny/lightline.vim'
 Plug 'ap/vim-buftabline'        " display the buffer name on top of the screen
 Plug 'mbbill/undotree'
+Plug 'ntpeters/vim-better-whitespace'
 
 if v:version >= 800
     " Plug 'scrooloose/syntastic'   " check syntactical errors
@@ -61,7 +62,9 @@ if v:version >= 800
     Plug 'scrooloose/nerdcommenter'
 endif
 
-if !has('nvim') && (v:version >= 800)
+if has('nvim-0.3')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+elseif has('nvim') || (v:version >= 800)
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
@@ -156,12 +159,13 @@ set termencoding=utf-8
 set comments=sl:/*,mb:\ *,elx:\ */
 
 " a function to trim whitespace to use it like:
+"" commented out because vim-better-whitespace is installed
 " :call TrimWhitespace()
-function! TrimWhitespace()
-    let l:save = winsaveview()
-    keeppatterns %s/\s\+$//e
-    call winrestview(l:save)
-endfun
+" function! TrimWhitespace()
+"     let l:save = winsaveview()
+"     keeppatterns %s/\s\+$//e
+"     call winrestview(l:save)
+" endfun
 
 " yank to clipboard
 if has("clipboard")
@@ -191,10 +195,10 @@ set list
 set listchars=tab:>·
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
-""" highlight the tabs 
+""" highlight the tabs
 " match Error /\t
 
-let g:indent_width=4  
+let g:indent_width=4
 
 function! CodingStyleMine ()
     " each tab has 2_spaces equivalent width
@@ -262,7 +266,7 @@ nnoremap <SPACE> <Nop>
 let mapleader=" "
 
 "" press jk to escape from the insert mode
-inoremap jk <Esc> 
+inoremap jk <Esc>
 
 "----------------------------------------------------------------------
 " auto command
@@ -356,6 +360,14 @@ let g:session_autoload='no'
 " set hidden
 nnoremap <C-N> :bnext<CR>
 nnoremap <C-P> :bprev<CR>
+
+" Vim-better-whitespace: highlight extra whitespace and clean those up
+":EnableWhitespace
+":DisableWhitespace
+":ToggleWhitespace
+":StripWhitespace
+let g:better_whitespace_enabled=1
+let g:strip_whitespace_on_save=1
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
