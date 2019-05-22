@@ -953,8 +953,8 @@ kernel."
   :config
   (evil-escape-mode)
   (setq-default evil-escape-key-sequence "jk")
-  (setq-default evil-escape-delay 0.2))
-
+  (setq-default evil-escape-delay 0.2)
+  (rename-minor-mode "evil-escape" evil-escape-mode "jk"))
 ;; =======================================================================
 ;; =======================================================================
 ;; helm

@@ -264,6 +264,7 @@ command Bc bp\|bd \#
 " key mapping
 nnoremap <SPACE> <Nop>
 let mapleader=" "
+" map <SPACE> <Leader>
 
 "" press jk to escape from the insert mode
 inoremap jk <Esc>
@@ -312,7 +313,9 @@ let g:SimpylFold_docstring_preview=1
 
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.
-map <<leader>-n> :NERDTreeToggle<CR>
+" map <<Leader>-d> :NERDTreeToggle<CR>
+nnoremap <Leader>f :NERDTreeToggle<Enter>
+"" https://medium.com/@victormours/a-better-nerdtree-setup-3d3921abc0b9
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 let NERDTreeShowHidden=1
@@ -368,6 +371,15 @@ nnoremap <C-P> :bprev<CR>
 ":StripWhitespace
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
+
+" Vim-easymotion: jump to anywhere in the buffers
+"" to emulate the avy emacs plugin
+"" <Leader>c{char}{char} to move to {char}{char}
+nmap <Leader>c <Plug>(easymotion-overwin-f2)
+
+"" Move to line
+map <Leader>l <Plug>(easymotion-bd-jk)
+nmap <Leader>l <Plug>(easymotion-overwin-line)
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
