@@ -71,6 +71,8 @@ elseif has('nvim') || (v:version >= 800)
 else
     Plug 'ajh17/VimCompletesMe'
 endif
+
+Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 "----------------------------------------------------------------------
@@ -112,6 +114,7 @@ endfunction
 "" set the default font and font size
 set guifont=Dejavu\ Sans\ Mono:h12
 
+set colorcolumn=80
 set number              " enable line number
 set ruler               " Show the line and column number (cursor position)
 set cursorline          " highlight the current line
@@ -152,6 +155,7 @@ set foldmethod=syntax
 "" all backspacing over everything in insert mode
 set backspace=indent,eol,start
 set wildmenu            " visual autocomplete for command menu
+set wildmode=longest:full,full
 set encoding=utf-8      " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
 set termencoding=utf-8
@@ -259,7 +263,8 @@ endif
 " buffer/window management
 "" to define a command, a new command must start with an upper letter
 command Bc bp\|bd \#
-
+set splitbelow
+set splitright
 "----------------------------------------------------------------------
 " key mapping
 nnoremap <SPACE> <Nop>
@@ -373,11 +378,10 @@ let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 
 " Vim-easymotion: jump to anywhere in the buffers
-"" to emulate the avy emacs plugin
-"" <Leader>c{char}{char} to move to {char}{char}
+" <Leader>c{char}{char} to move to {char}{char}
 nmap <Leader>c <Plug>(easymotion-overwin-f2)
 
-"" Move to line
+" Move to line
 map <Leader>l <Plug>(easymotion-bd-jk)
 nmap <Leader>l <Plug>(easymotion-overwin-line)
 
