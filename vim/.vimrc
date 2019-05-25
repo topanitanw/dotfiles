@@ -262,7 +262,7 @@ endif
 "----------------------------------------------------------------------
 " buffer/window management
 "" to define a command, a new command must start with an upper letter
-command Bc bp\|bd \#
+command! Bc bp\|bd \#
 set splitbelow
 set splitright
 "----------------------------------------------------------------------
