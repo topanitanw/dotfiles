@@ -5,42 +5,42 @@ set nocompatible 	   " Use gVim defaults
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
 if !exists("g:os")
-   if has("win64") || has("win32") || has("win16")
-      let g:os = "Windows"
-      " gvim, g:os = Windows
-   else
-      let g:os = substitute(system('uname'), '\n', '', '')
-      " for bash window subsystem, g:os = 'Linux'
-      " for mac osx, g:os = 'Darwin'
-   endif
+    if has("win64") || has("win32") || has("win16")
+        let g:os = "Windows"
+        " gvim, g:os = Windows
+    else
+        let g:os = substitute(system('uname'), '\n', '', '')
+        " for bash window subsystem, g:os = 'Linux'
+        " for mac osx, g:os = 'Darwin'
+    endif
 endif
 
 if g:os == "Windows"
-  if !has('nvim')
-    " as of 05/24/2018 Neovim on Windows is experimental so skip it.
-    let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
-    let g:plug_dir = 'vimfiles/plugged'
-  endif
+    if !has('nvim')
+        " as of 05/24/2018 Neovim on Windows is experimental so skip it.
+        let g:autoload_plugvim = 'vimfiles/autoload/plug.vim'
+        let g:plug_dir = 'vimfiles/plugged'
+    endif
 endif
 
 if g:os == "Darwin" || g:os == "Linux"
-  "if has('nvim')
+    "if has('nvim')
     "let g:autoload_plugvim = expand("~/.local/share/nvim/site/autoload/plug.vim")
     "let g:plug_dir = expand("~/.local/share/nvim/plugged")
     "let g:editor_root= expand("~/.config/nvim")
-  "else
+    "else
     let g:autoload_plugvim = expand("~/.vim/autoload/plug.vim")
     let g:plug_dir = expand("~/.vim/plugged")
     let g:editor_root = expand("~/.vim")
-  "endif
+    "endif
 endif
 
 if empty(glob(g:autoload_plugvim))
-  execute "!curl -fLo " . g:autoload_plugvim . " --create-dirs " .
-    \ "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-  autocmd VimEnter * PlugInstall | source $MYVIMRC
-  " Note: in window you might need to create a folder vimfiles/plugged
-  " manually
+    execute "!curl -fLo " . g:autoload_plugvim . " --create-dirs " .
+                \ "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+    " Note: in window you might need to create a folder vimfiles/plugged
+    " manually
 endif
 
 call plug#begin(g:plug_dir)
@@ -48,6 +48,8 @@ Plug 'vim-scripts/Zenburn'
 Plug 'itchyny/lightline.vim'
 Plug 'ap/vim-buftabline'        " display the buffer name on top of the screen
 Plug 'mbbill/undotree'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'Yggdroot/indentLine'
 
 if v:version >= 800
     " Plug 'scrooloose/syntastic'   " check syntactical errors
@@ -61,13 +63,17 @@ if v:version >= 800
     Plug 'scrooloose/nerdcommenter'
 endif
 
-if !has('nvim') && (v:version >= 800)
+if has('nvim-0.3')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+elseif has('nvim') || (v:version >= 800)
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
 else
     Plug 'ajh17/VimCompletesMe'
 endif
+
+Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 "----------------------------------------------------------------------
@@ -77,25 +83,25 @@ let g:zenburn_force_dark_Background = 1
 colorscheme zenburn
 
 let g:lightline = {
-      \ 'colorscheme': 'default',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'filename', 'readonly', 'modified', 'gitbranch' ] ]
-      \ },
-      \ 'component_function': {
-      \   'filename': 'LightLineFilename',
-      \   'gitbranch': 'gitbranch#name'
-      \ },
-      \ 'tabline': {
-      \   'left': [ ['bufferline'] ]
-      \ },
-      \ 'component_expand': {
-      \   'bufferline': 'LightLineBufferline',
-      \ },
-      \ 'component_type': {
-      \   'bufferline': 'tabsel',
-      \ },
-      \ }
+            \ 'colorscheme': 'default',
+            \ 'active': {
+            \   'left': [ [ 'mode', 'paste' ],
+            \             [ 'filename', 'readonly', 'modified', 'gitbranch' ] ]
+            \ },
+            \ 'component_function': {
+            \   'filename': 'LightLineFilename',
+            \   'gitbranch': 'gitbranch#name'
+            \ },
+            \ 'tabline': {
+            \   'left': [ ['bufferline'] ]
+            \ },
+            \ 'component_expand': {
+            \   'bufferline': 'LightLineBufferline',
+            \ },
+            \ 'component_type': {
+            \   'bufferline': 'tabsel',
+            \ },
+            \ }
 
 function! LightLineFilename()
     return expand('%')
@@ -109,6 +115,7 @@ endfunction
 "" set the default font and font size
 set guifont=Dejavu\ Sans\ Mono:h12
 
+set colorcolumn=80
 set number              " enable line number
 set ruler               " Show the line and column number (cursor position)
 set cursorline          " highlight the current line
@@ -149,6 +156,7 @@ set foldmethod=syntax
 "" all backspacing over everything in insert mode
 set backspace=indent,eol,start
 set wildmenu            " visual autocomplete for command menu
+set wildmode=longest:full,full
 set encoding=utf-8      " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
 set termencoding=utf-8
@@ -156,20 +164,21 @@ set termencoding=utf-8
 set comments=sl:/*,mb:\ *,elx:\ */
 
 " a function to trim whitespace to use it like:
+"" commented out because vim-better-whitespace is installed
 " :call TrimWhitespace()
-function! TrimWhitespace()
-    let l:save = winsaveview()
-    keeppatterns %s/\s\+$//e
-    call winrestview(l:save)
-endfun
+" function! TrimWhitespace()
+"     let l:save = winsaveview()
+"     keeppatterns %s/\s\+$//e
+"     call winrestview(l:save)
+" endfun
 
 " yank to clipboard
 if has("clipboard")
-  set clipboard=unnamed " copy to the system clipboard
+    set clipboard=unnamed " copy to the system clipboard
 
-  if has("unnamedplus") " X11 support
-    set clipboard+=unnamedplus
-  endif
+    if has("unnamedplus") " X11 support
+        set clipboard+=unnamedplus
+    endif
 endif
 
 "----------------------------------------------------------------------
@@ -180,6 +189,8 @@ endif
 filetype plugin indent on
 
 set autoindent
+""" once the setup is done, please type :retab to convert the existing files
+""" to the new settings.
 set expandtab 		   " Tabs are expanded to spaces
 set backspace=2 	   " Allow backspacing over everything in insert mode
 set cino+=(0         " Change the indentation of the function arguments
@@ -187,8 +198,9 @@ set cino+=(0         " Change the indentation of the function arguments
 """ show the tab with >······
 set list
 set listchars=tab:>·
-
-""" highlight the tabs 
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+""" highlight the tabs
 " match Error /\t
 
 let g:indent_width=4
@@ -219,6 +231,7 @@ set smartcase
 set incsearch        " search as characters are entered
 set hlsearch         " Enable search highlight
 set wrapscan         " when searching till the end, wrap around to the beginning
+set magic            " can search with a special character
 
 " When opening a new line and no filetype-specific indenting is enabled, keep
 " the same indent as the line you're currently on. Useful for READMEs, etc.
@@ -227,7 +240,7 @@ set vb
 set noerrorbells
 set showcmd         " display incomplete commands
 if has('mouse')
-   set mouse=r
+    set mouse=r
 endif
 set nobackup         " Cancel the backup files
 set history=1000
@@ -244,18 +257,23 @@ set undofile         " maintain undo history between sessions
 " this line below is specific to MS Windows machines and should be removed
 " for other systems
 if g:os == "Windows"
-   behave mswin
+    behave mswin
 endif
 
 "----------------------------------------------------------------------
 " buffer/window management
 "" to define a command, a new command must start with an upper letter
-command Bc bp\|bd \#
-
+command! Bc bp\|bd \#
+set splitbelow
+set splitright
 "----------------------------------------------------------------------
 " key mapping
 nnoremap <SPACE> <Nop>
 let mapleader=" "
+" map <SPACE> <Leader>
+
+"" press jk to escape from the insert mode
+inoremap jk <Esc>
 
 "----------------------------------------------------------------------
 " auto command
@@ -301,7 +319,9 @@ let g:SimpylFold_docstring_preview=1
 
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.
-map <<leader>-n> :NERDTreeToggle<CR>
+" map <<Leader>-d> :NERDTreeToggle<CR>
+nnoremap <Leader>f :NERDTreeToggle<Enter>
+"" https://medium.com/@victormours/a-better-nerdtree-setup-3d3921abc0b9
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 let NERDTreeShowHidden=1
@@ -320,7 +340,7 @@ let NERDTreeShowHidden=1
 " your code or executing your script.
 "" load a machine specific vimrc file
 if !empty(glob("~/.vimrc_machine_specific"))
-  source ~/.vimrc_machine_specific
+    source ~/.vimrc_machine_specific
 endif
 
 " Conoline: This plugin highlights the line of the cursor, only in the current window.
@@ -349,6 +369,29 @@ let g:session_autoload='no'
 " set hidden
 nnoremap <C-N> :bnext<CR>
 nnoremap <C-P> :bprev<CR>
+
+" Vim-better-whitespace: highlight extra whitespace and clean those up
+":EnableWhitespace
+":DisableWhitespace
+":ToggleWhitespace
+":StripWhitespace
+let g:better_whitespace_enabled=1
+let g:strip_whitespace_on_save=1
+
+" Vim-easymotion: jump to anywhere in the buffers
+" <Leader>c{char}{char} to move to {char}{char}
+nmap <Leader>c <Plug>(easymotion-overwin-f2)
+
+" Move to line
+map <Leader>l <Plug>(easymotion-bd-jk)
+nmap <Leader>l <Plug>(easymotion-overwin-line)
+
+" indentLine: display vertical lines at each indentation level
+let g:indentLine_enabled = 1
+let g:indentLine_char = '│'
+" let g:indentLine_setColors = 0
+" let g:indentLine_color_term = 239
+let g:indentLine_color_dark = 1 " (default: 2)
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding

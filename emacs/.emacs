@@ -112,6 +112,11 @@
                                (scroll-up 1)))
   (setq mouse-sel-mode t)
   (defun track-mouse (e))
+
+  ;; add the pdflatex path
+  (setenv "PATH" (concat "/Library/TeX/texbin"
+                         ":"
+                         (getenv "PATH")))
   )
 
 ;; disable the alarm bell
@@ -899,6 +904,7 @@ kernel."
 ;; =======================================================================
 ;; evil
 ;; =======================================================================
+(setq evil-want-C-i-jump nil)
 (use-package evil
   :demand t
   ;; :disabled
@@ -937,6 +943,19 @@ kernel."
   (evil-leader/set-key "a l" 'avy-goto-line)
   (evil-leader/set-key "a c" 'avy-goto-char-2)
   )
+
+;; =======================================================================
+;; evil-escape
+;; =======================================================================
+(use-package evil-escape
+  :after (evil)
+  :demand t
+  :config
+  (evil-escape-mode)
+  (setq-default evil-escape-key-sequence "jk")
+  (setq-default evil-escape-delay 0.2)
+  (rename-minor-mode "evil-escape" evil-escape-mode "jk"))
+;; =======================================================================
 ;; =======================================================================
 ;; helm
 ;; =======================================================================

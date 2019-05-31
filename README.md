@@ -10,8 +10,6 @@ This repository contains my dotfiles to set up Linux tools as follows:
    
 I plan to update this repository to keep track of packages/plugins I install in those two text editors.
 
----
-
 ## How to install these dotfiles
 
 If you want to install these dotfiles into your system, please follow the steps below
@@ -33,5 +31,3 @@ If you want to install these dotfiles into your system, please follow the steps 
 4. copy dotfiles back to the repository by running the following commands
     
         > bash backup.sh
-
---- 
