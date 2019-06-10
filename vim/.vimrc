@@ -377,6 +377,8 @@ nnoremap <C-P> :bprev<CR>
 ":StripWhitespace
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
+let g:strip_only_modified_lines=0
+let g:strip_whitespace_confirm=0
 
 " Vim-easymotion: jump to anywhere in the buffers
 " <Leader>c{char}{char} to move to {char}{char}
@@ -389,9 +391,10 @@ nmap <Leader>l <Plug>(easymotion-overwin-line)
 " indentLine: display vertical lines at each indentation level
 let g:indentLine_enabled = 1
 let g:indentLine_char = '│'
-" let g:indentLine_setColors = 0
-" let g:indentLine_color_term = 239
-let g:indentLine_color_dark = 1 " (default: 2)
+let g:indentLine_setColors = 1
+let g:indentLine_color_term = 243
+" let g:indentLine_bgcolor_term = '#3a3a3a'
+" let g:indentLine_color_dark = 1 " (default: 2)
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
