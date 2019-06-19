@@ -1,8 +1,14 @@
 {
-  "Cell": {
-    "cm_config": {
-      "lineNumbers": true,
-      "indentUnit": 4
-    }
+  "load_extensions": {
+    "nbextensions_configurator/config_menu/main": true,
+    "contrib_nbextensions_help_item/main": true,
+    "codefolding/main": true,
+    "toc2/main": true,
+    "zenmode/main": true,
+    "toggle_all_line_numbers/main": true
+  },
+  "toc2": {
+    "collapse_to_match_collapsible_headings": true,
+    "toc_cell": true
   }
 }
