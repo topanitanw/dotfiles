@@ -904,7 +904,6 @@ kernel."
 ;; =======================================================================
 ;; evil
 ;; =======================================================================
-(setq evil-want-C-i-jump nil)
 (use-package evil
   :demand t
   ;; :disabled
@@ -955,7 +954,7 @@ kernel."
   (setq-default evil-escape-key-sequence "jk")
   (setq-default evil-escape-delay 0.2)
   (rename-minor-mode "evil-escape" evil-escape-mode "jk"))
-;; =======================================================================
+
 ;; =======================================================================
 ;; helm
 ;; =======================================================================
@@ -1785,11 +1784,19 @@ kernel."
   (("<f8>" . org-tree-slide-mode)
    ("S-<f8>" . org-tree-slide-skip-done-toggle)))
 
+(use-package org-fancy-priorities
+  :ensure t
+  :hook
+  (org-mode . org-fancy-priorities-mode)
+  :config
+  (setq org-fancy-priorities-list '("1|I:S" "2|I:NS" "3|NT:S" "4|NI:NS"))
+  (rename-minor-mode "org-fancy-priorities" org-fancy-priorities-mode "FP"))
 ;; ==================================================================
 ;; apple script
 ;; syntax highlight for apple script
 (use-package apples-mode
   :mode ("\\.\\(applescri\\|sc\\)pt\\'" . apples-mode))
+
 ;; ==================================================================
 ;; Latex
 ;; get 2 spaces indentation for the \item
@@ -1799,6 +1806,7 @@ kernel."
   (add-hook 'LaTeX-mode-hook #'flyspell-mode)
   :config
   (setq LaTeX-item-indent 0))
+
 ;; ==================================================================
 ;; flyspell
 ;; check the spelling on the fly
@@ -1806,7 +1814,7 @@ kernel."
   ;; :diminish ""
   :config
   ;; remove/remap the minor-mode key map
-	(rename-minor-mode "flyspell" flyspell-mode "FlyS")
+  (rename-minor-mode "flyspell" flyspell-mode "FlyS")
   (define-key flyspell-mode-map (kbd "C-;") nil)
 
   ;; Enable spell check in program comments
