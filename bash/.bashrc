@@ -41,7 +41,12 @@ source ${SHELL_DIR}/git-prompt.sh
 if [ $(id -u) -eq 0 ]; then # you are root, set red colour prompt
     PS1="\\[$(tput setaf 1)\\]\\u@\\h:\\w \n#\\[$(tput sgr0)\\]"
 else # normal
-    PS1='\s \e[1;32;40m(\e[m \e[1;31m\u\e[m@\e[1;30m\h\e[m: \e[0;36m\w\e[m \e[1;32;40m)\e[m \n$ '
+    # \s shell
+    # \u user
+    # \h hostname
+    # \w working directory
+    # __git_ps1 git branch name
+    PS1='\s \e[1;32;40m(\e[m \e[1;31m\u\e[m@\e[1;30m\h\e[m: \e[0;36m\w\e[m \e[1;32;40m)\e[m $(__git_ps1 "[%s]")\n\$ '
 fi
 
 # setting terminal to handle 256 colors
