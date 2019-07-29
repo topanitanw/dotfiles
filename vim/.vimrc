@@ -212,6 +212,8 @@ function! CodingStyleMine ()
     execute "set softtabstop=".g:indent_width
     " Indentation width when using >> and << re-indentation
     execute "set shiftwidth=".g:indent_width
+    " make sure that the tabs are expanded.
+    set expandtab
     set textwidth=79
 endfunction
 call CodingStyleMine()
@@ -395,6 +397,20 @@ let g:indentLine_setColors = 1
 let g:indentLine_color_term = 243
 " let g:indentLine_bgcolor_term = '#3a3a3a'
 " let g:indentLine_color_dark = 1 " (default: 2)
+
+" vim-todo-highlight
+" TODO: NOTE: FIXME: NB: BUG:
+let g:todo_highlight_config = {
+            \   'BUG': {},
+            \   'REVIEW': {},
+            \   'NB': {},
+            \   'NOTE': {
+            \     'gui_fg_color': '#ffffff',
+            \     'gui_bg_color': '#ffbd2a',
+            \     'cterm_fg_color': 'red',
+            \     'cterm_bg_color': '214'
+            \   }
+            \ }
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding

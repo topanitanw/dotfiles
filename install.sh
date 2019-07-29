@@ -42,7 +42,7 @@ mkdir -p "${NVIM_DIR}"
 fsync vim/init.vim "${NVIM_DIR}"
 
 ##################################################
-# bash shell file 
+# bash shell file
 fsync bash/.bashrc "${DST_DIR}"
 fsync bash/.bash_profile "${DST_DIR}"
 fsync bash/.inputrc "${DST_DIR}"
@@ -58,7 +58,7 @@ cp_template bash/private_environment.sh \
 
 fsync bash/bash_function.sh ${SHELLFILES_DIR}/bash_function.sh
 
-# shell file 
+# shell file
 ##################################################
 # etc
 fsync .tmux.conf "${DST_DIR}"

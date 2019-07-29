@@ -46,6 +46,7 @@ else # normal
     # \h hostname
     # \w working directory
     # __git_ps1 git branch name
+    export GIT_PS1_SHOWDIRTYSTATE=1
     PS1='\s \e[1;32;40m(\e[m \e[1;31m\u\e[m@\e[1;30m\h\e[m: \e[0;36m\w\e[m \e[1;32;40m)\e[m $(__git_ps1 "[%s]")\n\$ '
 fi
 

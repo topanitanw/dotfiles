@@ -233,9 +233,9 @@
   ;; *   `c-basic-offset' times 0.5
   ;; /   `c-basic-offset' times -0.5
   ;; access-label: private/public label
-  (c-set-offset 'access-label '/)
-  ;; inclass: line inside the class definition
-  (c-set-offset 'inclass '+)
+  (c-set-offset 'access-label '+)
+  ;; inclass: indentation level of others inside the class definition
+  (c-set-offset 'inclass '++)
   )
 (coding-style-mine)
 
@@ -511,6 +511,7 @@ kernel."
 (setq-default whitespace-line-column 80)
 (setq whitespace-style '(face tabs tab-mark lines-tail trailing))
 (add-hook 'prog-mode-hook #'whitespace-mode)
+(add-hook 'before-save-hook 'whitespace-cleanup)
 
 ;; =======================================================================
 ;; =======================================================================
@@ -939,8 +940,8 @@ kernel."
   :config
   (global-evil-leader-mode)
   (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key "a l" 'avy-goto-line)
-  (evil-leader/set-key "a c" 'avy-goto-char-2)
+  (evil-leader/set-key "l" 'avy-goto-line)
+  (evil-leader/set-key "c" 'avy-goto-char-2)
   )
 
 ;; =======================================================================
@@ -1734,7 +1735,7 @@ kernel."
   (setq org-fontify-emphasized-text t)
   ;; add more work flow
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "IN-PROGRESS(i)" "HOLD(h@)" "WAITING(w@/!)" "|" "CANCELED(c@)" "DONE(d@/!)")))
+        '((sequence "TODO(t)" "DOING(i)" "HOLD(h@)" "WAITING(w@/!)" "|" "CANCELED(c@)" "DONE(d@/!)")))
   ;; set the source file to create an agenda
   (when window-system
     (setq org-agenda-files
@@ -1887,7 +1888,7 @@ kernel."
     ("cr"
      "\
 /*
- * 
+ *
  */")))
 (set-default 'abbrev-mode t)
 (setq save-abbrevs nil)
