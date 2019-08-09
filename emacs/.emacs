@@ -333,7 +333,7 @@ kernel."
 ;;   (load custom-file 'noerror))
 
 ;; set the number of characters per line
-(setq-default fill-column 80)
+(setq-default fill-column 70)
 ;; ----------------------------------------------------------------------
 ;; Ensure ibuffer opens with point at the current buffer's entry.
 ;; How to use iBuffer
