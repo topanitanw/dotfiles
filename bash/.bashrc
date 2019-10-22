@@ -46,8 +46,9 @@ else # normal
     # \h hostname
     # \w working directory
     # __git_ps1 git branch name
+    # set if the repo is dirty, show it.
     export GIT_PS1_SHOWDIRTYSTATE=1
-    PS1='\s \e[1;32;40m(\e[m \e[1;31m\u\e[m@\e[1;30m\h\e[m: \e[0;36m\w\e[m \e[1;32;40m)\e[m $(__git_ps1 "[%s]")\n\$ '
+    PS1='\s \[\e[1;32;40m(\e[m\] \[\e[1;31m\u\e[m\]@\[\e[1;30m\h\e[m\] : \[\e[0;36m\w\e[m\] \[\e[1;32;40m)\e[m\] $(__git_ps1 "[%s]")\n\$ '
 fi
 
 # setting terminal to handle 256 colors
@@ -79,6 +80,3 @@ check_source ${FILE_PRIVATE_ENV}
 
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
-
-# autojump setup
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh

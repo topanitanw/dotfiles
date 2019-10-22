@@ -54,7 +54,6 @@ Plug 'Yggdroot/indentLine'
 if v:version >= 800
     " Plug 'scrooloose/syntastic'   " check syntactical errors
     Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
-    Plug 'tmhedberg/SimpylFold'   " fold in python
     Plug 'vim-scripts/indentpython.vim' " indent in python
     Plug 'scrooloose/nerdtree'     " display file tree
     Plug 'miyakogi/conoline.vim'   " highlight the line of cursor
@@ -73,7 +72,12 @@ else
     Plug 'ajh17/VimCompletesMe'
 endif
 
+Plug 'tmhedberg/SimpylFold'   " fold in python
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'dense-analysis/ale'
 Plug 'easymotion/vim-easymotion'
+Plug 'sakshamgupta05/vim-todo-highlight'
+Plug 'qpkorr/vim-bufkill'
 call plug#end()
 
 "----------------------------------------------------------------------
