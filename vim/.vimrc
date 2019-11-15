@@ -317,6 +317,9 @@ augroup END
 " (despite the mappings later):
 autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 
+"" terminal mode
+" mitigate the problem when switching the buffer and the terminal disappears
+autocmd TermOpen * set bufhidden=hide
 "----------------------------------------------------------------------
 " package related setup
 "----------------------------------------------------------------------
