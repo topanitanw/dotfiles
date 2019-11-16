@@ -50,6 +50,7 @@ Plug 'ap/vim-buftabline'        " display the buffer name on top of the screen
 Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
+Plug 'ctrlpvim/ctrlp.vim'
 
 if v:version >= 800
     " Plug 'scrooloose/syntastic'   " check syntactical errors
@@ -418,6 +419,28 @@ let g:todo_highlight_config = {
             \     'cterm_bg_color': '214'
             \   }
             \ }
+
+"" ctrlp vim
+" fuzzy find files
+let g:ctrlp_map = '<Leader>p'
+let g:ctrlp_cmd = 'CtrlP'
+
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+            \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+            \ 'file': '\v\.(exe|so|dll)$',
+            \ }
+"  \ 'link': 'some_bad_symbolic_links',
+
+if g:os == "Windows"
+    set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe         " Windows
+    let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'  " Windows
+endif
+
+if g:os == "Darwin" || g:os == "Linux"
+    set wildignore+=*/tmp/*,*.so,*.swp,*.zip       " MacOSX/Linux
+    let g:ctrlp_user_command = 'find %s -type f'   " MacOSX/Linux
+endif
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
