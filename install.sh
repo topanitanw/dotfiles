@@ -74,6 +74,9 @@ mkdir -p "${JUPYTERNBCONFIG_DIR}"
 
 fsync jupyter/notebook.json "${JUPYTERNB_DIR}"
 ##################################################
+# ssh config
+mkdir -p ~/.ssh
+fsync ssh_config ~/.ssh/config
 
 printf "${LABEL} done\n"
 
