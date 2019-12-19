@@ -442,5 +442,11 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:ctrlp_user_command = 'find %s -type f'   " MacOSX/Linux
 endif
 
+"" http://andrewradev.com/2011/08/06/making-vim-pretty-with-custom-colors/
+"" I have to move the customized color here; otherwise, it doesn't work.
+"" change the highlight color of the current replaced text
+hi IncSearch cterm=bold,underline ctermfg=green ctermbg=none
+hi Search cterm=underline ctermfg=blue ctermbg=none
+
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
