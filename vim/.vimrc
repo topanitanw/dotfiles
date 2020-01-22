@@ -370,6 +370,7 @@ let g:conoline_use_colorscheme_default_insert=1
 let g:deoplete#enable_at_startup = 1
 filetype plugin indent on
 syntax enable
+" please do not uncomment these three lines; otherwise, deoplete won't work.
 " let g:loaded_python3_provider=1
 " let g:python_host_prog = '/usr/local/bin/python'
 " let g:python3_host_prog = '/usr/local/bin/python3'
