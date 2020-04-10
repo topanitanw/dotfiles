@@ -142,7 +142,7 @@
 
 ;; TODO: might need to install the nlinum package
 ;; M-x linum-mode to display line number
-;; (global-linum-mode 1)
+(global-linum-mode 1)
 ;; this package of displaying line numbers runs very slowly.
 
 ;; enable the highlight current line
@@ -564,7 +564,8 @@ kernel."
 ;; Nlinum
 ;; =======================================================================
 (use-package nlinum
-  :demand t
+  :demand nil
+  :disabled
   :init
   (add-hook 'prog-mode-hook 'nlinum-mode)
 
@@ -1681,6 +1682,7 @@ kernel."
   (setq indent-tabs-mode nil) ; use spaces to indent
   (electric-indent-mode -1) ; indentation in asm-mode is annoying
   (setq tab-stop-list (number-sequence 2 60 2))
+  ;; (local-unset-key (vector asm-comment-char))
   )
 
 ;; ==================================================================
@@ -1769,6 +1771,11 @@ kernel."
   ;;         ("WAITING" :foreground "orange" :weight bold)
   ;;         ("HOLD" :foreground "magenta" :weight bold)
   ;;         ("CANCELLED" :foreground "forest green" :weight bold)))
+
+  ;; make sure that the exported source code in html has the same
+  ;; indentation as the one in the org file
+  (setq org-src-preserve-indentation t)
+  (setq org-edit-src-content-indentation 0)
   )
 
 (dolist (mode-hook '(org-mode-hook
@@ -1846,6 +1853,10 @@ kernel."
 ;; ==================================================================
 ; Set up ESS, i.e. Statistics in Emacs, R, Stata, etc.
 (use-package ess-site
+  ;; do not download this package in windows since
+  ;; in window we download and install the modified emacs taking
+  ;; this package as part of the system.
+  :disabled (eq system-type 'windows-nt)
   :ensure ess
   :mode
   (("\\.R$" . R-mode))

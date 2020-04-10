@@ -117,7 +117,8 @@ function! LightlineBufferline()
 endfunction
 
 "" set the default font and font size
-set guifont=Dejavu\ Sans\ Mono:h12
+" set guifont=Dejavu\ Sans\ Mono:h12
+set guifont=JetBrains\ Mono:h12
 
 set colorcolumn=80
 set number              " enable line number
@@ -370,10 +371,13 @@ let g:conoline_use_colorscheme_default_insert=1
 let g:deoplete#enable_at_startup = 1
 filetype plugin indent on
 syntax enable
-" please do not uncomment these three lines; otherwise, deoplete won't work.
+
+" if the g:loaded_python3_provider is set to 1, it would cancel the python3
+" path that we set in the g:python3_host_prog.
 " let g:loaded_python3_provider=1
 " let g:python_host_prog = '/usr/local/bin/python'
-" let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python3_host_prog='/user/local/anaconda3/bin/python3'
+"echo g:python3_host_prog
 
 "" set tab and s-tab to choose the autocomplete word options
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
