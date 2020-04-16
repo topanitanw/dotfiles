@@ -78,6 +78,7 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'easymotion/vim-easymotion'
 Plug 'sakshamgupta05/vim-todo-highlight'
 Plug 'qpkorr/vim-bufkill'
+Plug 'kassio/neoterm'
 call plug#end()
 
 "----------------------------------------------------------------------
@@ -268,6 +269,9 @@ if g:os == "Windows"
 endif
 
 "----------------------------------------------------------------------
+set diffopt+=iwhite
+
+"----------------------------------------------------------------------
 " buffer/window management
 "" to define a command, a new command must start with an upper letter
 command! Bc bp\|bd \#
@@ -376,7 +380,8 @@ syntax enable
 " path that we set in the g:python3_host_prog.
 " let g:loaded_python3_provider=1
 " let g:python_host_prog = '/usr/local/bin/python'
-let g:python3_host_prog='/user/local/anaconda3/bin/python3'
+"let g:python3_host_prog=system('which python3')
+"let g:python3_host_prog = '/user/local/anaconda3/bin/python3'
 "echo g:python3_host_prog
 
 "" set tab and s-tab to choose the autocomplete word options
