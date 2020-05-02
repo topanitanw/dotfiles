@@ -50,11 +50,11 @@ Plug 'ap/vim-buftabline'        " display the buffer name on top of the screen
 Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
+Plug 'ctrlpvim/ctrlp.vim'
 
 if v:version >= 800
-    " Plug 'scrooloose/syntastic'   " check syntactical errors
+    Plug 'scrooloose/syntastic'   " check syntactical errors
     Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
-    Plug 'tmhedberg/SimpylFold'   " fold in python
     Plug 'vim-scripts/indentpython.vim' " indent in python
     Plug 'scrooloose/nerdtree'     " display file tree
     Plug 'miyakogi/conoline.vim'   " highlight the line of cursor
@@ -73,7 +73,12 @@ else
     Plug 'ajh17/VimCompletesMe'
 endif
 
+Plug 'tmhedberg/SimpylFold'   " fold in python
+Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'easymotion/vim-easymotion'
+Plug 'sakshamgupta05/vim-todo-highlight'
+Plug 'qpkorr/vim-bufkill'
+Plug 'kassio/neoterm'
 call plug#end()
 
 "----------------------------------------------------------------------
@@ -113,7 +118,8 @@ function! LightlineBufferline()
 endfunction
 
 "" set the default font and font size
-set guifont=Dejavu\ Sans\ Mono:h12
+" set guifont=Dejavu\ Sans\ Mono:h12
+set guifont=JetBrains\ Mono:h12
 
 set colorcolumn=80
 set number              " enable line number
@@ -263,6 +269,9 @@ if g:os == "Windows"
 endif
 
 "----------------------------------------------------------------------
+set diffopt+=iwhite
+
+"----------------------------------------------------------------------
 " buffer/window management
 "" to define a command, a new command must start with an upper letter
 command! Bc bp\|bd \#
@@ -313,6 +322,9 @@ augroup END
 " (despite the mappings later):
 autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 
+"" terminal mode
+" mitigate the problem when switching the buffer and the terminal disappears
+autocmd TermOpen * set bufhidden=hide
 "----------------------------------------------------------------------
 " package related setup
 "----------------------------------------------------------------------
@@ -335,11 +347,19 @@ let NERDTreeShowHidden=1
 " Snipmate: Glide through often-typed code, or snippets, that you can quickly
 " insert into your file. Update variables as you type.
 
-" Ctrl-P: Find full paths to files, buffers, and tags. Open multiple files at
-" once and create new files or directories.
-
 " Syntastic: Check your syntax and be notified about errors before compiling
 " your code or executing your script.
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+" let g:syntastic_quiet_messages = { "type": "style" }
+" let g:syntastic_debug=1
+" let g:syntastic_python_checkers = ['flake8']
+" let g:syntastic_python_flake8_args='--ignore=E501,E402,E302'
+let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_python_pylint_args='-d C0111,C0103,C0413'
+
 "" load a machine specific vimrc file
 if !empty(glob("~/.vimrc_machine_specific"))
     source ~/.vimrc_machine_specific
@@ -355,9 +375,14 @@ let g:conoline_use_colorscheme_default_insert=1
 let g:deoplete#enable_at_startup = 1
 filetype plugin indent on
 syntax enable
+
+" if the g:loaded_python3_provider is set to 1, it would cancel the python3
+" path that we set in the g:python3_host_prog.
 " let g:loaded_python3_provider=1
 " let g:python_host_prog = '/usr/local/bin/python'
-" let g:python3_host_prog = '/usr/local/bin/python3'
+"let g:python3_host_prog=system('which python3')
+"let g:python3_host_prog = '/user/local/anaconda3/bin/python3'
+"echo g:python3_host_prog
 
 "" set tab and s-tab to choose the autocomplete word options
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
@@ -399,7 +424,7 @@ let g:indentLine_color_term = 243
 " let g:indentLine_color_dark = 1 " (default: 2)
 
 " vim-todo-highlight
-" TODO: NOTE: FIXME: NB: BUG:
+" it works only to add more keywords
 let g:todo_highlight_config = {
             \   'BUG': {},
             \   'REVIEW': {},
@@ -411,6 +436,37 @@ let g:todo_highlight_config = {
             \     'cterm_bg_color': '214'
             \   }
             \ }
+" TODO: NOTE: FIXME: NB: BUG:
+
+"" ctrlp vim
+" Ctrl-P: Find full paths to files, buffers, and tags. Open multiple files at
+" once and create new files or directories.
+" fuzzy find files
+let g:ctrlp_map = '<Leader>p'
+let g:ctrlp_cmd = 'CtrlP'
+
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+            \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+            \ 'file': '\v\.(exe|so|dll)$',
+            \ }
+"  \ 'link': 'some_bad_symbolic_links',
+
+if g:os == "Windows"
+    set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe         " Windows
+    let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'  " Windows
+endif
+
+if g:os == "Darwin" || g:os == "Linux"
+    set wildignore+=*/tmp/*,*.so,*.swp,*.zip       " MacOSX/Linux
+    let g:ctrlp_user_command = 'find %s -type f'   " MacOSX/Linux
+endif
+
+"" http://andrewradev.com/2011/08/06/making-vim-pretty-with-custom-colors/
+"" I have to move the customized color here; otherwise, it doesn't work.
+"" change the highlight color of the current replaced text
+hi IncSearch cterm=bold,underline ctermfg=green ctermbg=none
+hi Search cterm=underline ctermfg=blue ctermbg=none
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding

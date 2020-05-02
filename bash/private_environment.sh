@@ -10,18 +10,41 @@ else
     PATH=${ORIGINAL_PATH}
 fi
 
+if [ -z "${ORIGINAL_LD_LIBRARY_PATH}" ]; then
+    export ORIGINAL_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
+else
+    LD_LIBRARY_PATH=${ORIGINAL_LD_LIBRARY_PATH}
+fi
+
 ## anaconda python
-export PATH="/home/${USERNAME}/anaconda3/bin:${PATH}"
+prepend_variable PATH "${HOME}/anaconda3/bin"
 
 ## pin
-export PIN_ROOT="/home/${USERNAME}/Work/research/software/intel_pin/v3.7"
+export PIN_ROOT="${HOME}/Work/research/software/intel_pin/v3.7"
 unset PIN_ROOT
 
 ## parsec
-export PARSECDIR="/home/${USERNAME}/Work/research/software/parsec-3.0"
-export PARSECBIN="/home/${USERNAME}/Work/research/software/parsec-3.0/bin"
-export PATH=${PARSECBIN}:"$PATH"
+export PARSECDIR="${HOME}/Work/research/software/parsec-3.0"
+export PARSECBIN="${HOME}/Work/research/software/parsec-3.0/bin"
+prepend_variable PATH "${PARSECBIN}"
+
+# examples of the installed local library
+prepend_variable PATH "${HOME}/local/bin"
+prepend_variable LD_LIBRARY_PATH "${HOME}/local"
+prepend_variable LD_LIBRARY_PATH "${HOME}/local/lib"
+prepend_variable LD_LIBRARY_PATH "${HOME}/local/lib64"
 
 ## git
 # a solution to push to the github
 # unset SSH_ASKPASS
+
+# autojump setup
+if [ $(uname) -eq "Darwin" ]; then
+    AUTOJUMP_SH="/usr/local/etc/profile.d/autojump.sh"
+fi
+
+if [ $(uname) -eq "Linux" ]; then
+    AUTOJUMP_SH="/usr/share/autojump/autojump.sh"
+fi
+
+[ -f ${AUTOJUMP_SH} ] && . ${AUTOJUMP_SH}
