@@ -1,6 +1,6 @@
 # private environment variable for the local machine
 
-. ~/.shell_files/bash_function.sh
+. ${HOME}/.shell_files/bash_function.sh
 
 USERNAME=$(whoami)
 
@@ -17,33 +17,33 @@ else
 fi
 
 ## anaconda python
-prepend_variable PATH "${HOME}/anaconda3/bin"
+# prepend_variable PATH "${HOME}/anaconda3/bin"
 
 ## pin
-export PIN_ROOT="${HOME}/Work/research/software/intel_pin/v3.7"
-unset PIN_ROOT
+# export PIN_ROOT="${HOME}/Work/research/software/intel_pin/v3.7"
+# unset PIN_ROOT
 
 ## parsec
-export PARSECDIR="${HOME}/Work/research/software/parsec-3.0"
-export PARSECBIN="${HOME}/Work/research/software/parsec-3.0/bin"
-prepend_variable PATH "${PARSECBIN}"
+# export PARSECDIR="${HOME}/Work/research/software/parsec-3.0"
+# hexport PARSECBIN="${HOME}/Work/research/software/parsec-3.0/bin"
+# prepend_variable PATH "${PARSECBIN}"
 
 # examples of the installed local library
-prepend_variable PATH "${HOME}/local/bin"
-prepend_variable LD_LIBRARY_PATH "${HOME}/local"
-prepend_variable LD_LIBRARY_PATH "${HOME}/local/lib"
-prepend_variable LD_LIBRARY_PATH "${HOME}/local/lib64"
+# prepend_variable PATH "${HOME}/local/bin"
+# prepend_variable LD_LIBRARY_PATH "${HOME}/local"
+# prepend_variable LD_LIBRARY_PATH "${HOME}/local/lib"
+# prepend_variable LD_LIBRARY_PATH "${HOME}/local/lib64"
 
 ## git
 # a solution to push to the github
 # unset SSH_ASKPASS
 
 # autojump setup
-if [ $(uname) -eq "Darwin" ]; then
+if [ "$(uname)" ==  "Darwin" ]; then
     AUTOJUMP_SH="/usr/local/etc/profile.d/autojump.sh"
 fi
 
-if [ $(uname) -eq "Linux" ]; then
+if [ "$(uname)" == "Linux" ]; then
     AUTOJUMP_SH="/usr/share/autojump/autojump.sh"
 fi
 
