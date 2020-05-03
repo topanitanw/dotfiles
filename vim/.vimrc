@@ -88,25 +88,25 @@ let g:zenburn_force_dark_Background = 1
 colorscheme zenburn
 
 let g:lightline = {
-            \ 'colorscheme': 'default',
-            \ 'active': {
-            \   'left': [ [ 'mode', 'paste' ],
-            \             [ 'filename', 'readonly', 'modified', 'gitbranch' ] ]
-            \ },
-            \ 'component_function': {
-            \   'filename': 'LightLineFilename',
-            \   'gitbranch': 'gitbranch#name'
-            \ },
-            \ 'tabline': {
-            \   'left': [ ['bufferline'] ]
-            \ },
-            \ 'component_expand': {
-            \   'bufferline': 'LightLineBufferline',
-            \ },
-            \ 'component_type': {
-            \   'bufferline': 'tabsel',
-            \ },
-            \ }
+    \ 'colorscheme': 'default',
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'filename', 'readonly', 'modified', 'gitbranch' ] ]
+    \ },
+    \ 'component_function': {
+    \   'filename': 'LightLineFilename',
+    \   'gitbranch': 'gitbranch#name'
+    \ },
+    \ 'tabline': {
+    \   'left': [ ['bufferline'] ]
+    \ },
+    \ 'component_expand': {
+    \   'bufferline': 'LightLineBufferline',
+    \ },
+    \ 'component_type': {
+    \   'bufferline': 'tabsel',
+    \ },
+    \ }
 
 function! LightLineFilename()
     return expand('%')
@@ -114,7 +114,9 @@ endfunction
 
 function! LightlineBufferline()
     call bufferline#refresh_status()
-    return [ g:bufferline_status_info.before, g:bufferline_status_info.current, g:bufferline_status_info.after]
+    return [ g:bufferline_status_info.before,
+                \ g:bufferline_status_info.current,
+                \ g:bufferline_status_info.after]
 endfunction
 
 "" set the default font and font size
@@ -396,6 +398,10 @@ let g:session_autoload='no'
 " set hidden
 nnoremap <C-N> :bnext<CR>
 nnoremap <C-P> :bprev<CR>
+" always show the buftabline
+let g:buftabline_show=2
+" show the tab number which corresponds with the buffer number in vim
+let g:buftabline_numbers=1
 
 " Vim-better-whitespace: highlight extra whitespace and clean those up
 ":EnableWhitespace
