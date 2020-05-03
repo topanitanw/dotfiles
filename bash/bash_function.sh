@@ -7,8 +7,8 @@ DEBUG_LEVEL=1
 # $1 (int) debug flag
 # ${@:2} (string) message
 function debugp() {
-    if [ "$DEBUG_LEVEL" -ge "$1" ]; then
-    │   printf "[DEBUG] ${@:2}\n"
+    if [ "$1" -ge "$DEBUG_LEVEL" ]; then
+        printf "[DEBUG] ${@:2}\n"
     fi
 }
 
@@ -25,8 +25,10 @@ function errorp() {
 }
 
 function check_source {
-    local sourcefile="sourcefile"
-    if [ -f "sourcefile{1}" ]; then
+    local sourcefile="$1"
+    debugp 2 "$sourcefile"
+
+    if test -f "$sourcefile" ; then
         source "$sourcefile"
         printf "source $sourcefile\n"
     else

@@ -14,19 +14,19 @@ function fsync {
     rsync $1 $2
 }
 
-fsync ${DST_DIR}/.emacs emacs/.emacs 
-fsync ${DST_DIR}/.vimrc vim/.vimrc 
+fsync ${DST_DIR}/.emacs emacs/.emacs
+fsync ${DST_DIR}/.vimrc vim/.vimrc
 
-fsync ${DST_DIR}/.bashrc bash/.bashrc 
-fsync ${DST_DIR}/.bash_profile bash/.bash_profile 
+fsync ${DST_DIR}/.bashrc bash/.bashrc
+fsync ${DST_DIR}/.bash_profile bash/.bash_profile
 fsync ${DST_DIR}/.shell_files/bash_fuction.sh bash/bash_function.sh
 
 fsync ${DST_DIR}/.inputrc bash/.inputrc
-fsync ${DST_DIR}/.tmux.conf .tmux.conf 
+fsync ${DST_DIR}/.tmux.conf .tmux.conf
 
 CONFIG_DIR="${DST_DIR}/.config"
 NVIM_DIR="${CONFIG_DIR}/nvim"
-fsync "${NVIM_DIR}/init.vim" vim/init.vim 
+fsync "${NVIM_DIR}/init.vim" vim/init.vim
 
 JUPYTERNB_DIR="${DST_DIR}/.jupyter/nbconfig"
 fsync "${JUPYTERNB_DIR}/notebook.json" jupyter/notebook.json

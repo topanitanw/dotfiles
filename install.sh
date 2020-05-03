@@ -47,6 +47,7 @@ fsync vim/init.vim "${NVIM_DIR}"
 # fsync bash/.bash_profile "${DST_DIR}"
 # fsync bash/.inputrc "${DST_DIR}"
 
+fsync bash/.bashrc "${DST_DIR}"
 SHELLFILES_DIR="${DST_DIR}/.shell_files"
 mkdir -p "${SHELLFILES_DIR}"
 
