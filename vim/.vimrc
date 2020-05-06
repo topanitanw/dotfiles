@@ -194,7 +194,14 @@ endif
 "" Attempt to determine the type of a file based on its name and possibly its
 "" contents. Use this to allow intelligent auto-indenting for each filetype,
 "" and for plugins that are filetype specific.
-filetype plugin indent on
+filetype on
+filetype plugin on
+filetype indent on
+
+" in makefiles, don't expand tabs to spaces, since actual tab characters are
+" needed, and have indentation at 8 chars to be sure that all indents are tabs
+" (despite the mappings later):
+autocmd FileType make set noexpandtab shiftwidth=4 softtabstop=0
 
 set autoindent
 """ once the setup is done, please type :retab to convert the existing files
@@ -223,6 +230,11 @@ function! CodingStyleMine ()
     " make sure that the tabs are expanded.
     set expandtab
     set textwidth=79
+
+    " in makefiles, don't expand tabs to spaces, since actual tab
+    " characters are needed, and have indentation at 8 chars to be sure
+    " that all indents are tabs (despite the mappings later):
+    autocmd FileType make set noexpandtab shiftwidth=4 softtabstop=0
 endfunction
 call CodingStyleMine()
 
@@ -318,11 +330,6 @@ augroup END
 "     \ set autoindent
 "     \ set fileformat=unix
 "
-
-" in makefiles, don't expand tabs to spaces, since actual tab characters are
-" needed, and have indentation at 8 chars to be sure that all indents are tabs
-" (despite the mappings later):
-autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 
 "" terminal mode
 " mitigate the problem when switching the buffer and the terminal disappears
