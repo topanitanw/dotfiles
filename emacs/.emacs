@@ -273,6 +273,11 @@ kernel."
   (setq indent-tabs-mode nil)
   (setq tab-width 8))
 
+(defun disable-auto-save ()
+  (setq make-backup-files nil)
+  (setq backup-inhibited t)
+  (setq auto-save-default nil))
+
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
 (c-set-offset 'access-label '/)
 ;; set the indent of all other elements in the class definition to equal

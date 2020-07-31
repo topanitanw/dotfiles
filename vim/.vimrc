@@ -123,6 +123,7 @@ endfunction
 " set guifont=Dejavu\ Sans\ Mono:h12
 set guifont=JetBrains\ Mono:h12
 
+" enable syntax highlighting
 set colorcolumn=80
 set number              " enable line number
 set ruler               " Show the line and column number (cursor position)
@@ -168,6 +169,7 @@ set wildmode=longest:full,full
 set encoding=utf-8      " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
 set termencoding=utf-8
+set ffs=unix,dos,mac
 " intelligent comments
 set comments=sl:/*,mb:\ *,elx:\ */
 
@@ -207,8 +209,12 @@ set autoindent
 """ once the setup is done, please type :retab to convert the existing files
 """ to the new settings.
 set expandtab 		   " Tabs are expanded to spaces
-set backspace=2 	   " Allow backspacing over everything in insert mode
+set smarttab
+set backspace=2      " Allow backspacing over everything in insert mode
 set cino+=(0         " Change the indentation of the function arguments
+
+" Formatting the C/C++ code
+map <F7> gg=G<C-o><C-o>
 
 """ show the tab with >······
 set list
@@ -260,11 +266,14 @@ set magic            " can search with a special character
 
 set vb
 set noerrorbells
+set novisualbell
 set showcmd         " display incomplete commands
 if has('mouse')
     set mouse=r
 endif
 set nobackup         " Cancel the backup files
+set nowb
+set noswapfile
 set history=1000
 set undolevels=1000
 set undofile         " maintain undo history between sessions
