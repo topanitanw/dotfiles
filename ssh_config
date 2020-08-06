@@ -1,1 +1,3 @@
 XAuthLocation /opt/X11/bin/xauth
+# keep the ssh alive for an hour
+ServerAliveInterval 60
