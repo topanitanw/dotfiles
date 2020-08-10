@@ -76,3 +76,8 @@ function prepend_variable {
 function remove_window_newline {
     sed -i 's/$//' $1
 }
+
+function pjr {
+    echo "$(git rev-parse --show-toplevel)"
+}
+
