@@ -74,10 +74,14 @@ JUPYTERNBCONFIG_DIR="${DST_DIR}/.jupyter/nbconfig/"
 mkdir -p "${JUPYTERNBCONFIG_DIR}"
 
 fsync jupyter/notebook.json "${JUPYTERNB_DIR}"
+
 ##################################################
 # ssh config
 mkdir -p ~/.ssh
 fsync ssh_config ~/.ssh/config
 
-printf "${LABEL} done\n"
+##################################################
+# git config
+fsync git/.gitconfig ~/.gitconfig
 
+printf "${LABEL} done\n"
