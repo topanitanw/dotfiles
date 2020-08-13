@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # configurable parameters
-DEBUG_LEVEL=1
+DEBUG_LEVEL=2
 
 # dedug print only when the debug flag is greater than DEBUG_LEVEL.
 # $1 (int) debug flag
@@ -26,7 +26,7 @@ function errorp() {
 
 function check_source {
     local sourcefile="$1"
-    debugp 2 "$sourcefile"
+    debugp 1 "$sourcefile"
 
     if test -f "$sourcefile" ; then
         source "$sourcefile"
@@ -76,3 +76,8 @@ function prepend_variable {
 function remove_window_newline {
     sed -i 's/$//' $1
 }
+
+function pjr {
+    echo "$(git rev-parse --show-toplevel)"
+}
+
