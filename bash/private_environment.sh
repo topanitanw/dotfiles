@@ -44,7 +44,7 @@ if [ "$(uname)" ==  "Darwin" ]; then
 fi
 
 if [ "$(uname)" == "Linux" ]; then
-    AUTOJUMP_SH="/usr/share/autojump/autojump.sh"
+    AUTOJUMP_SH="${HOME}/.autojump/etc/profile.d/autojump.sh"
 fi
 
 [ -f ${AUTOJUMP_SH} ] && . ${AUTOJUMP_SH}
