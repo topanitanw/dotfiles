@@ -65,11 +65,11 @@
 
 (when (eq system-type 'darwin) ;; mac specific settings
   (set-face-attribute 'default nil
-                      :family "DejaVu Sans Mono"
+                      :family "JetBrains Mono"
                       :height 150
                       :weight 'normal
                       :width 'normal)
-  (set-face-attribute 'mode-line nil :height 160)
+  (set-face-attribute 'mode-line nil :height 150)
   ;; for emacs on terminal in mac, to copy to and paste from clipboard
   ;; M-| pbcopy and M-| pbpaste commands or set these new commmands.
   (defun pbcopy ()
@@ -97,7 +97,7 @@
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'alt)
 
-  (prefer-coding-system 'utf-8)
+  ; (prefer-coding-system 'utf-8)
   ;; set the background mode
   (setq frame-background-mode 'light)
 
