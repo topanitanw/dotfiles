@@ -83,5 +83,6 @@ fsync ssh_config ~/.ssh/config
 ##################################################
 # git config
 fsync git/.gitconfig ~/.gitconfig
+git config --global
 
 printf "${LABEL} done\n"
