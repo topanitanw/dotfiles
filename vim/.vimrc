@@ -50,7 +50,7 @@ Plug 'ap/vim-buftabline'        " display the buffer name on top of the screen
 Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 
 if v:version >= 800
     Plug 'scrooloose/syntastic'   " check syntactical errors
@@ -79,6 +79,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'sakshamgupta05/vim-todo-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'kassio/neoterm'
+Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 call plug#end()
 
 "----------------------------------------------------------------------
@@ -431,11 +432,11 @@ let g:strip_whitespace_confirm=0
 
 " Vim-easymotion: jump to anywhere in the buffers
 " <Leader>c{char}{char} to move to {char}{char}
-nmap <Leader>c <Plug>(easymotion-overwin-f2)
+nmap <Leader>ec <Plug>(easymotion-overwin-f2)
 
 " Move to line
-map <Leader>l <Plug>(easymotion-bd-jk)
-nmap <Leader>l <Plug>(easymotion-overwin-line)
+map <Leader>el <Plug>(easymotion-bd-jk)
+nmap <Leader>el <Plug>(easymotion-overwin-line)
 
 " indentLine: display vertical lines at each indentation level
 let g:indentLine_enabled = 1
@@ -489,6 +490,8 @@ endif
 "" change the highlight color of the current replaced text
 hi IncSearch cterm=bold,underline ctermfg=green ctermbg=none
 hi Search cterm=underline ctermfg=blue ctermbg=none
+
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
