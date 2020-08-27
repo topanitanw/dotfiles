@@ -309,6 +309,9 @@ let mapleader=" "
 
 "" press jk to escape from the insert mode
 inoremap jk <Esc>
+"" mapping delay
+set timeoutlen=1000
+set ttimeoutlen=50
 
 "----------------------------------------------------------------------
 " auto command
