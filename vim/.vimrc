@@ -161,6 +161,11 @@ set laststatus=2     " Display the status line
 "" folding
 set foldmethod=syntax
 
+"" enable code folding for shell scripts
+au FileType sh let g:is_bash=1
+au FileType sh let g:sh_fold_enabled=5
+set foldenable
+
 "----------------------------------------------------------------------
 " Edit
 "" all backspacing over everything in insert mode
