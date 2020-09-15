@@ -1,4 +1,4 @@
-; nesc is the only one customized package
+;; nesc is the only one customized package
 ;; Modified Emacs should be downloaded from http://vgoulet.act.ulaval.ca/en/.
 ;;
 ;; emacs for window users
@@ -142,7 +142,10 @@
 
 ;; TODO: might need to install the nlinum package
 ;; M-x linum-mode to display line number
-(global-linum-mode 1)
+(if (version< emacs-version "26")
+    (global-linum-mode 1)
+    (global-display-line-numbers-mode))
+
 ;; this package of displaying line numbers runs very slowly.
 
 ;; enable the highlight current line
@@ -666,13 +669,14 @@ kernel."
   (load-theme 'zenburn t)
   ;; background of linum attribute will inherit from the
   ;; background of the text editor
-  (set-face-attribute 'linum nil
-                      ;; :foreground "#8FB28F"
-                      ;; :background "#3F3F3F"
-                      :family "DejaVu Sans Mono"
-                      :height 130
-                      :bold nil
-                      :underline nil)
+  (when (version< emacs-version "26")
+    (set-face-attribute 'linum nil
+                        ;; :foreground "#8FB28F"
+                        ;; :background "#3F3F3F"
+                        :family "DejaVu Sans Mono"
+                        :height 130
+                        :bold nil
+                        :underline nil))
   ;; To keep syntax highlighting in the current line:
   (set-face-foreground 'highlight nil)
   ;; Set any color as the background face of the current line
@@ -750,10 +754,13 @@ kernel."
 (use-package company
   :demand t
   :bind
-  (("C-c <tab>" . company-complete))
+  (("C-p" . company-complete))
   :init
   (global-company-mode)
   ;; (add-hook 'after-init-hook 'global-company-mode)
+  :hook
+  ((racket-mode . company-mode)
+   (racket-repl-mode . company-mode))
   :config
   ;; decrease delay before autocompletion popup shows
   (setq company-idle-delay 0.2
@@ -1078,9 +1085,10 @@ kernel."
 ;; rainbow-delimiters & color
 ;; =======================================================================
 (use-package rainbow-delimiters
-  :disabled t
-  :config
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  :ensure t
+  :hook
+  ((racket-mode . rainbow-delimiters-mode)
+   (racket-mode . rainbow-delimiters-mode)))
 
 (use-package color
   :disabled t
@@ -1781,6 +1789,10 @@ kernel."
   ;; indentation as the one in the org file
   (setq org-src-preserve-indentation t)
   (setq org-edit-src-content-indentation 0)
+
+  ;; we build a template to create a source code block
+  ;; <s|
+  (require 'org-tempo)
   )
 
 (dolist (mode-hook '(org-mode-hook
