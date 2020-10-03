@@ -351,7 +351,10 @@ augroup END
 
 "" terminal mode
 " mitigate the problem when switching the buffer and the terminal disappears
-autocmd TermOpen * set bufhidden=hide
+if has('nvim')
+    autocmd TermOpen * set bufhidden=hide
+endif
+
 "----------------------------------------------------------------------
 " package related setup
 "----------------------------------------------------------------------
