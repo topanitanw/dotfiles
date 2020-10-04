@@ -80,6 +80,7 @@ Plug 'sakshamgupta05/vim-todo-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'kassio/neoterm'
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+Plug 'mhinz/vim-startify'
 call plug#end()
 
 "----------------------------------------------------------------------
@@ -502,6 +503,8 @@ endif
 hi IncSearch cterm=bold,underline ctermfg=green ctermbg=none
 hi Search cterm=underline ctermfg=blue ctermbg=none
 
+"" whichkey will start when the leader key is pressed.
+"" in this case we assume that space is the leader key.
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
 " Reference
