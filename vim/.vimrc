@@ -217,6 +217,10 @@ set autoindent
 """ to the new settings.
 set expandtab 		   " Tabs are expanded to spaces
 set smarttab
+
+set ai               " Auto indent
+set si               " Smart indent
+
 set backspace=2      " Allow backspacing over everything in insert mode
 set cino+=(0         " Change the indentation of the function arguments
 
@@ -431,6 +435,8 @@ nnoremap <C-P> :bprev<CR>
 let g:buftabline_show=2
 " show the tab number which corresponds with the buffer number in vim
 let g:buftabline_numbers=1
+let g:buftabline_indicators=1
+let g:buftabline_separators=1
 
 " Vim-better-whitespace: highlight extra whitespace and clean those up
 ":EnableWhitespace

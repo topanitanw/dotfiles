@@ -1752,11 +1752,11 @@ kernel."
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DOING(i)" "HOLD(h@)" "WAITING(w@/!)" "|" "CANCELED(c@)" "DONE(d@/!)")))
   ;; set the source file to create an agenda
-  (when window-system
-    (setq org-agenda-files
-          (list
-           "e:/Dropbox/todolist/mytodolist.org"
-           "e:/Dropbox/todolist/today_plan.org")))
+  ;; (when window-system
+  ;;   (setq org-agenda-files
+  ;;         (list
+  ;;          "e:/Dropbox/todolist/mytodolist.org"
+  ;;          "e:/Dropbox/todolist/today_plan.org")))
   ;; turn on auto fill mode to avoid pressing M-q too often
   ;; set the amount of whitespaces between a headline and its tag
   ;; -70 comes from the width of ~70 characters per line. Thus,
@@ -1927,6 +1927,12 @@ kernel."
                              (message "emacs-init-time: %s"
                                       (emacs-init-time))))
 
+;; ==================================================================
+(use-package dashboard
+  :ensure t
+  :demand t
+  :config
+  (dashboard-setup-startup-hook))
 ;; ==================================================================
 ;; ## Emacs Lisp
 ;; (member 1 (cons 1 (cons 2 '()))) -> return (1)
