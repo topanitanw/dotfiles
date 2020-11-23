@@ -12,10 +12,10 @@ alias cd_496="cd ~/my_folder/496F2017/;";
 
 ## alias make
 alias mclmck="make clean; make check;";
-alias mclm="make clean; make;";
+alias mclmal="make clean; make all;";
 alias mcl="make clean;";
 alias mck="make check;";
-alias mall="make all;";
+alias mal="make all;";
 alias mii="make isoimage;";
 alias mmcf="make menuconfig;";
 
