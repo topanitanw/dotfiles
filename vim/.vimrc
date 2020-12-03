@@ -1,5 +1,5 @@
 "" Use gVim settings
-set nocompatible 	   " Use gVim defaults
+set nocompatible   " Use gVim defaults
 
 "----------------------------------------------------------------------
 " how to install vim-plug
@@ -123,7 +123,7 @@ endfunction
 
 "" set the default font and font size
 " set guifont=Dejavu\ Sans\ Mono:h12
-set guifont=JetBrains\ Mono:h12
+set guifont=JetBrains\ Mono:h14
 
 " enable syntax highlighting
 set colorcolumn=80

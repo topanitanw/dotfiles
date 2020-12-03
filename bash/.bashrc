@@ -7,6 +7,16 @@ case $- in
     *) return;;
 esac
 
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=linux;;
+    Darwin*)    machine=mac;;
+    CYGWIN*)    machine=cygwin;;
+    MINGW*)     machine=mingw;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
+echo ${machine}
+
 echo "reading ~/.bashrc"
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -17,6 +27,11 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then
+    echo "reading bash_completion.sh"
+    . "/usr/local/etc/profile.d/bash_completion.sh"
+fi
+
 SHELL_DIR="${HOME}/.shell_files"
 # create a keep the shell related files
 mkdir -p "${SHELL_DIR}"
@@ -24,6 +39,7 @@ mkdir -p "${SHELL_DIR}"
 if [ ! -f ${SHELL_DIR}/git-completion.bash ]; then
     pushd .
     cd ${SHELL_DIR}
+    echo "download git-completion.bash"
     wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
     popd
 fi
@@ -32,6 +48,7 @@ source ${SHELL_DIR}/git-completion.bash
 if [ ! -f ${SHELL_DIR}/git-prompt.sh ]; then
     pushd .
     cd ${SHELL_DIR}
+    echo "download git-prompt.sh"
     wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
     popd
 fi
