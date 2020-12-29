@@ -15,7 +15,7 @@ case "${unameOut}" in
     MINGW*)     machine=mingw;;
     *)          machine="UNKNOWN:${unameOut}"
 esac
-echo ${machine}
+echo "machine: ${machine}"
 
 echo "reading ~/.bashrc"
 # don't put duplicate lines or lines starting with space in the history.
