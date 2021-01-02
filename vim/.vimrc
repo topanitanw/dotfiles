@@ -67,6 +67,7 @@ if has('nvim-0.3')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 elseif has('nvim') || (v:version >= 800)
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    "Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
 else
@@ -181,7 +182,9 @@ set ffs=unix,dos,mac
 set comments=sl:/*,mb:\ *,elx:\ */
 
 " a function to trim whitespace to use it like:
-"" commented out because vim-better-whitespace is installed
+"" commented out because vim-better-whitespace is installed, so please
+"" call the StripWhitespace instead.
+
 " :call TrimWhitespace()
 " function! TrimWhitespace()
 "     let l:save = winsaveview()
@@ -222,7 +225,10 @@ set ai               " Auto indent
 set si               " Smart indent
 
 set backspace=2      " Allow backspacing over everything in insert mode
-set cino+=(0         " Change the indentation of the function arguments
+set cino+=(0,W4      " Change the indentation of the function arguments
+" a_long_line(
+"     argument,
+"     argument);
 
 " Formatting the C/C++ code
 map <F7> gg=G<C-o><C-o>

@@ -91,6 +91,13 @@
                          (getenv "PATH")))
   )
 
+;; =======================================================================
+;; Straight
+;; =======================================================================
+
+(setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")
+        ("melpa" . "http://melpa.org/packages/")))
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -131,6 +138,9 @@
 
 (use-package delight)
 
+;; =======================================================================
+;; Zenburn
+;; =======================================================================
 (use-package zenburn-theme
   :demand t
   :config
@@ -179,6 +189,30 @@
   (telephone-line-evil-config)
   (telephone-line-mode 1))
 
+;; =======================================================================
+;; hl-todo highlight the keywords TODO FIXME HACK REVIEW NOTE DEPRECATED
+;; =======================================================================
+(use-package hl-todo
+  :hook (prog-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces
+        `(("TODO"       warning bold)
+          ("FIXME"      error bold)
+          ("HACK"       font-lock-constant-face bold)
+          ("REVIEW"     font-lock-keyword-face bold)
+          ("NOTE"       success bold italic)
+          ("DEPRECATED" font-lock-doc-face bold))))
+
+;; =======================================================================
+;; restart emacs
+;; =======================================================================
+(use-package restart-emacs
+  :defer t)
+
+;; =======================================================================
+;; Company
+;; =======================================================================
 (use-package company
   :demand t
   :bind
@@ -219,6 +253,9 @@
   (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
   (rename-minor-mode "company" company-mode "Com"))
 
+;; =======================================================================
+;; Evil
+;; =======================================================================
 (use-package evil
   :demand t
   ;; :disabled
@@ -243,7 +280,10 @@
   (setq evil-shift-width mine-space-tap-offset)
   ;; define :ls, :buffers to open ibuffer
   (evil-ex-define-cmd "ls" 'ibuffer)
-  (evil-ex-define-cmd "buffers" 'ibuffer))
+  (evil-ex-define-cmd "buffers" 'ibuffer)
+
+  (evil-set-initial-state 'deft-mode 'emacs)
+  )
 
 ;; =======================================================================
 ;; evil-leader
@@ -254,8 +294,8 @@
   :config
   (global-evil-leader-mode)
   (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key "l" 'avy-goto-line)
-  (evil-leader/set-key "c" 'avy-goto-char-2)
+  ; (evil-leader/set-key "l" 'avy-goto-line)
+  ; (evil-leader/set-key "c" 'avy-goto-char-2)
   )
 
 ;; =======================================================================
@@ -273,6 +313,37 @@
   (setq-default evil-escape-key-sequence "jk")
   (setq-default evil-escape-delay 0.2)
   ; (rename-minor-mode "evil-escape" evil-escape-mode "jk")
+  )
+
+;; =======================================================================
+;; Undo Tree
+;; =======================================================================
+;; Undo-tree makes the undo and redo in emacs more easy-to-use
+;; C-_ or C-/  (`undo-tree-undo') Undo changes.
+;; M-_ or C-?  (`undo-tree-redo') Redo changes.
+;; C-x u to run undo-tree-visualize which opens a second buffer
+;; displaying a tree view of your undo history in a buffer. You can
+;; navigate this with the arrow keys and watch the main buffer change
+;; through its previous states, and hit q to exit when you have the
+;; buffer the way you wanted it, or C-q to quit without making any
+;; changes. 1 2 3
+(use-package undo-tree
+  :delight '(:eval (if mine-debug-show-modes-in-modeline
+                       undo-tree
+                       ""))
+  :init
+  (global-undo-tree-mode 1)
+  (setq undo-tree-visualizer-timestamp t
+        undo-tree-visualizer-diff t)
+  (defun clear-undo-tree ()
+    (interactive)
+    (setq buffer-undo-tree nil))
+  :bind
+  (("C-c u" . clear-undo-tree))
+  :config
+  (rename-minor-mode "undo-tree" undo-tree-mode "UT")
+  (when (featurep 'evil)
+    (evil-set-undo-system 'undo-tree))
   )
 
 ;; =======================================================================
@@ -308,7 +379,13 @@
   (setq helm-ff-file-name-history-use-recentf t)
  )
 
+;; =======================================================================
+;; highlight the indentation of the code
+;; =======================================================================
 (use-package highlight-indent-guides
+  :delight '(:eval (if mine-debug-show-modes-in-modeline
+		       highlight-indent-guides
+                       ""))
   :demand t
   :config
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
@@ -317,8 +394,12 @@
 
   (set-face-background 'highlight-indent-guides-odd-face "darkgray")
   (set-face-background 'highlight-indent-guides-even-face "dimgray")
-  (set-face-foreground 'highlight-indent-guides-character-face "dimgray"))
+  (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
+  )
 
+;; =======================================================================
+;; Mode
+;; =======================================================================
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
   :mode
@@ -327,7 +408,8 @@
    ("\\.markdown\\'" . markdown-mode))
   :init
   ;(setq markdown-command "multimarkdown")
-  (setq markdown-enable-math t))
+  (setq markdown-enable-math t)
+  )
 
 (use-package auctex
   :mode ("\\.tex\\'" . latex-mode)
@@ -395,9 +477,13 @@
   )
 
 (use-package deft
+  :init
+  (when (featurep 'evil-leader)
+    (evil-leader/set-key
+      "d" #'deft))
   :config
   (setq deft-extensions '("txt" "org" "md"))
-  (setq deft-directory "~/Dropbox/notes")
+  (setq deft-directory (file-truename "~/Dropbox/notes"))
   (setq deft-recursive t)
   (setq deft-use-filename-as-title t)
   (setq deft-file-naming-rules '((noslash . "_")
@@ -413,7 +499,7 @@
   :straight (md-roam :type git :host github :repo "nobiot/md-roam")
   :config
   (require 'md-roam)
-  (setq md-roam-file-extension-single "md") 
+  (setq md-roam-file-extension-single "md")
   (setq md-roam-use-markdown-file-links t)
   )
 
@@ -426,13 +512,21 @@
   (after-init . org-roam-mode)
   :custom
   (org-roam-directory (file-truename "~/Dropbox/notes"))
-  :bind (:map org-roam-mode-map
-	      (("C-c r r" . org-roam)
-	       ("C-c r f" . org-roam-find-file)
-	       ("C-c r g" . org-roam-graph))
-	      :map org-mode-map
-	      (("C-c r i" . org-roam-insert))
-	      (("C-c r I" . org-roam-insert-immediate)))
+  :init
+  (when (featurep 'evil-leader)
+   (evil-leader/set-key
+     "rr"  #'org-roam
+     "rf"  #'org-roam-find-file
+     "rg"  #'org-roam-graph
+     "ri"  #'org-roam-insert
+     "rt"  #'org-roam-tag-add))
+  ; :bind (:map org-roam-mode-map
+  ; 	      (("C-c r r" . org-roam)
+  ; 	       ("C-c r f" . org-roam-find-file)
+  ; 	       ("C-c r g" . org-roam-graph))
+  ; 	      :map org-mode-map
+  ; 	      (("C-c r i" . org-roam-insert))
+  ; 	      (("C-c r I" . org-roam-insert-immediate)))
   :config
   (setq org-roam-db-update-method 'immediate)
   ; set the file name without the date format
@@ -446,10 +540,68 @@
   ; the first element in the list is the default extension of the org-roam
   (setq org-roam-file-extensions '("md" "txt" "org"))
   (setq org-roam-graph-executable (executable-find "dot"))
+  (setq org-roam-graph-viewer "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
   (setq org-roam-title-sources '(title))
   (setq org-id-link-to-org-use-id t)
+
+  (require 'org-protocol)
+  (require 'org-roam-protocol)
   )
 
+(use-package org-roam-server
+  :after org-roam
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+	org-roam-server-port 8080
+	org-roam-server-export-inline-images t
+	org-roam-server-authenticate nil
+	org-roam-server-network-poll t
+	org-roam-server-network-arrows nil
+	org-roam-server-network-label-truncate t
+	org-roam-server-network-label-truncate-length 60
+	org-roam-server-network-label-wrap-length 20)
+  )
 
+;; =======================================================================
+;; Avy
+;; =======================================================================
+(use-package avy
+  :bind
+  (("C-c j" . avy-goto-char-2)
+   ("C-c l" . avy-goto-line))
+  :config
+  (when (featurep 'evil-leader)
+    (evil-leader/set-key
+      "jl" #'avy-goto-line
+      "jc" #'avy-goto-char-2))
+  )
+
+;; ==================================================================
+;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
                      (lambda () (message "emacs-init-time: %s" (emacs-init-time))))
+;; # Emacs Lisp
+;; ## Basic Settings
+;; Use (setq ...) to set value locally to a buffer
+;; Use (setq-default ...) to set value globally
+;; set the default font
+;; (set-frame-font Fontname-Size)
+;; (member 1 (cons 1 (cons 2 '()))) -> return (1)
+;; (display-grpahic-p) = check whether emacs is on the terminal mode or not
+;; (interactive) = it will call this function if we press M-x function-name
+;; function name = mode-name/what-to-type -> read what we type in that mode
+;; (package-installed-p 'package-name) = check whether the package is installed
+;; or not
+;; (progn
+;;   ...
+;;   ...)    =  execute the statements in sequence and return the value
+;;              of the last one
+;; (load-file "directory/file.el")
+
+;; window-system = this is a window system
+
+;; Reference:
+;; 1. general emacs setup
+;;    https://github.com/chadhs/dotfiles/blob/master/editors/emacs-config.org
+;; 2. evil setup
+;;    http://evgeni.io/posts/quick-start-evil-mode/
