@@ -20,11 +20,14 @@ alias mii="make isoimage;";
 alias mmcf="make menuconfig;";
 
 ## alias rm
-alias rm="rm -i";
+### trash-put should be install by pip install trash-cli
+### use trash-list to access the file in the trash
+### If you need to use the rm command, please use \rm to escape the rm.
+alias rm="echo 'You are supposed to use trash-put instead'";
 alias rmswp="rm .*.swp; rm *~;";
 
 ## alias ls
-alias ll="ls -la";
+alias ll="ls -lah";
 
 # project specific
 alias rmll="rm *.ll;";
