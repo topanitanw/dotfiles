@@ -4,7 +4,7 @@
 (defvar mine-space-tap-offset 4
   "the number of spaces per tap")
 
-(setq-default fill-column 80)
+(setq-default fill-column 70)
 ;; elisp tutorial is written below:
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
@@ -90,6 +90,38 @@
                          ":"
                          (getenv "PATH")))
   )
+
+(defun coding-style-mine ()
+  "My coding style."
+  (interactive)
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width mine-space-tap-offset)
+
+  ;; set the c-style indentation to ellemtel
+  (setq-default c-default-style "ellemtel"
+                c-basic-offset mine-space-tap-offset)
+  ;;------------------------------------------------------------
+  ;; +   `c-basic-offset' times 1
+  ;; -   `c-basic-offset' times -1
+  ;; ++  `c-basic-offset' times 2
+  ;; --  `c-basic-offset' times -2
+  ;; *   `c-basic-offset' times 0.5
+  ;; /   `c-basic-offset' times -0.5
+  ;; access-label: private/public label
+  (c-set-offset 'access-label '+)
+  ;; inclass: indentation level of others inside the class definition
+  (c-set-offset 'inclass '++)
+  ;; the first argument of the function after the brace
+  (c-set-offset 'arglist-intro '+)
+  ;; the closing brace of the function argument
+  ;; void
+  ;;;veryLongFunctionName(
+  ;;     |void* arg1, <--- arglist-intro is at the | symbol
+  ;;     void* arg2,
+  ;; |); <--- arglist-close is at the | symbol.
+  (c-set-offset 'arglist-close 0)
+  )
+(coding-style-mine)
 
 ;; =======================================================================
 ;; Straight
@@ -471,6 +503,7 @@
   (setq org-src-preserve-indentation t)
   (setq org-edit-src-content-indentation 0)
   (setq org-startup-with-inline-images t)
+  (setq org-src-preserve-indentation nil)
   ;; we build a template to create a source code block
   ;; <s|
   (require 'org-tempo)
@@ -514,12 +547,12 @@
   (org-roam-directory (file-truename "~/Dropbox/notes"))
   :init
   (when (featurep 'evil-leader)
-   (evil-leader/set-key
-     "rr"  #'org-roam
-     "rf"  #'org-roam-find-file
-     "rg"  #'org-roam-graph
-     "ri"  #'org-roam-insert
-     "rt"  #'org-roam-tag-add))
+    (evil-leader/set-key
+      "rr"  #'org-roam
+      "rf"  #'org-roam-find-file
+      "rg"  #'org-roam-graph
+      "ri"  #'org-roam-insert
+      "rt"  #'org-roam-tag-add))
   ; :bind (:map org-roam-mode-map
   ; 	      (("C-c r r" . org-roam)
   ; 	       ("C-c r f" . org-roam-find-file)
