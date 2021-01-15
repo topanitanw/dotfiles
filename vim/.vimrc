@@ -183,8 +183,7 @@ set comments=sl:/*,mb:\ *,elx:\ */
 
 " a function to trim whitespace to use it like:
 "" commented out because vim-better-whitespace is installed, so please
-"" call the StripWhitespace instead.
-
+"" :call StripWhitespace instead.
 " :call TrimWhitespace()
 " function! TrimWhitespace()
 "     let l:save = winsaveview()
@@ -252,7 +251,8 @@ function! CodingStyleMine ()
     execute "set shiftwidth=".g:indent_width
     " make sure that the tabs are expanded.
     set expandtab
-    set textwidth=79
+    set textwidth=80
+    set wrapmargin=2
 
     " in makefiles, don't expand tabs to spaces, since actual tab
     " characters are needed, and have indentation at 8 chars to be sure
@@ -265,7 +265,7 @@ function! CodingStyleCompany ()
     set tabstop=3        " each tab has 2_spaces equivalent width
     set softtabstop=3    " number of spaces in tab when editing
     set shiftwidth=3     " Indentation width when using >> and << re-indentation
-    set textwidth=79
+    set textwidth=80
 endfunction
 
 "----------------------------------------------------------------------
