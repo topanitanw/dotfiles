@@ -1,3 +1,4 @@
+;; -*- origami-fold-style: triple-braces -*-
 (defvar mine-debug-show-modes-in-modeline nil
   "show the mode symbol in the mode line")
 
@@ -91,7 +92,7 @@
                          (getenv "PATH")))
   )
 
-(defun coding-style-mine ()
+(defun mine-coding-style ()
   "My coding style."
   (interactive)
   (setq-default indent-tabs-mode nil)
@@ -108,9 +109,9 @@
   ;; *   `c-basic-offset' times 0.5
   ;; /   `c-basic-offset' times -0.5
   ;; access-label: private/public label
-  (c-set-offset 'access-label '+)
+  (c-set-offset 'access-label '--)
   ;; inclass: indentation level of others inside the class definition
-  (c-set-offset 'inclass '++)
+  (c-set-offset 'inclass '+)
   ;; the first argument of the function after the brace
   (c-set-offset 'arglist-intro '+)
   ;; the closing brace of the function argument
@@ -121,7 +122,13 @@
   ;; |); <--- arglist-close is at the | symbol.
   (c-set-offset 'arglist-close 0)
   )
-(coding-style-mine)
+(mine-coding-style)
+
+;; set the indent of private, public keywords to be 0.5 x c-basic-offset
+(c-set-offset 'access-label '--)
+;; set the indent of all other elements in the class definition to equal
+;; the c-basic-offset
+(c-set-offset 'inclass      (/ mine-space-tap-offset 2))
 
 ;; =======================================================================
 ;; Straight
@@ -599,9 +606,9 @@
 ;; Avy
 ;; =======================================================================
 (use-package avy
-  :bind
-  (("C-c j" . avy-goto-char-2)
-   ("C-c l" . avy-goto-line))
+  ; :bind
+  ; (("C-c j" . avy-goto-char-2)
+  ;  ("C-c l" . avy-goto-line))
   :config
   (when (featurep 'evil-leader)
     (evil-leader/set-key
@@ -609,6 +616,43 @@
       "jc" #'avy-goto-char-2))
   )
 
+;{{{vim
+; (use-package vimish-fold
+;   :ensure
+;   :after evil
+;   )
+;
+; (use-package evil-vimish-fold
+;   :ensure
+;   :after vimish-fold
+;   :init
+;   (setq evil-vimish-fold-mode-lighter " |")
+;   (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))
+;   :config
+;   (global-evil-vimish-fold-mode)
+;   )
+;}}}
+; (use-package s
+;   :ensure
+;   )
+;
+; (use-package dash
+;   :ensure
+;   )
+
+(use-package origami
+  :ensure
+  :config
+  (global-origami-mode)
+  )
+
+;; lsp-origami provides support for origami.el using language server protocol’s
+;; textDocument/foldingRange functionality.
+;; https://github.com/emacs-lsp/lsp-origami/
+(use-package lsp-origami
+  :disabled
+  :hook ((lsp-after-open . lsp-origami-mode))
+  )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
