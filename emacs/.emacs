@@ -128,7 +128,7 @@
 (c-set-offset 'access-label '--)
 ;; set the indent of all other elements in the class definition to equal
 ;; the c-basic-offset
-(c-set-offset 'inclass      (/ mine-space-tap-offset 2))
+(c-set-offset 'inclass      mine-space-tap-offset)
 
 ;; =======================================================================
 ;; Straight
