@@ -6,7 +6,7 @@
 ;;
 ;; emacs tutorial
 ;; http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/
-;; popwin https://emacs.stackexchange.com/questions/459/how-to-automatically-kill-helm-buffers-i-dont-need
+;; popwin https://emacs.stackexchange.com/questions/459/how-to-automatically-kill-helmbuffers-i-dont-need
 ;; https://github.com/anschwa/emacs.d/blob/master/readme.org
 ;; https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#13-mode-line
 ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/#fnref:2
@@ -17,20 +17,24 @@
 ;; https://caiorss.github.io/Emacs-Elisp-Programming/Keybindings.html
 ;; http://www.unexpected-vortices.com/emacs/quick-ref.html
 ;; =======================================================================
-(setq use-spacemacs nil) ; t or nil
-(when use-spacemacs
+;; Note mm/dd/yyyy:
+;; 1. 12/24/2020 try to refractor the emacs init file due to crash
+;;    when M-x describe-mode and the emacs is running in the peroni.
+;;    - DOING add the prefix mine- to my customized variable
+;;    - DOING remove the installation script in the .emacs for the
+;;      unused packages.
+(setq mine-use-spacemacs nil) ; t or nil
+(when mine-use-spacemacs
   (setq user-emacs-directory "~/.spacemacs.d/") ; default to ~/.emacs.d
   (load (expand-file-name "init.el" user-emacs-directory))
   (with-current-buffer " *load*"
     (goto-char (point-max))))
 
 ;; =======================================================================
-;; ## Basic Settings
-;; Use (setq ...) to set value locally to a buffer
-;; Use (setq-default ...) to set value globally
-;; set the default font
-;; (set-frame-font Fontname-Size)
-;; select the coding style of the emacs
+;; # Basic Settings
+;; customize emacs
+(setq mine-debug-show-modes-in-modeline nil)
+;; elisp tutorial is written below:
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
@@ -41,8 +45,6 @@
 
 (when (eq system-type 'windows-nt)
   ;; (set-frame-font "DejaVu Sans Mono-13")
-  ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
-  ;; (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-14")
   (prefer-coding-system 'utf-8-dos)
   (set-face-attribute 'default nil
                       :family "DejaVu Sans Mono"
@@ -215,18 +217,18 @@
 ;; try this (require 'myplugin)
 
 ;; declare global variables to avoid the magic number
-(defvar space-tap-offset 4 "the number of spaces per tap")
+(defvar mine-space-tap-offset 4 "the number of spaces per tap")
 
 ;; Indentation Setup
 (defun coding-style-mine ()
   "My coding style."
   (interactive)
   (setq-default indent-tabs-mode nil)
-  (setq-default tab-width space-tap-offset)
+  (setq-default tab-width mine-space-tap-offset)
 
   ;; set the c-style indentation to ellemtel
   (setq-default c-default-style "ellemtel"
-                c-basic-offset space-tap-offset)
+                c-basic-offset mine-space-tap-offset)
 
   ;;------------------------------------------------------------
   ;; +   `c-basic-offset' times 1
@@ -245,11 +247,11 @@
 (defun coding-style-nk ()
   (interactive)
   (setq-default indent-tabs-mode nil)
-  (setq-default tab-width 8)
+  (setq-default tab-width (* 2 mine-space-tap-offset))
 
   ;; set the c-style indentation to ellemtel
   (setq-default c-default-style "linux"
-                c-basic-offset 4)
+                c-basic-offset mine-space-tap-offset)
   )
 
 (defun coding-style-ctf ()
@@ -285,7 +287,7 @@ kernel."
 (c-set-offset 'access-label '/)
 ;; set the indent of all other elements in the class definition to equal
 ;; the c-basic-offset
-(c-set-offset 'inclass      2)
+(c-set-offset 'inclass      (/ mine-space-tap-offset 2))
 
 ;; Automatic(electric) Indentation
 (global-set-key (kbd "RET") 'newline-and-indent)
@@ -341,7 +343,7 @@ kernel."
 ;;   (load custom-file 'noerror))
 
 ;; set the number of characters per line
-(setq-default fill-column 70)
+(setq-default fill-column 80)
 ;; ----------------------------------------------------------------------
 ;; Ensure ibuffer opens with point at the current buffer's entry.
 ;; How to use iBuffer
@@ -514,12 +516,6 @@ kernel."
 (setq save-interprogram-paste-before-kill t)
 (setq x-select-enable-clipboard t)
 (setq mouse-drag-copy-region t)
-;; highlight the only part of the text longer than 80 characters on a line
-;; highlight the trailing whitespaces
-(setq-default whitespace-line-column 80)
-(setq whitespace-style '(face tabs tab-mark lines-tail trailing))
-(add-hook 'prog-mode-hook #'whitespace-mode)
-(add-hook 'before-save-hook 'whitespace-cleanup)
 
 ;; =======================================================================
 ;; =======================================================================
@@ -544,16 +540,28 @@ kernel."
 ;; (add-to-list 'package-archives
 ;;              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
 
-(add-to-list 'package-archives
-             '("org" . "http://orgmode.org/elpa/") t)
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+                                        ;             '("melpa" . "http://melpa.org/packages/")
+;(add-to-list 'package-archives
+;             '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")
+        ("melpa" . "http://melpa.org/packages/")))
+; (add-to-list 'package-archives
+;             '("org" . "http://orgmode.org/elpa/") t)
+;(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 
 ;; initialize package.el
+;(package-initialize)
+                                        ;(setq package-enable-at-startup nil)
 (package-initialize)
-(setq package-enable-at-startup nil)
+(require 'package)
+; (add-to-list 'package-archives
+;             '("melpa" . "http://melpa.org/packages/") t)
+
+
+
+
 ;; =======================================================================
 ;; use-package
 ;; =======================================================================
@@ -566,7 +574,36 @@ kernel."
   (require 'use-package)
   (setq-default use-package-always-defer t
                 use-package-always-ensure t))
-(require 'bind-key)
+; (require 'bind-key)
+
+;; =======================================================================
+;; Diminish
+;; =======================================================================
+;; rename the major-mode and minor-mode package on the mode line
+(use-package diminish
+  :demand t
+  :config
+  (defmacro rename-major-mode (package-name mode new-name)
+    `(eval-after-load ,package-name
+       '(defadvice ,mode (after rename-modeline activate)
+          (setq mode-name ,new-name))))
+
+  ;; how to call the macro
+  ;; (rename-major-mode "ruby-mode" ruby-mode "RUBY")
+  (defmacro rename-minor-mode (package mode new-name)
+    `(eval-after-load ,package
+       '(diminish ',mode ,new-name)))
+  ;; how to call the macro
+  ;; (rename-minor-mode "company" company-mode "CMP")
+  )
+
+;; =======================================================================
+;; delight
+;; =======================================================================
+;; customize the major and minor modes on the modeline
+(use-package delight
+  :ensure t
+  )
 
 ;; =======================================================================
 ;; Nlinum
@@ -582,6 +619,24 @@ kernel."
       (setq nlinum-format "%3d \u2502")
       (setq nlinum-format "%3d |"))
 )
+
+;; =======================================================================
+;; Beacon Mode
+;; =======================================================================
+;; highlight extra spaces and tabs
+(use-package whitespace
+  :demand t
+  :delight '(:eval (if mine-debug-show-modes-in-modeline
+                       whitespace-mode
+                       ""))
+  :config
+  ;; highlight the only part of the text longer than 80 characters on a line
+  ;; highlight the trailing whitespaces
+  (setq-default whitespace-line-column 80)
+  (setq whitespace-style '(face tabs tab-mark lines-tail trailing))
+  (add-hook 'prog-mode-hook #'whitespace-mode)
+  (add-hook 'before-save-hook 'whitespace-cleanup)
+  )
 ;; =======================================================================
 ;; Beacon Mode
 ;; =======================================================================
@@ -609,6 +664,9 @@ kernel."
 ;; =======================================================================
 (use-package which-key
   :demand t
+  :delight '(:eval (if mine-debug-show-modes-in-modeline
+                       which-key-mode
+                       ""))
   :init
   (which-key-mode)
   :config
@@ -726,27 +784,6 @@ kernel."
           (evil   . (telephone-line-airline-position-segment))))
   ;; (telephone-line-evil-config)
   (telephone-line-mode 1))
-
-;; =======================================================================
-;; Diminish
-;; =======================================================================
-;; rename the major-mode and minor-mode package on the mode line
-(use-package diminish
-  :demand t
-  :config
-  (defmacro rename-major-mode (package-name mode new-name)
-    `(eval-after-load ,package-name
-       '(defadvice ,mode (after rename-modeline activate)
-          (setq mode-name ,new-name))))
-
-  ;; how to call the macro
-  ;; (rename-major-mode "ruby-mode" ruby-mode "RUBY")
-  (defmacro rename-minor-mode (package mode new-name)
-    `(eval-after-load ,package
-       '(diminish ',mode ,new-name)))
-  ;; how to call the macro
-  ;; (rename-minor-mode "company" company-mode "CMP")
-  )
 
 ;; =======================================================================
 ;; Company
@@ -916,7 +953,7 @@ kernel."
 ;; https://tuhdo.github.io/helm-intro.html
 ;; https://writequit.org/denver-emacs/presentations/2016-03-01-helm.html
 ;; =======================================================================
-;; evil
+;; evil-mode
 ;; =======================================================================
 (use-package evil
   :demand t
@@ -939,7 +976,7 @@ kernel."
 
   ;; shift width for evil-mode users
   ;; For the vim-like motions of ">>" and "<<"
-  (setq evil-shift-width space-tap-offset)
+  (setq evil-shift-width mine-space-tap-offset)
   ;; define :ls, :buffers to open ibuffer
   (evil-ex-define-cmd "ls" 'ibuffer)
   (evil-ex-define-cmd "buffers" 'ibuffer))
@@ -960,789 +997,795 @@ kernel."
 ;; =======================================================================
 ;; evil-escape
 ;; =======================================================================
+;; use the jk to escape from the insert mode
 (use-package evil-escape
   :after (evil)
   :demand t
+  :delight '(:eval (if mine-debug-show-modes-in-modeline
+                       "jk"
+                       ""))
   :config
   (evil-escape-mode)
   (setq-default evil-escape-key-sequence "jk")
   (setq-default evil-escape-delay 0.2)
-  (rename-minor-mode "evil-escape" evil-escape-mode "jk"))
+  ; (rename-minor-mode "evil-escape" evil-escape-mode "jk")
+  )
 
 ;; =======================================================================
 ;; helm
 ;; =======================================================================
-(use-package helm
+(use-package helm)
+;(use-package helm
   ;; disabled if emacs version is before 24.4
-  :if (version< "24.4" emacs-version)
-  :diminish (helm-mode)
-  :init
-  (progn
-    (require 'helm-config)
-    (setq helm-candidate-number-limit 100
-    ;; From https://gist.github.com/antifuchs/9238468
-          helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
-          ; this actually updates things reeeelatively quickly.
-          helm-input-idle-delay 0.01
-          helm-yas-display-key-on-candidate t
-          helm-quick-update t
-          helm-M-x-requires-pattern nil
-          ;; ignore boring files like .o and .a
-          helm-ff-skip-boring-files t)
-    (helm-mode))
-  :bind
-  (;("C-x b" . helm-buffers-list)
-   ("M-x" . helm-M-x)
-   ("M-y" . helm-show-kill-ring)
-   ;("C-x C-f" . helm-find-files)
-   ("C-c h" . helm-mini)))
+  ; :if (version< "24.4" emacs-version)
+  ; :diminish (helm-mode)
+  ; :init
+  ; (progn
+  ;   (require 'helm-config)
+  ;   (setq helm-candidate-number-limit 100
+  ;   ;; From https://gist.github.com/antifuchs/9238468
+  ;         helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+  ;         ; this actually updates things reeeelatively quickly.
+  ;         helm-input-idle-delay 0.01
+  ;         helm-yas-display-key-on-candidate t
+  ;         helm-quick-update t
+  ;         helm-M-x-requires-pattern nil
+  ;         ;; ignore boring files like .o and .a
+  ;         helm-ff-skip-boring-files t)
+  ;   (helm-mode))
+  ; :bind
+  ; (;("C-x b" . helm-buffers-list)
+  ;  ("M-x" . helm-M-x)
+  ;  ("M-y" . helm-show-kill-ring)
+  ;  ;("C-x C-f" . helm-find-files)
+  ;  ("C-c h" . helm-mini)))
+ ; )
 
+;
+; ;; =======================================================================
+; ;; drag-stuff
+; ;; =======================================================================
+; (use-package drag-stuff
+;   :init
+;   (drag-stuff-global-mode t)
+;   :bind
+;   (("M-S-<up>" . drag-stuff-up)
+;    ("M-S-<down>" . drag-stuff-down)
+;    ("M-S-<left>" . drag-stuff-left)
+;    ("M-S-<right>" . drag-stuff-right))
+;   :config
+;   (rename-minor-mode "drag-stuff" drag-stuff-mode "Drag"))
+;
+; ;; =======================================================================
+; ;; multiple-cursor
+; ;; =======================================================================
+; (use-package multiple-cursors
+;   :bind
+;   (("C-c C-l" . mc/edit-lines)
+;    ("C->" . mc/mark-next-like-this)
+;    ("C-<" . mc/mark-previous-like-this)
+;    ("C-c C-<" . mc/mark-all-like-this)
+;    ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+;
+; ;; =======================================================================
+; ;; highlight-indentation
+; ;; =======================================================================
+; ;; (use-package highlight-indentation
+; ;;   ;; :disabled t
+; ;;   :config
+; ;;   ;; (set-face-background 'highlight-indentation-face "#555555")
+; ;;   ;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
+; ;;   ;; hook the highlight mode to the python and the jav
+; ;;   (add-hook 'yaml-mode-hook 'hightlight-indentation-mode)
+; ;;   (add-hook 'yaml-mode-hook 'highlight-indentation-current-column-mode)
+; ;;   ;; (add-hook 'css-mode-hook 'highlight-indentation-mode)
+; ;;   ;; (add-hook 'css-mode-hook 'highlight-indentation-current-column-mode)
+; ;;   ;; (add-hook 'nesc-mode-hook 'highlight-indentation-current-column-mode)
+; ;;   ;; (add-hook 'python-mode-hook 'highlight-indentation-current-column-mode)
+; ;;   ;; (add-hook 'java-mode-hook 'highlight-indentation-current-column-mode)
+; ;;   ;; (add-hook 'js2-mode-hook 'highlight-indentation-current-column-mode)
+; ;;   )
+;
+; ;; ===================================================================
+; ;; hightlight indentation
+; (use-package highlight-indent-guides
+;   :demand t
+;   :config
+;   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+;   (setq highlight-indent-guides-method 'character)
+;   (setq highlight-indent-guides-auto-enabled nil)
+;
+;   (set-face-background 'highlight-indent-guides-odd-face "darkgray")
+;   (set-face-background 'highlight-indent-guides-even-face "dimgray")
+;   (set-face-foreground 'highlight-indent-guides-character-face "dimgray"))
+; ;; =======================================================================
 ;; =======================================================================
-;; drag-stuff
+;; hl-todo highlight the keywords
 ;; =======================================================================
-(use-package drag-stuff
-  :init
-  (drag-stuff-global-mode t)
-  :bind
-  (("M-S-<up>" . drag-stuff-up)
-   ("M-S-<down>" . drag-stuff-down)
-   ("M-S-<left>" . drag-stuff-left)
-   ("M-S-<right>" . drag-stuff-right))
+(use-package hl-todo
+  :hook (prog-mode . hl-todo-mode)
   :config
-  (rename-minor-mode "drag-stuff" drag-stuff-mode "Drag"))
-
-;; =======================================================================
-;; multiple-cursor
-;; =======================================================================
-(use-package multiple-cursors
-  :bind
-  (("C-c C-l" . mc/edit-lines)
-   ("C->" . mc/mark-next-like-this)
-   ("C-<" . mc/mark-previous-like-this)
-   ("C-c C-<" . mc/mark-all-like-this)
-   ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
-
-;; =======================================================================
-;; highlight-indentation
-;; =======================================================================
-;; (use-package highlight-indentation
-;;   ;; :disabled t
-;;   :config
-;;   ;; (set-face-background 'highlight-indentation-face "#555555")
-;;   ;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
-;;   ;; hook the highlight mode to the python and the jav
-;;   (add-hook 'yaml-mode-hook 'hightlight-indentation-mode)
-;;   (add-hook 'yaml-mode-hook 'highlight-indentation-current-column-mode)
-;;   ;; (add-hook 'css-mode-hook 'highlight-indentation-mode)
-;;   ;; (add-hook 'css-mode-hook 'highlight-indentation-current-column-mode)
-;;   ;; (add-hook 'nesc-mode-hook 'highlight-indentation-current-column-mode)
-;;   ;; (add-hook 'python-mode-hook 'highlight-indentation-current-column-mode)
-;;   ;; (add-hook 'java-mode-hook 'highlight-indentation-current-column-mode)
-;;   ;; (add-hook 'js2-mode-hook 'highlight-indentation-current-column-mode)
-;;   )
-
-;; ===================================================================
-;; hightlight indentation
-(use-package highlight-indent-guides
-  :demand t
-  :config
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-  (setq highlight-indent-guides-method 'character)
-  (setq highlight-indent-guides-auto-enabled nil)
-
-  (set-face-background 'highlight-indent-guides-odd-face "darkgray")
-  (set-face-background 'highlight-indent-guides-even-face "dimgray")
-  (set-face-foreground 'highlight-indent-guides-character-face "dimgray"))
-;; =======================================================================
-;; fic-mode TODO BUG FIXME CLEANUP CHECKING(owner)
-;; =======================================================================
-(use-package fic-mode
-  :demand t
-  :init
-  (if (>= emacs-major-version 24)
-      (progn (add-hook 'prog-mode-hook 'fic-mode)
-             (add-hook 'LaTeX-mode-hook 'fic-mode))
-      (progn (add-hook 'c-mode-hook 'fic-mode)
-             (add-hook 'nesc-mode-hook 'fic-mode)
-             (add-hook 'java-mode-hook 'fic-mode)
-             (add-hook 'python-mode-hook 'fic-mode)
-             (add-hook 'c++-mode-hook 'fic-mode)
-             (add-hook 'emacs-lisp-mode-hook 'fic-mode)
-             (add-hook 'LaTeX-mode-hook 'fic-mode)))
-  :config
-  (dolist (word '("TODO" "CLEANUP" "CHECKING"))
-    (when (not (member word fic-highlighted-words))
-      (push word fic-highlighted-words))))
-;; =======================================================================
-;; rainbow-mode red '#ffffff'
-;; =======================================================================
-(use-package rainbow-mode
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'rainbow-mode)
-  (add-hook 'web-mode-hook 'rainbow-mode))
-
-;; =======================================================================
-;; rainbow-delimiters & color
-;; =======================================================================
-(use-package rainbow-delimiters
-  :ensure t
-  :hook
-  ((racket-mode . rainbow-delimiters-mode)
-   (racket-mode . rainbow-delimiters-mode)))
-
-(use-package color
-  :disabled t
-  :config
-  (defun gen-col-list (length s v &optional hval)
-    (cl-flet ( (random-float () (/ (random 10000000000) 10000000000.0))
-               (mod-float (f) (- f (ffloor f))) )
-      (unless hval
-        (setq hval (random-float)))
-      (let ((golden-ratio-conjugate (/ (- (sqrt 5) 1) 2))
-            (h hval)
-            (current length)
-            (ret-list '()))
-        (while (> current 0)
-          (setq ret-list
-                (append ret-list
-                        (list (apply 'color-rgb-to-hex (color-hsl-to-rgb h s v)))))
-          (setq h (mod-float (+ h golden-ratio-conjugate)))
-          (setq current (- current 1)))
-        ret-list)))
-
-  (defun set-random-rainbow-colors (s l &optional h)
-    ;; Output into message buffer in case you get a scheme you REALLY like.
-    ;; (message "set-random-rainbow-colors %s" (list s l h))
-    (rainbow-delimiters-mode t)
-
-    ;; I also want css style colors in my code.
-    ;; (xah-syntax-color-hex)
-    ;; This function and fg-from-bg are redundant with rainbow mode.
-
-    ;; Show mismatched braces in bright red.
-    (set-face-background 'rainbow-delimiters-unmatched-face "red")
-
-    ;; Rainbow delimiters based on golden ratio
-    (let ( (colors (gen-col-list 9 s l h))
-           (i 1) )
-      (let ( (length (length colors)) )
-        ;;(message (concat "i " (number-to-string i) " length " (number-to-string length)))
-        (while (<= i length)
-          (let ( (rainbow-var-name (concat "rainbow-delimiters-depth-"
-                                           (number-to-string i)
-                                           "-face"))
-                 (col (nth i colors)) )
-            ;; (message (concat rainbow-var-name " => " col))
-            (set-face-foreground (intern rainbow-var-name) col))
-          (setq i (+ i 1))))))
-
-  ;; saturation: s [gray 0 - 1 pure color]
-  ;; lightness: l [dark 0 - 1 fully illuminated (completely white)]
-  ;; the default values of s and l are 0.5 and 0.49, and
-  ;; the color of braskets looks quite nice for the theme with the
-  ;; white background.
-  ;; (add-hook 'emacs-lisp-mode-hook
-  ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
-  ;; (add-hook 'lisp-mode-hook
-  ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
-  (add-hook 'prog-mode-hook
-            '(lambda () (set-random-rainbow-colors 0.8 0.6 0.7))))
-
-;; =======================================================================
-;; Undo Tree
-;; =======================================================================
-;; Undo-tree makes the undo and redo in emacs more easy-to-use
-;; C-_ or C-/  (`undo-tree-undo') Undo changes.
-;; M-_ or C-?  (`undo-tree-redo') Redo changes.
-;; C-x u to run undo-tree-visualize which opens a second buffer
-;; displaying a tree view of your undo history in a buffer. You can
-;; navigate this with the arrow keys and watch the main buffer change
-;; through its previous states, and hit q to exit when you have the
-;; buffer the way you wanted it, or C-q to quit without making any
-;; changes. 1 2 3
-(use-package undo-tree
-  :init
-  (global-undo-tree-mode 1)
-  (setq undo-tree-visualizer-timestamp t
-        undo-tree-visualizer-diff t)
-  (defun clear-undo-tree ()
-    (interactive)
-    (setq buffer-undo-tree nil))
-  :bind
-  (("C-c u" . clear-undo-tree))
-  :config
-  (rename-minor-mode "undo-tree" undo-tree-mode "UT"))
-
-;; =======================================================================
-;; Swiper
-;; =======================================================================
-(use-package swiper
-  :bind
-  (("C-c s" . swiper))
-  :init
-  ;; (ivy-mode 1)
-  ;; (setq ivy-display-style 'fancy)
-  ;; using ivy to switch buffers
-  ;; (setq ivy-use-virtual-buffers t)
-  )
-
-;; =======================================================================
-;; Counsel
-;; =======================================================================
-;; helm-M-x is better in the case that it lists the history commands.
-;; (use-package counsel
-;;   ;; :if (and (>= emacs-major-version 24)
-;;   ;;          (>= emacs-minor-version 4))
-;;   :if (version< "24.4" emacs-version)
-;;   :bind
-;;   (;("C-x C-f" . counsel-find-file)
-;;    ("M-x" . counsel-M-x)))
-
-;; =======================================================================
-;; Avy
-;; =======================================================================
-;; jumping from places to places
-(use-package avy
-  :bind
-  (("C-c j" . avy-goto-char-2)
-   ("C-c l" . avy-goto-line)))
-
-;; =======================================================================
-;; bookmark
-;; =======================================================================
-(use-package bm
-  :bind
-  (("<C-f2>" . bm-toggle)
-   ("<f2>" . bm-next)
-   ("<S-f2>" . bm-previous)))
-
-;; ==================================================================
-;; uniquify
-;; ==================================================================
-;; a built-in package in emacs
-;; make the buffer unique
-(use-package uniquify
-  :ensure nil
-  :config
-  (setq uniquify-buffer-name-style 'forward)
-  (setq uniquify-separator "/")
-  (setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
-  (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
-
-(use-package hydra
-  :demand t
-  :init
-  (defhydra hydra-ibuffer-main (:color pink :hint nil)
-    "
-     ^Navigation^ | ^Mark^        | ^Actions^        | ^View^
-    -^----------^-+-^----^--------+-^-------^--------+-^----^-------
-      _k_:    ʌ   | _m_: mark     | _D_: delete      | _g_: refresh
-     _RET_: visit | _u_: unmark   | _S_: save        | _s_: sort
-      _j_:    v   | _*_: specific | _a_: all actions | _/_: filter
-    -^----------^-+-^----^--------+-^-------^--------+-^----^-------
-    "
-    ("j" ibuffer-forward-line)
-    ("RET" ibuffer-visit-buffer :color blue)
-    ("k" ibuffer-backward-line)
-
-    ("m" ibuffer-mark-forward)
-    ("u" ibuffer-unmark-forward)
-    ("*" hydra-ibuffer-mark/body :color blue)
-
-    ("D" ibuffer-do-delete)
-    ("S" ibuffer-do-save)
-    ("a" hydra-ibuffer-action/body :color blue)
-
-    ("g" ibuffer-update)
-    ("s" hydra-ibuffer-sort/body :color blue)
-    ("/" hydra-ibuffer-filter/body :color blue)
-
-    ("o" ibuffer-visit-buffer-other-window "other window" :color blue)
-    ("q" ibuffer-quit "quit ibuffer" :color blue)
-    ("." nil "toggle hydra" :color blue))
-
-  (defhydra hydra-ibuffer-mark (:color teal :columns 5
-                                       :after-exit (hydra-ibuffer-main/body))
-    "Mark"
-    ("*" ibuffer-unmark-all "unmark all")
-    ("M" ibuffer-mark-by-mode "mode")
-    ("m" ibuffer-mark-modified-buffers "modified")
-    ("u" ibuffer-mark-unsaved-buffers "unsaved")
-    ("s" ibuffer-mark-special-buffers "special")
-    ("r" ibuffer-mark-read-only-buffers "read-only")
-    ("/" ibuffer-mark-dired-buffers "dired")
-    ("e" ibuffer-mark-dissociated-buffers "dissociated")
-    ("h" ibuffer-mark-help-buffers "help")
-    ("z" ibuffer-mark-compressed-file-buffers "compressed")
-    ("b" hydra-ibuffer-main/body "back" :color blue))
-
-  (defhydra hydra-ibuffer-action (:color teal :columns 4
-                                         :after-exit
-                                         (if (eq major-mode 'ibuffer-mode)
-                                             (hydra-ibuffer-main/body)))
-    "Action"
-    ("A" ibuffer-do-view "view")
-    ("E" ibuffer-do-eval "eval")
-    ("F" ibuffer-do-shell-command-file "shell-command-file")
-    ("I" ibuffer-do-query-replace-regexp "query-replace-regexp")
-    ("H" ibuffer-do-view-other-frame "view-other-frame")
-    ("N" ibuffer-do-shell-command-pipe-replace "shell-cmd-pipe-replace")
-    ("M" ibuffer-do-toggle-modified "toggle-modified")
-    ("O" ibuffer-do-occur "occur")
-    ("P" ibuffer-do-print "print")
-    ("Q" ibuffer-do-query-replace "query-replace")
-    ("R" ibuffer-do-rename-uniquely "rename-uniquely")
-    ("T" ibuffer-do-toggle-read-only "toggle-read-only")
-    ("U" ibuffer-do-replace-regexp "replace-regexp")
-    ("V" ibuffer-do-revert "revert")
-    ("W" ibuffer-do-view-and-eval "view-and-eval")
-    ("X" ibuffer-do-shell-command-pipe "shell-command-pipe")
-    ("b" nil "back"))
-
-  (defhydra hydra-ibuffer-sort (:color amaranth :columns 3)
-    "Sort"
-    ("i" ibuffer-invert-sorting "invert")
-    ("a" ibuffer-do-sort-by-alphabetic "alphabetic")
-    ("v" ibuffer-do-sort-by-recency "recently used")
-    ("s" ibuffer-do-sort-by-size "size")
-    ("f" ibuffer-do-sort-by-filename/process "filename")
-    ("m" ibuffer-do-sort-by-major-mode "mode")
-    ("b" hydra-ibuffer-main/body "back" :color blue))
-
-  (defhydra hydra-ibuffer-filter (:color amaranth :columns 4)
-    "Filter"
-    ("m" ibuffer-filter-by-used-mode "mode")
-    ("M" ibuffer-filter-by-derived-mode "derived mode")
-    ("n" ibuffer-filter-by-name "name")
-    ("c" ibuffer-filter-by-content "content")
-    ("e" ibuffer-filter-by-predicate "predicate")
-    ("f" ibuffer-filter-by-filename "filename")
-    (">" ibuffer-filter-by-size-gt "size")
-    ("<" ibuffer-filter-by-size-lt "size")
-    ("/" ibuffer-filter-disable "disable")
-    ("b" hydra-ibuffer-main/body "back" :color blue))
-  ; (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
-  (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
-
-  (use-package windmove
-    :demand t)
-
-  (defun hydra-move-splitter-left (arg)
-    "Move window splitter left."
-    (interactive "p")
-    (if (let ((windmove-wrap-around))
-          (windmove-find-other-window 'right))
-        (shrink-window-horizontally arg)
-        (enlarge-window-horizontally arg)))
-
-  (defun hydra-move-splitter-right (arg)
-    "Move window splitter right."
-    (interactive "p")
-    (if (let ((windmove-wrap-around))
-          (windmove-find-other-window 'right))
-        (enlarge-window-horizontally arg)
-        (shrink-window-horizontally arg)))
-
-  (defun hydra-move-splitter-up (arg)
-    "Move window splitter up."
-    (interactive "p")
-    (if (let ((windmove-wrap-around))
-      (windmove-find-other-window 'up))
-    (enlarge-window arg)
-    (shrink-window arg)))
-
-  (defun hydra-move-splitter-down (arg)
-    "Move window splitter down."
-    (interactive "p")
-    (if (let ((windmove-wrap-around))
-      (windmove-find-other-window 'up))
-    (shrink-window arg)
-    (enlarge-window arg)))
-
-  (global-set-key
-   (kbd "C-c w")
-   (defhydra hydra-window ()
-     "
-     Movement^^     ^Split^         ^Switch^		    ^Resize^
-     ----------------------------------------------------------------
-     _h_ ←        	_v_ertical       	_b_uffer		  _q_ X←
-     _j_ ↓        	_x_ horizontal	  _f_ind files  _w_ X↓
-     _k_ ↑        	_z_ undo      	  _a_ce 1		    _e_ X↑
-     _l_ →        	_Z_ reset      	  _s_wap		    _r_ X→
-     _F_ollow		    _D_lt Other   	  _S_ave		    max_i_mize
-     _._ cancel	    _o_nly this   	  _d_elete
-     "
-     ("h" windmove-left )
-     ("j" windmove-down )
-     ("k" windmove-up )
-     ("l" windmove-right )
-     ("q" hydra-move-splitter-left)
-     ("w" hydra-move-splitter-down)
-     ("e" hydra-move-splitter-up)
-     ("r" hydra-move-splitter-right)
-     ("b" helm-mini)
-     ("f" helm-find-files)
-     ("F" follow-mode)
-     ("a" (lambda ()
-            (interactive)
-            (ace-window 1)
-            (add-hook 'ace-window-end-once-hook
-                      'hydra-window/body))
-      )
-     ("v" (lambda ()
-            (interactive)
-            (split-window-right)
-            (windmove-right))
-      )
-     ("x" (lambda ()
-            (interactive)
-            (split-window-below)
-            (windmove-down))
-      )
-     ("s" (lambda ()
-            (interactive)
-            (ace-window 4)
-            (add-hook 'ace-window-end-once-hook
-                      'hydra-window/body)))
-     ("S" save-buffer)
-     ("d" delete-window)
-     ("D" (lambda ()
-            (interactive)
-            (ace-window 16)
-            (add-hook 'ace-window-end-once-hook
-                      'hydra-window/body))
-      )
-     ("o" delete-other-windows)
-     ("i" ace-maximize-window)
-     ("z" (progn
-            (winner-undo)
-            (setq this-command 'winner-undo))
-      )
-     ("Z" winner-redo)
-     ("." nil)
-     )))
-
-;; ==================================================================
-;; ace-window
-;; ==================================================================
-;; switching between buffers
-(use-package ace-window
-  :bind (("C-x o" . ace-window))
-  :config
-  (global-set-key [remap other-window] 'ace-window)
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
-
-;; ==================================================================
-;; hideshow
-;; ==================================================================
-;; code folding
-;; This minor mode will add little +/- displays to foldable regions in the
-;; buffer and to folded regions. It is indented to be used in
-;; conjunction with hideshow.el which is a part of GNU Emacs since
-;; version 20.
-(use-package hideshowvis
-  :diminish hs-minor-mode
-  :disabled
-  ;; on mac (25.3) this module has a problem
-  :ensure nil
-  :init
-  (dolist (hook (list 'emacs-lisp-mode-hook
-                      'c++-mode-hook
-                      'nesc-mode-hook
-                      'python-mode-hook))
-    (add-hook hook 'hideshowvis-enable))
-  ;; (hideshowvis-symbols)
-  :config
-  (setq hideshowvis-ignore-same-line nil))
-
-(autoload 'hideshowvis-enable "hideshowvis" "Highlight foldable regions")
-(autoload 'hideshowvis-minor-mode
-  "hideshowvis"
-  "Will indicate regions foldable with hideshow in the fringe."
-  'interactive)
-
-;; ==================================================================
-;; neotree
-;; ==================================================================
-;; need to reconfig for evil node
-;; n and p: next and previous
-;; H: toggle to display the hidden files
-;; A: minimize and maximize the neotree buffer
-;; TAB or SPC or RET: fold/unfold files in a directory
-;; g: refresh files
-(use-package neotree
-  :bind (("C-c n" . 'neotree-toggle))
-  :config
-  ;; (setq neo-theme (if (display-graphic-p)
-  ;;                     'icons
-  ;;                     'arrow))
-  )
-
-(use-package all-the-icons)
-;; ==================================================================
-;; vimrc-mode
-(use-package vimrc-mode
-  :mode ("\\.vim\\(rc\\)?\\'" . vimrc-mode))
-
-;; ===================================================================
-;; flycheck-mode
-(use-package flycheck
-  ;:demand t
-  :if (not window-system)
-  :init
-  (global-flycheck-mode)
-  )
-
-;; ==================================================================
-;; Gitignore mode
-(use-package gitignore-mode)
-;; git commit message mode
-(use-package git-commit
-  :if (>= emacs-major-version 25))
-
-;; ===================================================================
-;; python-mode
-;; ===================================================================
-;; Python Custom Identation Setup
-;; set the python code to indent with the tab-width = 2
-(use-package python
-  :mode ("\\.py\\'" . python-mode)
-  ;; :bind
-  ;; (:map python-mode
-  ;;  ("RET"  .  set-newline-and-indent))
-  :config
-  (defvar python-space-offset 4 "the number of spaces per tap")
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (setq indent-tabs-mode nil) ; disable tab mode
-              (setq tab-width python-space-offset)
-              ; set the indentation width for python
-              (setq python-indent python-space-offset)
-              (setq python-indent-offset python-space-offset)
-              (setq electric-indent-chars '(?\n))
-              (setq flycheck-python-pylint-executable "pylint3")
-              (setq flycheck-python-pylint-executable "/usr/local/anaconda3/bin/pylint")
-              (setq flycheck-pylintrc "~/.pylintrc")
-            ))
-  ;; Ignoring electric indentation
-  (defun electric-indent-ignore-python (char)
-    "Ignore electric indentation for python-mode"
-    (if (equal major-mode 'python-mode)
-        `no-indent'
-      nil))
-  (add-hook 'electric-indent-functions 'electric-indent-ignore-python)
-
-  ;; Enter key executes newline-and-indent
-  (defun set-newline-and-indent ()
-    "Map the return key with `newline-and-indent'"
-    (local-set-key (kbd "RET") 'newline-and-indent))
-  (add-hook 'python-mode-hook 'set-newline-and-indent))
-;; ===================================================================
-;; Nesc
-;; ===================================================================
-(use-package nesc
-  :ensure nil
-  :init
-  (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
-  (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
-  (autoload 'nesc-mode "nesc.el")
-  :mode ("\\.nc\\'" . nesc-mode))
-
-;; ===================================================================
-;; Java
-(use-package java-mode
-  :ensure nil
-  :mode "\\.java\\'" ; ("\\.py\\'" . python-mode)
-  :config
-  (add-hook 'java-mode-hook (lambda ()
-                              (setq c-basic-offset space-tap-offset
-                                    tab-width space-tap-offset
-                                    indent-tabs-mode nil))))
-
-;; ==================================================================
-;; shell mode
-(use-package shell
-  :config
-  (add-hook 'sh-mode-hook (lambda ()
-                            (setq indent-tabs-mode t
-                                  tab-width 4
-                                  sh-basic-offset 4
-                                  sh-indentation 4))))
-
-;; ==================================================================
-;; Ruby mode
-(use-package ruby-mode
-  :config
-  (add-hook 'ruby-mode-hook (lambda ()
-                              (setq indent-tabs-mode nil
-                                    tab-width space-tap-offset
-                                    ruby-indent-level space-tap-offset)))
-  (add-hook 'ruby-mode-hook 'robe-mode))
-
-;; ==================================================================
-;; Autocomplete for ruby
-(use-package robe
-  :after ruby-mode
-  :config
-  (add-to-list 'company-backends 'company-robe))
-
-;; ==================================================================
-;; Arduino mode
-(use-package arduino-mode
-  :if (>= emacs-major-version 25)
-  :mode ("\\.\\(pde\\|ino\\)$" . arduino-mode)
-  :config
-  (add-hook 'arduino-mode-hook
-            (lambda ()
-              (modify-syntax-entry ?_ "w"))))
-
-;; ==================================================================
-;; Matlab
-;; ==================================================================
-(use-package matlab-mode
-  :mode ("\\.m\\'" . matlab-mode)
-  :config
-  (setq matlab-indent-level 4)
-  (setq matlab-indent-function-body nil)
-  (autoload 'matlab-shell "matlab" "Interactive Matlab mode." t))
-
-;; =======================================================================
-;; Web-mode
-;; =======================================================================
-(use-package web-mode
-  :mode
-  (("\\.phtml\\'" . web-mode)
-   ("\\.tpl\\.php\\'" . web-mode)
-   ("\\.[agj]sp\\'" . web-mode)
-   ("\\.as[cp]x\\'" . web-mode)
-   ("\\.erb\\'" . web-mode)
-   ("\\.mustache\\'" . web-mode)
-   ("\\.djhtml\\'" . web-mode)
-   ("\\.html?\\'" . web-mode)
-   ("\\.js\\'" . web-mode))
-  :config
-  ;; HTML element offset indentation
-  (setq web-mode-markup-indent-offset 2)
-
-  ;; CSS offset indentation
-  (setq web-mode-css-indent-offset 2)
-
-  ;; Script/code offset indentation (for JavaScript, Java, PHP,
-  ;; Embedded Ruby (.erb), VBScript, Python, etc.)
-  (setq web-mode-code-indent-offset 2)
-
-  ;; highlight the current column with
-  (setq web-mode-enable-current-column-highlight t))
-
-;; ======================================================================
-;; Racket Mode https://github.com/greghendershott/racket-mode
-;; prevents emacs from showing 'lambda' as 'λ'
-;; in window, only lampda will change to a symbol, but in mac,
-;; the logical operators in python will be shown as symbols ex or => v.
-(when (and (version< "24.4" emacs-version)
-           (window-system))
-  (global-prettify-symbols-mode 1))
-
-;; (if a   =>  (if a
-;      b           b
-;    c)            c)
-(put 'if 'lisp-indent-function 3)
-
-;; =======================================================================
-;; racket mode setup
-(use-package racket-mode
-  :bind
-  (("C-c r" . racket-run))
-  :init
-  (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
-  (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
-  :config
-  (setq racket-mode-pretty-lambda t)
-  ;; (type-case FAW a-fae
-  ;     [a ...
-  ;     [b ...
-  (put 'type-case 'racket-indent-function 2)
-  (put 'local 'racket-indent-function nil)
-  (put '+ 'racket-indent-function nil)
-  (put '- 'racket-indent-function nil)
-  (setq tab-always-indent 'complete)
-  (when (window-system)
-    (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
-    (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
-;; parendit
-;; http://danmidwood.com/content/2014/11/21/animated-paredit.html
-;; ==================================================================
-;; sml a teaching programming language in coursera
-;; type C-x C-s to call sml prompt in another buffer
-;; type C-d to end the session
-;; type C-c C-c to interrupt evaluation and get your prompt back
-;; type M-p to print the previous line you used in REPL
-;; type M-n to print the next line you used in REPL
-(use-package sml-mode
-  :mode ("\\.sml\\'" . sml-mode))
-
-;; ==================================================================
-;; assembly mode setup
-(use-package asm-mode
-  ;; an installed package
-  :mode
-  (("\\.S\\'" . asm-mode)
-   ("\\.asm\\'" . asm-mode))
-  :bind
-  (("RET" . newline-and-indent))
-  :config
-  (setq asm-indent-level (* 2 space-tap-offset))
-  (setq indent-tabs-mode nil) ; use spaces to indent
-  (electric-indent-mode -1) ; indentation in asm-mode is annoying
-  (setq tab-stop-list (number-sequence 2 60 2))
-  ;; (local-unset-key (vector asm-comment-char))
-  )
-
-;; ==================================================================
-;; Scala
-(use-package scala-mode
-  :interpreter
-  ("scala" . scala-mode)
-  :config
-  (setq prettify-symbols-alist scala-prettify-symbols-alist)
-  (prettify-symbols-mode))
-
-;; ==================================================================
-;; YAML mode
-;; C-x TAB = indent the region/line
-;; C-n C-x $ = fold lines that indented more than n spaces
-;; C-x $ = select display folded lines
-(use-package yaml-mode
-  :mode
-  (("\\.yml\\'" . yaml-mode)
-   ("\\.conf\\'" . yaml-mode))
-  :bind
-  ;; remap the ENTER key to newline-and-indent
-  ;; (define-key yaml-mode-map "\C-m" 'newline-and-indent)
-  ("RET" . newline-and-indent)
-  :init
-  (add-hook 'yaml-mode-hook #'highlight-numbers-mode)
-  (add-hook 'yaml-mode-hook 'highlight-indent-guides-mode)
-  (add-hook 'yaml-mode-hook 'fic-mode)
-  ;; TODO find a way to fold the code
-  )
-
-;; ==================================================================
-;; markdown mode-line
-(use-package markdown-mode
-  :commands (markdown-mode gfm-mode)
-  :mode
-  (("README\\.md\\'" . gfm-mode)
-   ("\\.md\\'" . markdown-mode)
-   ("\\.markdown\\'" . markdown-mode))
-  :init
-  (setq markdown-command "multimarkdown"))
-;; ==================================================================
-;; Org mode customization
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces
+        `(("TODO"       warning bold)
+          ("FIXME"      error bold)
+          ("HACK"       font-lock-constant-face bold)
+          ("REVIEW"     font-lock-keyword-face bold)
+          ("NOTE"       success bold)
+          ("DEPRECATED" font-lock-doc-face bold))))
+; ;; =======================================================================
+; ;; rainbow-mode red '#ffffff'
+; ;; =======================================================================
+; (use-package rainbow-mode
+;   :init
+;   (add-hook 'emacs-lisp-mode-hook 'rainbow-mode)
+;   (add-hook 'web-mode-hook 'rainbow-mode))
+;
+; ;; =======================================================================
+; ;; rainbow-delimiters & color
+; ;; =======================================================================
+; (use-package rainbow-delimiters
+;   :ensure t
+;   :hook
+;   ((racket-mode . rainbow-delimiters-mode)
+;    (racket-mode . rainbow-delimiters-mode)))
+;
+; (use-package color
+;   :disabled t
+;   :config
+;   (defun gen-col-list (length s v &optional hval)
+;     (cl-flet ( (random-float () (/ (random 10000000000) 10000000000.0))
+;                (mod-float (f) (- f (ffloor f))) )
+;       (unless hval
+;         (setq hval (random-float)))
+;       (let ((golden-ratio-conjugate (/ (- (sqrt 5) 1) 2))
+;             (h hval)
+;             (current length)
+;             (ret-list '()))
+;         (while (> current 0)
+;           (setq ret-list
+;                 (append ret-list
+;                         (list (apply 'color-rgb-to-hex (color-hsl-to-rgb h s v)))))
+;           (setq h (mod-float (+ h golden-ratio-conjugate)))
+;           (setq current (- current 1)))
+;         ret-list)))
+;
+;   (defun set-random-rainbow-colors (s l &optional h)
+;     ;; Output into message buffer in case you get a scheme you REALLY like.
+;     ;; (message "set-random-rainbow-colors %s" (list s l h))
+;     (rainbow-delimiters-mode t)
+;
+;     ;; I also want css style colors in my code.
+;     ;; (xah-syntax-color-hex)
+;     ;; This function and fg-from-bg are redundant with rainbow mode.
+;
+;     ;; Show mismatched braces in bright red.
+;     (set-face-background 'rainbow-delimiters-unmatched-face "red")
+;
+;     ;; Rainbow delimiters based on golden ratio
+;     (let ( (colors (gen-col-list 9 s l h))
+;            (i 1) )
+;       (let ( (length (length colors)) )
+;         ;;(message (concat "i " (number-to-string i) " length " (number-to-string length)))
+;         (while (<= i length)
+;           (let ( (rainbow-var-name (concat "rainbow-delimiters-depth-"
+;                                            (number-to-string i)
+;                                            "-face"))
+;                  (col (nth i colors)) )
+;             ;; (message (concat rainbow-var-name " => " col))
+;             (set-face-foreground (intern rainbow-var-name) col))
+;           (setq i (+ i 1))))))
+;
+;   ;; saturation: s [gray 0 - 1 pure color]
+;   ;; lightness: l [dark 0 - 1 fully illuminated (completely white)]
+;   ;; the default values of s and l are 0.5 and 0.49, and
+;   ;; the color of braskets looks quite nice for the theme with the
+;   ;; white background.
+;   ;; (add-hook 'emacs-lisp-mode-hook
+;   ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
+;   ;; (add-hook 'lisp-mode-hook
+;   ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
+;   (add-hook 'prog-mode-hook
+;             '(lambda () (set-random-rainbow-colors 0.8 0.6 0.7))))
+;
+; ;; =======================================================================
+; ;; Undo Tree
+; ;; =======================================================================
+; ;; Undo-tree makes the undo and redo in emacs more easy-to-use
+; ;; C-_ or C-/  (`undo-tree-undo') Undo changes.
+; ;; M-_ or C-?  (`undo-tree-redo') Redo changes.
+; ;; C-x u to run undo-tree-visualize which opens a second buffer
+; ;; displaying a tree view of your undo history in a buffer. You can
+; ;; navigate this with the arrow keys and watch the main buffer change
+; ;; through its previous states, and hit q to exit when you have the
+; ;; buffer the way you wanted it, or C-q to quit without making any
+; ;; changes. 1 2 3
+; (use-package undo-tree
+;   :init
+;   (global-undo-tree-mode 1)
+;   (setq undo-tree-visualizer-timestamp t
+;         undo-tree-visualizer-diff t)
+;   (defun clear-undo-tree ()
+;     (interactive)
+;     (setq buffer-undo-tree nil))
+;   :bind
+;   (("C-c u" . clear-undo-tree))
+;   :config
+;   (rename-minor-mode "undo-tree" undo-tree-mode "UT"))
+;
+; ;; =======================================================================
+; ;; Swiper
+; ;; =======================================================================
+; (use-package swiper
+;   :bind
+;   (("C-c s" . swiper))
+;   :init
+;   ;; (ivy-mode 1)
+;   ;; (setq ivy-display-style 'fancy)
+;   ;; using ivy to switch buffers
+;   ;; (setq ivy-use-virtual-buffers t)
+;   )
+;
+; ;; =======================================================================
+; ;; Counsel
+; ;; =======================================================================
+; ;; helm-M-x is better in the case that it lists the history commands.
+; ;; (use-package counsel
+; ;;   ;; :if (and (>= emacs-major-version 24)
+; ;;   ;;          (>= emacs-minor-version 4))
+; ;;   :if (version< "24.4" emacs-version)
+; ;;   :bind
+; ;;   (;("C-x C-f" . counsel-find-file)
+; ;;    ("M-x" . counsel-M-x)))
+;
+; ;; =======================================================================
+; ;; Avy
+; ;; =======================================================================
+; ;; jumping from places to places
+; (use-package avy
+;   :bind
+;   (("C-c j" . avy-goto-char-2)
+;    ("C-c l" . avy-goto-line)))
+;
+; ;; =======================================================================
+; ;; bookmark
+; ;; =======================================================================
+; (use-package bm
+;   :bind
+;   (("<C-f2>" . bm-toggle)
+;    ("<f2>" . bm-next)
+;    ("<S-f2>" . bm-previous)))
+;
+; ;; ==================================================================
+; ;; uniquify
+; ;; ==================================================================
+; ;; a built-in package in emacs
+; ;; make the buffer unique
+; (use-package uniquify
+;   :ensure nil
+;   :config
+;   (setq uniquify-buffer-name-style 'forward)
+;   (setq uniquify-separator "/")
+;   (setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
+;   (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
+;
+; (use-package hydra
+;   :demand t
+;   :init
+;   (defhydra hydra-ibuffer-main (:color pink :hint nil)
+;     "
+;      ^Navigation^ | ^Mark^        | ^Actions^        | ^View^
+;     -^----------^-+-^----^--------+-^-------^--------+-^----^-------
+;       _k_:    ʌ   | _m_: mark     | _D_: delete      | _g_: refresh
+;      _RET_: visit | _u_: unmark   | _S_: save        | _s_: sort
+;       _j_:    v   | _*_: specific | _a_: all actions | _/_: filter
+;     -^----------^-+-^----^--------+-^-------^--------+-^----^-------
+;     "
+;     ("j" ibuffer-forward-line)
+;     ("RET" ibuffer-visit-buffer :color blue)
+;     ("k" ibuffer-backward-line)
+;
+;     ("m" ibuffer-mark-forward)
+;     ("u" ibuffer-unmark-forward)
+;     ("*" hydra-ibuffer-mark/body :color blue)
+;
+;     ("D" ibuffer-do-delete)
+;     ("S" ibuffer-do-save)
+;     ("a" hydra-ibuffer-action/body :color blue)
+;
+;     ("g" ibuffer-update)
+;     ("s" hydra-ibuffer-sort/body :color blue)
+;     ("/" hydra-ibuffer-filter/body :color blue)
+;
+;     ("o" ibuffer-visit-buffer-other-window "other window" :color blue)
+;     ("q" ibuffer-quit "quit ibuffer" :color blue)
+;     ("." nil "toggle hydra" :color blue))
+;
+;   (defhydra hydra-ibuffer-mark (:color teal :columns 5
+;                                        :after-exit (hydra-ibuffer-main/body))
+;     "Mark"
+;     ("*" ibuffer-unmark-all "unmark all")
+;     ("M" ibuffer-mark-by-mode "mode")
+;     ("m" ibuffer-mark-modified-buffers "modified")
+;     ("u" ibuffer-mark-unsaved-buffers "unsaved")
+;     ("s" ibuffer-mark-special-buffers "special")
+;     ("r" ibuffer-mark-read-only-buffers "read-only")
+;     ("/" ibuffer-mark-dired-buffers "dired")
+;     ("e" ibuffer-mark-dissociated-buffers "dissociated")
+;     ("h" ibuffer-mark-help-buffers "help")
+;     ("z" ibuffer-mark-compressed-file-buffers "compressed")
+;     ("b" hydra-ibuffer-main/body "back" :color blue))
+;
+;   (defhydra hydra-ibuffer-action (:color teal :columns 4
+;                                          :after-exit
+;                                          (if (eq major-mode 'ibuffer-mode)
+;                                              (hydra-ibuffer-main/body)))
+;     "Action"
+;     ("A" ibuffer-do-view "view")
+;     ("E" ibuffer-do-eval "eval")
+;     ("F" ibuffer-do-shell-command-file "shell-command-file")
+;     ("I" ibuffer-do-query-replace-regexp "query-replace-regexp")
+;     ("H" ibuffer-do-view-other-frame "view-other-frame")
+;     ("N" ibuffer-do-shell-command-pipe-replace "shell-cmd-pipe-replace")
+;     ("M" ibuffer-do-toggle-modified "toggle-modified")
+;     ("O" ibuffer-do-occur "occur")
+;     ("P" ibuffer-do-print "print")
+;     ("Q" ibuffer-do-query-replace "query-replace")
+;     ("R" ibuffer-do-rename-uniquely "rename-uniquely")
+;     ("T" ibuffer-do-toggle-read-only "toggle-read-only")
+;     ("U" ibuffer-do-replace-regexp "replace-regexp")
+;     ("V" ibuffer-do-revert "revert")
+;     ("W" ibuffer-do-view-and-eval "view-and-eval")
+;     ("X" ibuffer-do-shell-command-pipe "shell-command-pipe")
+;     ("b" nil "back"))
+;
+;   (defhydra hydra-ibuffer-sort (:color amaranth :columns 3)
+;     "Sort"
+;     ("i" ibuffer-invert-sorting "invert")
+;     ("a" ibuffer-do-sort-by-alphabetic "alphabetic")
+;     ("v" ibuffer-do-sort-by-recency "recently used")
+;     ("s" ibuffer-do-sort-by-size "size")
+;     ("f" ibuffer-do-sort-by-filename/process "filename")
+;     ("m" ibuffer-do-sort-by-major-mode "mode")
+;     ("b" hydra-ibuffer-main/body "back" :color blue))
+;
+;   (defhydra hydra-ibuffer-filter (:color amaranth :columns 4)
+;     "Filter"
+;     ("m" ibuffer-filter-by-used-mode "mode")
+;     ("M" ibuffer-filter-by-derived-mode "derived mode")
+;     ("n" ibuffer-filter-by-name "name")
+;     ("c" ibuffer-filter-by-content "content")
+;     ("e" ibuffer-filter-by-predicate "predicate")
+;     ("f" ibuffer-filter-by-filename "filename")
+;     (">" ibuffer-filter-by-size-gt "size")
+;     ("<" ibuffer-filter-by-size-lt "size")
+;     ("/" ibuffer-filter-disable "disable")
+;     ("b" hydra-ibuffer-main/body "back" :color blue))
+;   ; (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
+;   (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
+;
+;   (use-package windmove
+;     :demand t)
+;
+;   (defun hydra-move-splitter-left (arg)
+;     "Move window splitter left."
+;     (interactive "p")
+;     (if (let ((windmove-wrap-around))
+;           (windmove-find-other-window 'right))
+;         (shrink-window-horizontally arg)
+;         (enlarge-window-horizontally arg)))
+;
+;   (defun hydra-move-splitter-right (arg)
+;     "Move window splitter right."
+;     (interactive "p")
+;     (if (let ((windmove-wrap-around))
+;           (windmove-find-other-window 'right))
+;         (enlarge-window-horizontally arg)
+;         (shrink-window-horizontally arg)))
+;
+;   (defun hydra-move-splitter-up (arg)
+;     "Move window splitter up."
+;     (interactive "p")
+;     (if (let ((windmove-wrap-around))
+;       (windmove-find-other-window 'up))
+;     (enlarge-window arg)
+;     (shrink-window arg)))
+;
+;   (defun hydra-move-splitter-down (arg)
+;     "Move window splitter down."
+;     (interactive "p")
+;     (if (let ((windmove-wrap-around))
+;       (windmove-find-other-window 'up))
+;     (shrink-window arg)
+;     (enlarge-window arg)))
+;
+;   (global-set-key
+;    (kbd "C-c w")
+;    (defhydra hydra-window ()
+;      "
+;      Movement^^     ^Split^         ^Switch^		    ^Resize^
+;      ----------------------------------------------------------------
+;      _h_ ←        	_v_ertical       	_b_uffer		  _q_ X←
+;      _j_ ↓        	_x_ horizontal	  _f_ind files  _w_ X↓
+;      _k_ ↑        	_z_ undo      	  _a_ce 1		    _e_ X↑
+;      _l_ →        	_Z_ reset      	  _s_wap		    _r_ X→
+;      _F_ollow		    _D_lt Other   	  _S_ave		    max_i_mize
+;      _._ cancel	    _o_nly this   	  _d_elete
+;      "
+;      ("h" windmove-left )
+;      ("j" windmove-down )
+;      ("k" windmove-up )
+;      ("l" windmove-right )
+;      ("q" hydra-move-splitter-left)
+;      ("w" hydra-move-splitter-down)
+;      ("e" hydra-move-splitter-up)
+;      ("r" hydra-move-splitter-right)
+;      ("b" helm-mini)
+;      ("f" helm-find-files)
+;      ("F" follow-mode)
+;      ("a" (lambda ()
+;             (interactive)
+;             (ace-window 1)
+;             (add-hook 'ace-window-end-once-hook
+;                       'hydra-window/body))
+;       )
+;      ("v" (lambda ()
+;             (interactive)
+;             (split-window-right)
+;             (windmove-right))
+;       )
+;      ("x" (lambda ()
+;             (interactive)
+;             (split-window-below)
+;             (windmove-down))
+;       )
+;      ("s" (lambda ()
+;             (interactive)
+;             (ace-window 4)
+;             (add-hook 'ace-window-end-once-hook
+;                       'hydra-window/body)))
+;      ("S" save-buffer)
+;      ("d" delete-window)
+;      ("D" (lambda ()
+;             (interactive)
+;             (ace-window 16)
+;             (add-hook 'ace-window-end-once-hook
+;                       'hydra-window/body))
+;       )
+;      ("o" delete-other-windows)
+;      ("i" ace-maximize-window)
+;      ("z" (progn
+;             (winner-undo)
+;             (setq this-command 'winner-undo))
+;       )
+;      ("Z" winner-redo)
+;      ("." nil)
+;      )))
+;
+; ;; ==================================================================
+; ;; ace-window
+; ;; ==================================================================
+; ;; switching between buffers
+; (use-package ace-window
+;   :bind (("C-x o" . ace-window))
+;   :config
+;   (global-set-key [remap other-window] 'ace-window)
+;   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+;
+; ;; ==================================================================
+; ;; hideshow
+; ;; ==================================================================
+; ;; code folding
+; ;; This minor mode will add little +/- displays to foldable regions in the
+; ;; buffer and to folded regions. It is indented to be used in
+; ;; conjunction with hideshow.el which is a part of GNU Emacs since
+; ;; version 20.
+; (use-package hideshowvis
+;   :diminish hs-minor-mode
+;   :disabled
+;   ;; on mac (25.3) this module has a problem
+;   :ensure nil
+;   :init
+;   (dolist (hook (list 'emacs-lisp-mode-hook
+;                       'c++-mode-hook
+;                       'nesc-mode-hook
+;                       'python-mode-hook))
+;     (add-hook hook 'hideshowvis-enable))
+;   ;; (hideshowvis-symbols)
+;   :config
+;   (setq hideshowvis-ignore-same-line nil))
+;
+; (autoload 'hideshowvis-enable "hideshowvis" "Highlight foldable regions")
+; (autoload 'hideshowvis-minor-mode
+;   "hideshowvis"
+;   "Will indicate regions foldable with hideshow in the fringe."
+;   'interactive)
+;
+; ;; ==================================================================
+; ;; neotree
+; ;; ==================================================================
+; ;; need to reconfig for evil node
+; ;; n and p: next and previous
+; ;; H: toggle to display the hidden files
+; ;; A: minimize and maximize the neotree buffer
+; ;; TAB or SPC or RET: fold/unfold files in a directory
+; ;; g: refresh files
+; (use-package neotree
+;   :bind (("C-c n" . 'neotree-toggle))
+;   :config
+;   ;; (setq neo-theme (if (display-graphic-p)
+;   ;;                     'icons
+;   ;;                     'arrow))
+;   )
+;
+; (use-package all-the-icons)
+; ;; ==================================================================
+; ;; vimrc-mode
+; (use-package vimrc-mode
+;   :mode ("\\.vim\\(rc\\)?\\'" . vimrc-mode))
+;
+; ;; ===================================================================
+; ;; flycheck-mode
+; (use-package flycheck
+;   ;:demand t
+;   :if (not window-system)
+;   :init
+;   (global-flycheck-mode)
+;   )
+;
+; ;; ==================================================================
+; ;; Gitignore mode
+; (use-package gitignore-mode)
+; ;; git commit message mode
+; (use-package git-commit
+;   :if (>= emacs-major-version 25))
+;
+; ;; ===================================================================
+; ;; python-mode
+; ;; ===================================================================
+; ;; Python Custom Identation Setup
+; ;; set the python code to indent with the tab-width = 2
+; (use-package python
+;   :mode ("\\.py\\'" . python-mode)
+;   ;; :bind
+;   ;; (:map python-mode
+;   ;;  ("RET"  .  set-newline-and-indent))
+;   :config
+;   (defvar python-space-offset 4 "the number of spaces per tap")
+;   (add-hook 'python-mode-hook
+;             (lambda ()
+;               (setq indent-tabs-mode nil) ; disable tab mode
+;               (setq tab-width python-space-offset)
+;               ; set the indentation width for python
+;               (setq python-indent python-space-offset)
+;               (setq python-indent-offset python-space-offset)
+;               (setq electric-indent-chars '(?\n))
+;               (setq flycheck-python-pylint-executable "pylint3")
+;               (setq flycheck-python-pylint-executable "/usr/local/anaconda3/bin/pylint")
+;               (setq flycheck-pylintrc "~/.pylintrc")
+;             ))
+;   ;; Ignoring electric indentation
+;   (defun electric-indent-ignore-python (char)
+;     "Ignore electric indentation for python-mode"
+;     (if (equal major-mode 'python-mode)
+;         `no-indent'
+;       nil))
+;   (add-hook 'electric-indent-functions 'electric-indent-ignore-python)
+;
+;   ;; Enter key executes newline-and-indent
+;   (defun set-newline-and-indent ()
+;     "Map the return key with `newline-and-indent'"
+;     (local-set-key (kbd "RET") 'newline-and-indent))
+;   (add-hook 'python-mode-hook 'set-newline-and-indent))
+; ;; ===================================================================
+; ;; Nesc
+; ;; ===================================================================
+; (use-package nesc
+;   :ensure nil
+;   :init
+;   (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
+;   (setq load-path (cons (expand-file-name "~/.emacs.d/nesC") load-path))
+;   (autoload 'nesc-mode "nesc.el")
+;   :mode ("\\.nc\\'" . nesc-mode))
+;
+; ;; ===================================================================
+; ;; Java
+; (use-package java-mode
+;   :ensure nil
+;   :mode "\\.java\\'" ; ("\\.py\\'" . python-mode)
+;   :config
+;   (add-hook 'java-mode-hook (lambda ()
+;                               (setq c-basic-offset mine-space-tap-offset
+;                                     tab-width mine-space-tap-offset
+;                                     indent-tabs-mode nil))))
+;
+; ;; ==================================================================
+; ;; shell mode
+; (use-package shell
+;   :config
+;   (add-hook 'sh-mode-hook (lambda ()
+;                             (setq indent-tabs-mode t
+;                                   tab-width 4
+;                                   sh-basic-offset 4
+;                                   sh-indentation 4))))
+;
+; ;; ==================================================================
+; ;; Ruby mode
+; (use-package ruby-mode
+;   :config
+;   (add-hook 'ruby-mode-hook (lambda ()
+;                               (setq indent-tabs-mode nil
+;                                     tab-width mine-space-tap-offset
+;                                     ruby-indent-level mine-space-tap-offset)))
+;   (add-hook 'ruby-mode-hook 'robe-mode))
+;
+; ;; ==================================================================
+; ;; Autocomplete for ruby
+; (use-package robe
+;   :after ruby-mode
+;   :config
+;   (add-to-list 'company-backends 'company-robe))
+;
+; ;; ==================================================================
+; ;; Arduino mode
+; (use-package arduino-mode
+;   :if (>= emacs-major-version 25)
+;   :mode ("\\.\\(pde\\|ino\\)$" . arduino-mode)
+;   :config
+;   (add-hook 'arduino-mode-hook
+;             (lambda ()
+;               (modify-syntax-entry ?_ "w"))))
+;
+; ;; ==================================================================
+; ;; Matlab
+; ;; ==================================================================
+; (use-package matlab-mode
+;   :mode ("\\.m\\'" . matlab-mode)
+;   :config
+;   (setq matlab-indent-level 4)
+;   (setq matlab-indent-function-body nil)
+;   (autoload 'matlab-shell "matlab" "Interactive Matlab mode." t))
+;
+; ;; =======================================================================
+; ;; Web-mode
+; ;; =======================================================================
+; (use-package web-mode
+;   :mode
+;   (("\\.phtml\\'" . web-mode)
+;    ("\\.tpl\\.php\\'" . web-mode)
+;    ("\\.[agj]sp\\'" . web-mode)
+;    ("\\.as[cp]x\\'" . web-mode)
+;    ("\\.erb\\'" . web-mode)
+;    ("\\.mustache\\'" . web-mode)
+;    ("\\.djhtml\\'" . web-mode)
+;    ("\\.html?\\'" . web-mode)
+;    ("\\.js\\'" . web-mode))
+;   :config
+;   ;; HTML element offset indentation
+;   (setq web-mode-markup-indent-offset 2)
+;
+;   ;; CSS offset indentation
+;   (setq web-mode-css-indent-offset 2)
+;
+;   ;; Script/code offset indentation (for JavaScript, Java, PHP,
+;   ;; Embedded Ruby (.erb), VBScript, Python, etc.)
+;   (setq web-mode-code-indent-offset 2)
+;
+;   ;; highlight the current column with
+;   (setq web-mode-enable-current-column-highlight t))
+;
+; ;; ======================================================================
+; ;; Racket Mode https://github.com/greghendershott/racket-mode
+; ;; prevents emacs from showing 'lambda' as 'λ'
+; ;; in window, only lampda will change to a symbol, but in mac,
+; ;; the logical operators in python will be shown as symbols ex or => v.
+; (when (and (version< "24.4" emacs-version)
+;            (window-system))
+;   (global-prettify-symbols-mode 1))
+;
+; it is not recommended to change the indentation of the if like
+; this since it breaks the emacs lisp coding convention.
+; ;; (if a   =>  (if a
+; ;      b           b
+; ;    c)            c)
+; (put 'if 'lisp-indent-function 3)
+;
+; ;; =======================================================================
+; ;; racket mode setup
+; (use-package racket-mode
+;   :bind
+;   (("C-c r" . racket-run))
+;   :init
+;   (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+;   (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+;   :config
+;   (setq racket-mode-pretty-lambda t)
+;   ;; (type-case FAW a-fae
+;   ;     [a ...
+;   ;     [b ...
+;   (put 'type-case 'racket-indent-function 2)
+;   (put 'local 'racket-indent-function nil)
+;   (put '+ 'racket-indent-function nil)
+;   (put '- 'racket-indent-function nil)
+;   (setq tab-always-indent 'complete)
+;   (when (window-system)
+;     (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
+;     (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
+; ;; parendit
+; ;; http://danmidwood.com/content/2014/11/21/animated-paredit.html
+; ;; ==================================================================
+; ;; sml a teaching programming language in coursera
+; ;; type C-x C-s to call sml prompt in another buffer
+; ;; type C-d to end the session
+; ;; type C-c C-c to interrupt evaluation and get your prompt back
+; ;; type M-p to print the previous line you used in REPL
+; ;; type M-n to print the next line you used in REPL
+; (use-package sml-mode
+;   :mode ("\\.sml\\'" . sml-mode))
+;
+; ;; ==================================================================
+; ;; assembly mode setup
+; (use-package asm-mode
+;   ;; an installed package
+;   :mode
+;   (("\\.S\\'" . asm-mode)
+;    ("\\.asm\\'" . asm-mode))
+;   :bind
+;   (("RET" . newline-and-indent))
+;   :config
+;   (setq asm-indent-level (* 2 mine-space-tap-offset))
+;   (setq indent-tabs-mode nil) ; use spaces to indent
+;   (electric-indent-mode -1) ; indentation in asm-mode is annoying
+;   (setq tab-stop-list (number-sequence 2 60 2))
+;   ;; (local-unset-key (vector asm-comment-char))
+;   )
+;
+; ;; ==================================================================
+; ;; Scala
+; (use-package scala-mode
+;   :interpreter
+;   ("scala" . scala-mode)
+;   :config
+;   (setq prettify-symbols-alist scala-prettify-symbols-alist)
+;   (prettify-symbols-mode))
+;
+; ;; ==================================================================
+; ;; YAML mode
+; ;; C-x TAB = indent the region/line
+; ;; C-n C-x $ = fold lines that indented more than n spaces
+; ;; C-x $ = select display folded lines
+; (use-package yaml-mode
+;   :mode
+;   (("\\.yml\\'" . yaml-mode)
+;    ("\\.conf\\'" . yaml-mode))
+;   :bind
+;   ;; remap the ENTER key to newline-and-indent
+;   ;; (define-key yaml-mode-map "\C-m" 'newline-and-indent)
+;   ("RET" . newline-and-indent)
+;   :init
+;   (add-hook 'yaml-mode-hook #'highlight-numbers-mode)
+;   (add-hook 'yaml-mode-hook 'highlight-indent-guides-mode)
+;   (add-hook 'yaml-mode-hook 'fic-mode)
+;   ;; TODO find a way to fold the code
+;   )
+;
+; ;; ==================================================================
+; ;; markdown mode-line
+; (use-package markdown-mode
+;   :commands (markdown-mode gfm-mode)
+;   :mode
+;   (("README\\.md\\'" . gfm-mode)
+;    ("\\.md\\'" . markdown-mode)
+;    ("\\.markdown\\'" . markdown-mode))
+;   :init
+;   (setq markdown-command "multimarkdown"))
+; ;; ==================================================================
+; ;; Org mode customization
 (use-package org
   :bind
   (("C-c a" . org-agenda))
-  :mode ("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
+  :mode (("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
+         ("\\.txt\\'" . org-mode))
   :config
   ;; hide the structural markers in the org-mode
   (setq org-hide-emphasis-markers t)
@@ -1794,132 +1837,175 @@ kernel."
   ;; <s|
   (require 'org-tempo)
   )
-
-(dolist (mode-hook '(org-mode-hook
-                     LaTeX-mode-hook))
-  (add-hook mode-hook 'turn-on-auto-fill))
-;; ==================================================================
-;; setup the org-tree-slide mode
-;; control functions
-;; org-tree-slide-move-next-tree (C->)
-;; org-tree-slide-move-previous-tree (C-<)
-;; org-tree-slide-content (C-x s c)
-(use-package org-tree-slide
-  :bind
-  (("<f8>" . org-tree-slide-mode)
-   ("S-<f8>" . org-tree-slide-skip-done-toggle)))
-
-(use-package org-fancy-priorities
+;
+; (dolist (mode-hook '(org-mode-hook
+;                      LaTeX-mode-hook))
+;   (add-hook mode-hook 'turn-on-auto-fill))
+; ;; ==================================================================
+; ;; setup the org-tree-slide mode
+; ;; control functions
+; ;; org-tree-slide-move-next-tree (C->)
+; ;; org-tree-slide-move-previous-tree (C-<)
+; ;; org-tree-slide-content (C-x s c)
+; (use-package org-tree-slide
+;   :bind
+;   (("<f8>" . org-tree-slide-mode)
+;    ("S-<f8>" . org-tree-slide-skip-done-toggle)))
+;
+; (use-package org-fancy-priorities
+;   :ensure t
+;   :hook
+;   (org-mode . org-fancy-priorities-mode)
+;   :config
+;   (setq org-fancy-priorities-list '("1|I:S" "2|I:NS" "3|NT:S" "4|NI:NS"))
+;   (rename-minor-mode "org-fancy-priorities" org-fancy-priorities-mode "FP"))
+; ;; ==================================================================
+; ;; apple script
+; ;; syntax highlight for apple script
+; (use-package apples-mode
+;   :mode ("\\.\\(applescri\\|sc\\)pt\\'" . apples-mode))
+;
+; ;; ==================================================================
+; ;; Latex
+; ;; get 2 spaces indentation for the \item
+; (use-package auctex
+;   :mode ("\\.tex\\'" . latex-mode)
+;   :init
+;   (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+;   :config
+;   (setq LaTeX-item-indent 0))
+;
+; ;; ==================================================================
+; ;; flyspell
+; ;; check the spelling on the fly
+; (use-package flyspell
+;   ;; :diminish ""
+;   :config
+;   ;; remove/remap the minor-mode key map
+;   (rename-minor-mode "flyspell" flyspell-mode "FlyS")
+;   (define-key flyspell-mode-map (kbd "C-;") nil)
+;
+;   ;; Enable spell check in program comments
+;   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+;   ;; Enable spell check in plain text / org-mode
+;   (add-hook 'text-mode-hook 'flyspell-mode)
+;   (add-hook 'org-mode-hook 'flyspell-mode)
+;   (setq flyspell-issue-welcome-flag nil)
+;   (setq flyspell-issue-message-flag nil)
+;
+;   ;; ignore repeated words
+;   (setq flyspell-mark-duplications-flag nil)
+;
+;   (when (string-equal 'gnu/linux system-type)
+;     (setq-default ispell-program-name "/usr/bin/aspell"))
+;   (when (string-equal system-type "darwin")
+;     (setq-default ispell-program-name "/usr/local/bin/ispell"))
+;   (setq-default ispell-list-command "list")
+;   )
+;
+; ;; ==================================================================
+; ;; writegood-mode
+; (use-package writegood-mode)
+;
+;
+; ;; ==================================================================
+; ;; emacs speak statistics
+; ;; ==================================================================
+; ; Set up ESS, i.e. Statistics in Emacs, R, Stata, etc.
+; (use-package ess-site
+;   ;; do not download this package in windows since
+;   ;; in window we download and install the modified emacs taking
+;   ;; this package as part of the system.
+;   :disabled (eq system-type 'windows-nt)
+;   :ensure ess
+;   :mode
+;   (("\\.R$" . R-mode))
+;   :config
+;   (ess-toggle-underscore nil) ; http://stackoverflow.com/questions/2531372/how-to-stop-emacs-from-replacing-underbar-with-in-ess-mode
+;   (setq ess-fancy-comments nil) ; http://stackoverflow.com/questions/780796/emacs-ess-mode-tabbing-for-comment-region
+;   ; Make ESS use RStudio's indenting style
+;   (add-hook 'ess-mode-hook (lambda() (ess-set-style 'RStudio)))
+;   ; Make ESS use more horizontal screen
+;   ; http://stackoverflow.com/questions/12520543/how-do-i-get-my-r-buffer-in-emacs-to-occupy-more-horizontal-space
+;   (add-hook 'ess-R-post-run-hook 'ess-execute-screen-options)
+;   (define-key inferior-ess-mode-map "\C-cw" 'ess-execute-screen-options)
+;   ; Add path to Stata to Emacs' exec-path so that Stata can be found
+;   (setq exec-path (append exec-path '("/usr/local/stata14"))))
+;
+; ;; ==================================================================
+; ;; desktop plus
+; ;; ==================================================================
+; ;; the file will be saved in the ~/.emacs.d/desktops/
+; (use-package desktop+
+;   :demand t)
+;
+; (use-package xcscope
+;   :disabled t)
+;
+; (use-package helm-cscope
+;   :disabled t)
+;
+; (clear-abbrev-table global-abbrev-table)
+;
+; (define-abbrev-table 'global-abbrev-table
+;   '(
+;     ("fh"
+;      "/*
+;  *-----------------------------------------------------------------------------
+;  *
+;  *
+;  *-----------------------------------------------------------------------------
+;  */")
+;     ("cr"
+;      "\
+; /*
+;  *
+;  */")))
+; (set-default 'abbrev-mode t)
+; (setq save-abbrevs nil)
+;
+; ;; ==================================================================
+; (use-package dashboard
+;   :ensure t
+;   :demand t
+;   :config
+;   (dashboard-setup-startup-hook))
+;
+(use-package deft
   :ensure t
-  :hook
-  (org-mode . org-fancy-priorities-mode)
   :config
-  (setq org-fancy-priorities-list '("1|I:S" "2|I:NS" "3|NT:S" "4|NI:NS"))
-  (rename-minor-mode "org-fancy-priorities" org-fancy-priorities-mode "FP"))
-;; ==================================================================
-;; apple script
-;; syntax highlight for apple script
-(use-package apples-mode
-  :mode ("\\.\\(applescri\\|sc\\)pt\\'" . apples-mode))
-
-;; ==================================================================
-;; Latex
-;; get 2 spaces indentation for the \item
-(use-package auctex
-  :mode ("\\.tex\\'" . latex-mode)
-  :init
-  (add-hook 'LaTeX-mode-hook #'flyspell-mode)
-  :config
-  (setq LaTeX-item-indent 0))
-
-;; ==================================================================
-;; flyspell
-;; check the spelling on the fly
-(use-package flyspell
-  ;; :diminish ""
-  :config
-  ;; remove/remap the minor-mode key map
-  (rename-minor-mode "flyspell" flyspell-mode "FlyS")
-  (define-key flyspell-mode-map (kbd "C-;") nil)
-
-  ;; Enable spell check in program comments
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  ;; Enable spell check in plain text / org-mode
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  (add-hook 'org-mode-hook 'flyspell-mode)
-  (setq flyspell-issue-welcome-flag nil)
-  (setq flyspell-issue-message-flag nil)
-
-  ;; ignore repeated words
-  (setq flyspell-mark-duplications-flag nil)
-
-  (when (string-equal 'gnu/linux system-type)
-    (setq-default ispell-program-name "/usr/bin/aspell"))
-  (when (string-equal system-type "darwin")
-    (setq-default ispell-program-name "/usr/local/bin/ispell"))
-  (setq-default ispell-list-command "list")
+  (setq deft-extensions '("txt" "org" "tex" "md"))
+  (setq deft-directory "~/Dropbox/notes")
+  (setq deft-recursive t)
+  (setq deft-use-filename-as-title t)
+  (setq deft-file-naming-rules '((noslash . "_")
+                                 (nospace . "_")
+                                 (case-fn . downcase)))
+  (setq deft-text-mode 'org-mode)
+  (setq deft-org-mode-title-prefix t)
+  (setq deft-use-filter-string-for-filename t)
+  (setq deft-default-extension "txt")
   )
 
-;; ==================================================================
-;; writegood-mode
-(use-package writegood-mode)
-
-
-;; ==================================================================
-;; emacs speak statistics
-;; ==================================================================
-; Set up ESS, i.e. Statistics in Emacs, R, Stata, etc.
-(use-package ess-site
-  ;; do not download this package in windows since
-  ;; in window we download and install the modified emacs taking
-  ;; this package as part of the system.
-  :disabled (eq system-type 'windows-nt)
-  :ensure ess
-  :mode
-  (("\\.R$" . R-mode))
+(use-package org-roam
+  :ensure t
+  :delight '(:eval (if mine-debug-show-modes-in-modeline
+                       org-roam
+                       ""))
   :config
-  (ess-toggle-underscore nil) ; http://stackoverflow.com/questions/2531372/how-to-stop-emacs-from-replacing-underbar-with-in-ess-mode
-  (setq ess-fancy-comments nil) ; http://stackoverflow.com/questions/780796/emacs-ess-mode-tabbing-for-comment-region
-  ; Make ESS use RStudio's indenting style
-  (add-hook 'ess-mode-hook (lambda() (ess-set-style 'RStudio)))
-  ; Make ESS use more horizontal screen
-  ; http://stackoverflow.com/questions/12520543/how-do-i-get-my-r-buffer-in-emacs-to-occupy-more-horizontal-space
-  (add-hook 'ess-R-post-run-hook 'ess-execute-screen-options)
-  (define-key inferior-ess-mode-map "\C-cw" 'ess-execute-screen-options)
-  ; Add path to Stata to Emacs' exec-path so that Stata can be found
-  (setq exec-path (append exec-path '("/usr/local/stata14"))))
-
-;; ==================================================================
-;; desktop plus
-;; ==================================================================
-;; the file will be saved in the ~/.emacs.d/desktops/
-(use-package desktop+
-  :demand t)
-
-(use-package xcscope
-  :disabled t)
-
-(use-package helm-cscope
-  :disabled t)
-
-(clear-abbrev-table global-abbrev-table)
-
-(define-abbrev-table 'global-abbrev-table
-  '(
-    ("fh"
-     "/*
- *-----------------------------------------------------------------------------
- *
- *
- *-----------------------------------------------------------------------------
- */")
-    ("cr"
-     "\
-/*
- *
- */")))
-(set-default 'abbrev-mode t)
-(setq save-abbrevs nil)
+  (setq org-roam-directory "~/Dropbox/notes")
+  (setq org-roam-db-update-method 'immediate)
+  ; set the file name without the date format
+  (setq org-roam-capture-templates
+        '(("d" "default" plain (function org-roam--capture-get-point)
+          "%?"
+          :file-name "${slug}"
+          :head "# -*- mode: org; -*-\n#+title: ${title}\n"
+          :immediate-finish t
+          :unnarrowed t)))
+  ; the first element in the list is the default extension of the org-roam
+  (setq org-roam-file-extensions '("txt" "org"))
+  )
 
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
@@ -1928,13 +2014,12 @@ kernel."
                                       (emacs-init-time))))
 
 ;; ==================================================================
-(use-package dashboard
-  :ensure t
-  :demand t
-  :config
-  (dashboard-setup-startup-hook))
-;; ==================================================================
-;; ## Emacs Lisp
+;; # Emacs Lisp
+;; ## Basic Settings
+;; Use (setq ...) to set value locally to a buffer
+;; Use (setq-default ...) to set value globally
+;; set the default font
+;; (set-frame-font Fontname-Size)
 ;; (member 1 (cons 1 (cons 2 '()))) -> return (1)
 ;; (display-grpahic-p) = check whether emacs is on the terminal mode or not
 ;; (interactive) = it will call this function if we press M-x function-name
@@ -1946,7 +2031,7 @@ kernel."
 ;;   ...)    =  execute the statements in sequence and return the value
 ;;              of the last one
 ;; (load-file "directory/file.el")
-;; (defcustom variable ... ) = a function to declare a customizable variable
+
 ;; window-system = this is a window system
 
 ;; ==================================================================
