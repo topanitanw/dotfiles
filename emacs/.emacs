@@ -1,9 +1,19 @@
-;; -*- origami-fold-style: triple-braces -*-
 (defvar mine-debug-show-modes-in-modeline nil
   "show the mode symbol in the mode line")
 
 (defvar mine-space-tap-offset 4
   "the number of spaces per tap")
+
+(defun show-mode-in-modeline (mode-sym)
+  (if mine-debug-show-modes-in-modeline
+      mode-sym
+      ""))
+
+;; Change "yes or no" to "y or n"
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; make searches case insensitive
+(setq case-fold-search t)
 
 (setq-default fill-column 70)
 ;; elisp tutorial is written below:
@@ -92,6 +102,7 @@
                          (getenv "PATH")))
   )
 
+;;; coding convention {{{
 (defun mine-coding-style ()
   "My coding style."
   (interactive)
@@ -128,8 +139,44 @@
 (c-set-offset 'access-label '--)
 ;; set the indent of all other elements in the class definition to equal
 ;; the c-basic-offset
-(c-set-offset 'inclass      mine-space-tap-offset)
+(c-set-offset 'inclass mine-space-tap-offset)
 
+
+;;; ibuffer {{{
+;; ----------------------------------------------------------------------
+;; Ensure ibuffer opens with point at the current buffer's entry.
+;; How to use iBuffer
+;; call ibuffer C-x C-b and mark buffers in the list with
+;; - m (mark the buffer you want to keep)
+;; - t (toggle marks)
+;; - D (kill all marked buffers)
+;; - g (update ibuffer)
+;; - x (execute the commands)
+(defadvice ibuffer
+  (around ibuffer-point-to-most-recent) ()
+  "Open ibuffer with cursor pointed to most recent buffer name."
+  (let ((recent-buffer-name (buffer-name)))
+    ad-do-it
+    (ibuffer-jump-to-buffer recent-buffer-name)))
+(ad-activate 'ibuffer)
+
+;; nearly all of this is the default layout
+(setq ibuffer-formats
+      '((mark modified read-only " "
+              (name 25 25 :left :elide) ; change: 30s were originally 18s
+              " "
+              (size 9 -1 :right)
+              " "
+              (mode 16 16 :left :elide)
+              " " filename-and-process)
+        (mark " "
+              (name 16 -1)
+              " " filename)))
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+;;; }}}
+
+;;; package manager {{{
 ;; =======================================================================
 ;; Straight
 ;; =======================================================================
@@ -154,6 +201,7 @@
 
 ;; use-package-always-ensure variable is related to the package,
 ;; so you are not supposed to use it.
+;; :ensure as well.
 (setq-default
   straight-use-package-by-default t
   use-package-always-defer t)
@@ -176,7 +224,8 @@
   )
 
 (use-package delight)
-
+;;; }}}
+;;; theme {{{
 ;; =======================================================================
 ;; Zenburn
 ;; =======================================================================
@@ -242,13 +291,14 @@
           ("REVIEW"     font-lock-keyword-face bold)
           ("NOTE"       success bold italic)
           ("DEPRECATED" font-lock-doc-face bold))))
-
+;;; }}}
 ;; =======================================================================
 ;; restart emacs
 ;; =======================================================================
 (use-package restart-emacs
   :defer t)
 
+;;; autocomplete {{{
 ;; =======================================================================
 ;; Company
 ;; =======================================================================
@@ -291,7 +341,8 @@
   (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
   (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
   (rename-minor-mode "company" company-mode "Com"))
-
+;;; }}}
+;;; evil {{{
 ;; =======================================================================
 ;; Evil
 ;; =======================================================================
@@ -344,16 +395,17 @@
 (use-package evil-escape
   :after (evil)
   :demand t
-  :delight '(:eval (if mine-debug-show-modes-in-modeline
-                       "jk"
-                       ""))
+  ; :delight '(:eval (if mine-debug-show-modes-in-modeline
+  ;                      "jk"
+  ;                      ""))
+  :delight '(:eval (show-mode-in-modeline "jk"))
   :config
   (evil-escape-mode)
   (setq-default evil-escape-key-sequence "jk")
   (setq-default evil-escape-delay 0.2)
   ; (rename-minor-mode "evil-escape" evil-escape-mode "jk")
   )
-
+;;; }}}
 ;; =======================================================================
 ;; Undo Tree
 ;; =======================================================================
@@ -367,9 +419,10 @@
 ;; buffer the way you wanted it, or C-q to quit without making any
 ;; changes. 1 2 3
 (use-package undo-tree
-  :delight '(:eval (if mine-debug-show-modes-in-modeline
-                       undo-tree
-                       ""))
+  ;:delight '(:eval (if mine-debug-show-modes-in-modeline
+  ;                     undo-tree
+  ;                     ""))
+  :delight '(:eval (show-mode-in-modeline 'undo-tree))
   :init
   (global-undo-tree-mode 1)
   (setq undo-tree-visualizer-timestamp t
@@ -416,15 +469,16 @@
   (recentf-mode 1)
   (setq-default recent-save-file "~/.emacs.d/recentf")
   (setq helm-ff-file-name-history-use-recentf t)
- )
+  )
 
 ;; =======================================================================
 ;; highlight the indentation of the code
 ;; =======================================================================
 (use-package highlight-indent-guides
-  :delight '(:eval (if mine-debug-show-modes-in-modeline
-		       highlight-indent-guides
-                       ""))
+  ;:delight '(:eval (if mine-debug-show-modes-in-modeline
+  ;		       highlight-indent-guides
+  ;                     ""))
+  :delight '(:eval (show-mode-in-modeline 'highlight-indent-guides))
   :demand t
   :config
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
@@ -457,6 +511,7 @@
   :config
   (setq LaTeX-item-indent 0))
 
+;;; org {{{
 (use-package org
   :bind
   (("C-c a" . org-agenda))
@@ -545,9 +600,10 @@
 
 (use-package org-roam
   :after org
-  :delight '(:eval (if mine-debug-show-modes-in-modeline
-                       org-roam
-                       ""))
+  ;:delight '(:eval (if mine-debug-show-modes-in-modeline
+  ;                     org-roam
+  ;                     ""))
+  :delight '(:eval (show-mode-in-modeline 'org-roam))
   :hook
   (after-init . org-roam-mode)
   :custom
@@ -574,9 +630,9 @@
         '(("d" "default" plain (function org-roam--capture-get-point)
           "%?"
           :file-name "${slug}"
-          :head "# -*- mode: org; -*-\n#+title: ${title}\n"
-          :immediate-finish t
-          :unnarrowed t)))
+	  :head "# -*- mode: org; -*-\n#+title: ${title}\n"
+	  :immediate-finish t
+	  :unnarrowed t)))
   ; the first element in the list is the default extension of the org-roam
   (setq org-roam-file-extensions '("md" "txt" "org"))
   (setq org-roam-graph-executable (executable-find "dot"))
@@ -601,7 +657,7 @@
 	org-roam-server-network-label-truncate-length 60
 	org-roam-server-network-label-wrap-length 20)
   )
-
+;;; }}}
 ;; =======================================================================
 ;; Avy
 ;; =======================================================================
@@ -609,6 +665,7 @@
   ; :bind
   ; (("C-c j" . avy-goto-char-2)
   ;  ("C-c l" . avy-goto-line))
+  :demand t
   :config
   (when (featurep 'evil-leader)
     (evil-leader/set-key
@@ -616,34 +673,15 @@
       "jc" #'avy-goto-char-2))
   )
 
-;{{{vim
-; (use-package vimish-fold
-;   :ensure
-;   :after evil
-;   )
-;
-; (use-package evil-vimish-fold
-;   :ensure
-;   :after vimish-fold
-;   :init
-;   (setq evil-vimish-fold-mode-lighter " |")
-;   (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))
-;   :config
-;   (global-evil-vimish-fold-mode)
-;   )
-;}}}
-; (use-package s
-;   :ensure
-;   )
-;
-; (use-package dash
-;   :ensure
-;   )
-
 (use-package origami
-  :ensure
+  :hook (prog-mode . origami-mode)
   :config
   (global-origami-mode)
+  (setq-local origami-fold-style 'triple-braces)
+  (setq origami-show-fold-header t)     ;highlight fold headers
+  ; (add-hook 'prog-mode-hook
+  ;           (lambda ()
+  ;             (setq-local origami-fold-style 'triple-braces)))
   )
 
 ;; lsp-origami provides support for origami.el using language server protocol’s
@@ -653,11 +691,28 @@
   :disabled
   :hook ((lsp-after-open . lsp-origami-mode))
   )
+
+;{{{
+(use-package vimish-fold
+  :disabled
+  :after evil
+  :config
+  (vimish-fold-global-mode 1)
+  )
+
+(use-package evil-vimish-fold
+  :disabled
+  :after vimish-fold
+  :init
+  (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))
+  :config
+  (global-evil-vimish-fold-mode))
+;}}}
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
                      (lambda () (message "emacs-init-time: %s" (emacs-init-time))))
-;; # Emacs Lisp
+;; # Emacs Lisp {{{
 ;; ## Basic Settings
 ;; Use (setq ...) to set value locally to a buffer
 ;; Use (setq-default ...) to set value globally
@@ -682,3 +737,4 @@
 ;;    https://github.com/chadhs/dotfiles/blob/master/editors/emacs-config.org
 ;; 2. evil setup
 ;;    http://evgeni.io/posts/quick-start-evil-mode/
+;; }}}
