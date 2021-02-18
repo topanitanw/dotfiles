@@ -222,7 +222,7 @@ set ai               " Auto indent
 set si               " Smart indent
 
 set backspace=2      " Allow backspacing over everything in insert mode
-set cino+=(0         " Change the indentation of the function arguments
+set cino+=(0,W4      " Change the indentation of the function arguments
 
 " Formatting the C/C++ code
 map <F7> gg=G<C-o><C-o>
