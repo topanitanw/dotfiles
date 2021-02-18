@@ -1,5 +1,5 @@
 "" Use gVim settings
-set nocompatible 	   " Use gVim defaults
+set nocompatible   " Use gVim defaults
 
 "----------------------------------------------------------------------
 " how to install vim-plug
@@ -67,6 +67,7 @@ if has('nvim-0.3')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 elseif has('nvim') || (v:version >= 800)
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    "Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
 else
@@ -123,7 +124,7 @@ endfunction
 
 "" set the default font and font size
 " set guifont=Dejavu\ Sans\ Mono:h12
-set guifont=JetBrains\ Mono:h12
+set guifont=JetBrains\ Mono:h14
 
 " enable syntax highlighting
 set colorcolumn=80
@@ -181,7 +182,8 @@ set ffs=unix,dos,mac
 set comments=sl:/*,mb:\ *,elx:\ */
 
 " a function to trim whitespace to use it like:
-"" commented out because vim-better-whitespace is installed
+"" commented out because vim-better-whitespace is installed, so please
+"" :call StripWhitespace instead.
 " :call TrimWhitespace()
 " function! TrimWhitespace()
 "     let l:save = winsaveview()
@@ -223,6 +225,9 @@ set si               " Smart indent
 
 set backspace=2      " Allow backspacing over everything in insert mode
 set cino+=(0,W4      " Change the indentation of the function arguments
+" a_long_line(
+"     argument,
+"     argument);
 
 " Formatting the C/C++ code
 map <F7> gg=G<C-o><C-o>
@@ -246,12 +251,14 @@ function! CodingStyleMine ()
     execute "set shiftwidth=".g:indent_width
     " make sure that the tabs are expanded.
     set expandtab
-    set textwidth=79
+    set textwidth=80
+    set wrapmargin=2
 
     " in makefiles, don't expand tabs to spaces, since actual tab
     " characters are needed, and have indentation at 8 chars to be sure
     " that all indents are tabs (despite the mappings later):
     autocmd FileType make set noexpandtab shiftwidth=4 softtabstop=0
+    set cino+=(0,W4
 endfunction
 call CodingStyleMine()
 
@@ -259,7 +266,7 @@ function! CodingStyleCompany ()
     set tabstop=3        " each tab has 2_spaces equivalent width
     set softtabstop=3    " number of spaces in tab when editing
     set shiftwidth=3     " Indentation width when using >> and << re-indentation
-    set textwidth=79
+    set textwidth=80
 endfunction
 
 "----------------------------------------------------------------------
