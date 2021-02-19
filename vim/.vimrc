@@ -258,6 +258,7 @@ function! CodingStyleMine ()
     " characters are needed, and have indentation at 8 chars to be sure
     " that all indents are tabs (despite the mappings later):
     autocmd FileType make set noexpandtab shiftwidth=4 softtabstop=0
+    set cino+=(0,W4
 endfunction
 call CodingStyleMine()
 
