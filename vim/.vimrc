@@ -309,7 +309,9 @@ if g:os == "Windows"
 endif
 
 "----------------------------------------------------------------------
-set diffopt+=iwhite
+if has('nvim')
+    set diffopt+=iwhite
+endif
 
 "----------------------------------------------------------------------
 " buffer/window management
@@ -456,11 +458,11 @@ let g:strip_whitespace_confirm=0
 
 " Vim-easymotion: jump to anywhere in the buffers
 " <Leader>c{char}{char} to move to {char}{char}
-nmap <Leader>ec <Plug>(easymotion-overwin-f2)
+nmap <Leader>jc <Plug>(easymotion-overwin-f2)
 
 " Move to line
-map <Leader>el <Plug>(easymotion-bd-jk)
-nmap <Leader>el <Plug>(easymotion-overwin-line)
+map <Leader>jl <Plug>(easymotion-bd-jk)
+nmap <Leader>jl <Plug>(easymotion-overwin-line)
 
 " indentLine: display vertical lines at each indentation level
 let g:indentLine_enabled = 1
