@@ -1,3 +1,4 @@
+;; *-* mode: lisp *-*
 (defvar mine-debug-show-modes-in-modeline nil
   "show the mode symbol in the mode line")
 
@@ -26,6 +27,13 @@
 (setq-default visible-bell 1)
 (setq ring-bell-function 'ignore)
 
+;; keyboard scroll one line at a time
+(setq-default scroll-step 1)
+
+;; support mouse wheel scrolling
+(when (require 'mwheel nil 'noerror)
+  (mouse-wheel-mode t))
+
 ;; enable the highlight current line
 (global-hl-line-mode +1)
 
@@ -46,6 +54,8 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
+;; we can use either one of the two to check the os
+;; (when (string-equal system-type "darwin")
 (when (eq system-type 'darwin) ;; mac specific settings
   (set-face-attribute 'default nil
                       :family "JetBrains Mono"
@@ -75,12 +85,13 @@
   ;; sets fn-delete to be right-delete
   (global-set-key [kp-delete] 'delete-char)
   ;; set the ispell path to the emacs for mac machines
-  (setq ispell-program-name "/usr/local/bin/ispell")
+  (when (file-exists-p "/usr/local/bin/ispell")
+    (setq ispell-program-name "/usr/local/bin/ispell"))
   ;; set the alt key to be the option key
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'alt)
 
-  ; (prefer-coding-system 'utf-8)
+                                        ; (prefer-coding-system 'utf-8)
   ;; set the background mode
   (setq frame-background-mode 'light)
 
@@ -100,7 +111,7 @@
   (setenv "PATH" (concat "/Library/TeX/texbin"
                          ":"
                          (getenv "PATH")))
-  )
+ )
 
 ;;; coding convention {{{
 (defun mine-coding-style ()
@@ -176,6 +187,25 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 ;;; }}}
 
+;;----------------------------------------------------------------------
+;; remove the ^M
+;; There are two solutions to solve this problem.
+;; 1. call this function
+(defun remove-control-M ()
+  "Remove ^M at end of line in the whole buffer. from Steve"
+  (interactive)
+  (save-match-data
+    (save-excursion
+      (let ((remove-count 0))
+        (goto-char (point-min))
+        (while (re-search-forward (concat (char-to-string 13) "$") (point-max) t)
+          (setq remove-count (+ remove-count 1))
+          (replace-match "" nil nil))
+        (message (format "%d ^M removed from buffer." remove-count))))))
+;; 2. press M-% or M-x replace-string
+;;    - C-q C-M RET
+;;    - RET
+;;    - ! (replace the entire file)
 ;;; package manager {{{
 ;; =======================================================================
 ;; Straight
@@ -303,7 +333,7 @@
 ;; Company
 ;; =======================================================================
 (use-package company
-  :demand t
+  :defer 2
   :bind
   (("C-p" . company-complete))
   :init
@@ -325,6 +355,7 @@
         company-dabbrev-downcase nil ;; set it globally
         ;; need to type at least 3 characters until the autocompletion starts
         company-minimum-prefix-length 3
+        company-tooltip-align-annotations 't
         ;; weight by frequency
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance))
@@ -341,6 +372,11 @@
   (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
   (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
   (rename-minor-mode "company" company-mode "Com"))
+
+(use-package company-box
+  :after company
+  :diminish
+  :hook (company-mode . company-box-mode))
 ;;; }}}
 ;;; evil {{{
 ;; =======================================================================
@@ -578,7 +614,8 @@
       "d" #'deft))
   :config
   (setq deft-extensions '("txt" "org" "md"))
-  (setq deft-directory (file-truename "~/Dropbox/notes"))
+  (when (eq system-type 'darwin) ;; mac specific settings
+    (setq deft-directory (file-truename "~/Dropbox/notes")))
   (setq deft-recursive t)
   (setq deft-use-filename-as-title t)
   (setq deft-file-naming-rules '((noslash . "_")
@@ -708,6 +745,54 @@
   :config
   (global-evil-vimish-fold-mode))
 ;}}}
+
+(use-package vimrc-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.vim\\(rc\\)?\\'" . vimrc-mode))
+  )
+
+(use-package flyspell
+  :delight '(:eval (show-mode-in-modeline "flys"))
+  :config
+  ;; remove/remap the minor-mode key map
+  ; (rename-minor-mode "flyspell" flyspell-mode "FlyS")
+  (define-key flyspell-mode-map (kbd "C-;") nil)
+
+  ;; Enable spell check in program comments
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  ;; Enable spell check in plain text / org-mode
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  (setq flyspell-issue-welcome-flag nil)
+  (setq flyspell-issue-message-flag nil)
+
+  ;; ignore repeated words
+  (setq flyspell-mark-duplications-flag nil)
+  (when (and (string-equal 'gnu/linux system-type)
+             (file-exists-p "/usr/bin/aspell"))
+    (setq-default ispell-program-name "/usr/bin/aspell"))
+  (setq-default ispell-list-command "list")
+  )
+
+(use-package racket-mode
+  :bind
+  (("C-c r" . racket-run))
+  :init
+  (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+  (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+  :config
+  (setq racket-mode-pretty-lambda t)
+  ;; (type-case FAW a-fae
+  ;     [a ...
+  ;     [b ...
+  (put 'type-case 'racket-indent-function 2)
+  (put 'local 'racket-indent-function nil)
+  (put '+ 'racket-indent-function nil)
+  (put '- 'racket-indent-function nil)
+  (setq tab-always-indent 'complete)
+  (when (window-system)
+    (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
+    (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
