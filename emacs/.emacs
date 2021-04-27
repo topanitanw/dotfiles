@@ -1,3 +1,4 @@
+;; *-* mode: lisp *-*
 (defvar mine-debug-show-modes-in-modeline nil
   "show the mode symbol in the mode line")
 
@@ -25,6 +26,13 @@
 ;; disable the alarm bell
 (setq-default visible-bell 1)
 (setq ring-bell-function 'ignore)
+
+;; keyboard scroll one line at a time
+(setq-default scroll-step 1)
+
+;; support mouse wheel scrolling
+(when (require 'mwheel nil 'noerror)
+  (mouse-wheel-mode t))
 
 ;; enable the highlight current line
 (global-hl-line-mode +1)
@@ -606,7 +614,8 @@
       "d" #'deft))
   :config
   (setq deft-extensions '("txt" "org" "md"))
-  (setq deft-directory (file-truename "~/Dropbox/notes"))
+  (when (eq system-type 'darwin) ;; mac specific settings
+    (setq deft-directory (file-truename "~/Dropbox/notes")))
   (setq deft-recursive t)
   (setq deft-use-filename-as-title t)
   (setq deft-file-naming-rules '((noslash . "_")
@@ -764,6 +773,26 @@
     (setq-default ispell-program-name "/usr/bin/aspell"))
   (setq-default ispell-list-command "list")
   )
+
+(use-package racket-mode
+  :bind
+  (("C-c r" . racket-run))
+  :init
+  (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+  (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+  :config
+  (setq racket-mode-pretty-lambda t)
+  ;; (type-case FAW a-fae
+  ;     [a ...
+  ;     [b ...
+  (put 'type-case 'racket-indent-function 2)
+  (put 'local 'racket-indent-function nil)
+  (put '+ 'racket-indent-function nil)
+  (put '- 'racket-indent-function nil)
+  (setq tab-always-indent 'complete)
+  (when (window-system)
+    (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
+    (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
