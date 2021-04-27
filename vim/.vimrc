@@ -139,8 +139,8 @@ set modeline
 set modelines=1
 
 if has("gui_running")
-"  set guioptions -= m   "remove Menu bar
-"  set guioptions -= T   "remove Tool bar
+"  set guioptions -= m  " remove Menu bar
+"  set guioptions -= T  " remove Tool bar
 endif
 
 " from here https://sunaku.github.io/vim-256color-bce.html
