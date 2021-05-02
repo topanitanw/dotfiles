@@ -409,6 +409,9 @@
   (evil-ex-define-cmd "buffers" 'ibuffer)
 
   (evil-set-initial-state 'deft-mode 'emacs)
+  (setq evil-search-module 'evil-search)
+  (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
+  (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat)
   )
 
 ;; =======================================================================
