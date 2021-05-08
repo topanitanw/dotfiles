@@ -409,7 +409,10 @@
   (evil-ex-define-cmd "buffers" 'ibuffer)
 
   (evil-set-initial-state 'deft-mode 'emacs)
+
+  ;; set up search in the evil mode 
   (setq evil-search-module 'evil-search)
+  ;; use up and down keys to scroll the search history
   (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
   (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat)
   )
