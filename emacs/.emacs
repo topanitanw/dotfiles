@@ -356,6 +356,8 @@
         ;; need to type at least 3 characters until the autocompletion starts
         company-minimum-prefix-length 3
         company-tooltip-align-annotations 't
+        company-show-numbers t
+        company-tooltip-align-annotations 't
         ;; weight by frequency
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance))
@@ -799,6 +801,47 @@
   (when (window-system)
     (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
     (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
+
+(use-package centaur-tabs
+  :disabled
+  :demand
+  :config
+  (centaur-tabs-mode t)
+  :bind
+  ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward))
+
+(use-package yaml-mode)
+
+(use-package tabbar
+  :disabled
+  :config
+  (customize-set-variable 'tabbar-background-color "gray20")
+  (customize-set-variable 'tabbar-separator '(0.5))
+  (customize-set-variable 'tabbar-use-images nil)
+  (tabbar-mode 1)
+
+  ;; My preferred keys
+  (define-key global-map [(alt j)] 'tabbar-backward)
+  (define-key global-map [(alt k)] 'tabbar-forward)
+
+  ;; Colors
+  (set-face-attribute 'tabbar-default nil
+                      :background "gray20" :foreground 
+                      "gray60" :distant-foreground "gray50"
+                      :family "Helvetica Neue" :box nil)
+  (set-face-attribute 'tabbar-unselected nil
+                      :background "gray80" :foreground "black" :box nil)
+  (set-face-attribute 'tabbar-modified nil
+                      :foreground "red4" :box nil
+                      :inherit 'tabbar-unselected)
+  (set-face-attribute 'tabbar-selected nil
+                      :background "#4090c0" :foreground "white" :box nil)
+  (set-face-attribute 'tabbar-selected-modified nil
+                      :inherit 'tabbar-selected :foreground "GoldenRod2" :box nil)
+  (set-face-attribute 'tabbar-button nil
+                      :box nil)
+  )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

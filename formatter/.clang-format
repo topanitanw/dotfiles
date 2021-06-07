@@ -1,0 +1,45 @@
+# -*- mode: config -*-
+---
+Language:         Cpp
+BasedOnStyle:  Google
+IndentWidth:        4
+SortIncludes:    true
+ColumnLimit:       80
+UseTab:         Never
+
+AlwaysBreakAfterDefinitionReturnType: true
+AlwaysBreakTemplateDeclarations: true
+BreakConstructorInitializers: BeforeColon
+
+AlignAfterOpenBracket: AlwaysBreak
+# false:
+# void f() {
+#   f(aaaaaaaaaaaaaaaaaaaa,
+#     aaaaaaaaaaaaaaaaaaaa,
+#     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa);
+# }
+BinPackArguments: false
+
+# false:
+# void f(int aaaaaaaaaaaaaaaaaaaa,
+#        int aaaaaaaaaaaaaaaaaaaa,
+#        int aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) {}
+BinPackParameters: false
+
+ExperimentalAutoDetectBinPacking: false
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# works for the clang-format 10, not 5
+AllowAllArgumentsOnNextLine: false
+
+# not extra indent of public:
+AccessModifierOffset: -4
+AlignTrailingComments: true
+
+BraceWrapping:
+	AfterFunction: false
+
+# true: (int) i;
+SpaceAfterCStyleCast: true
+
+ExperimentalAutoDetectBinPacking: true
