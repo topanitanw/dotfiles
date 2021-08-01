@@ -97,3 +97,4 @@ check_source ${FILE_PRIVATE_ENV}
 
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
+
