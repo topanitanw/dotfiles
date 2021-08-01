@@ -842,6 +842,12 @@
   (set-face-attribute 'tabbar-button nil
                       :box nil)
   )
+
+(use-package org-roam-ui
+  :straight
+    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+    :hook (org-roam . org-roam-ui-mode))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

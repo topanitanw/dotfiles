@@ -17,6 +17,21 @@ case "${unameOut}" in
 esac
 echo "machine: ${machine}"
 
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/usr/local/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/usr/local/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
 echo "reading ~/.bashrc"
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -98,18 +113,18 @@ check_source ${FILE_PRIVATE_ENV}
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/pwa732/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/pwa732/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/pwa732/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/pwa732/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+# # >>> conda initialize >>>
+# # !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$('/home/pwa732/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "/home/pwa732/anaconda3/etc/profile.d/conda.sh" ]; then
+#         . "/home/pwa732/anaconda3/etc/profile.d/conda.sh"
+#     else
+#         export PATH="/home/pwa732/anaconda3/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
+# # <<< conda initialize <<<
 

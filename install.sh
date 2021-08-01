@@ -7,7 +7,7 @@ printf "${LABEL} home directory: ${DST_DIR}\n"
 
 function sync {
     # check if the file exists
-    if [ ! -f $1 ]; then
+    if [ ! -f "$1" ]; then
         return 0
     fi
 
@@ -17,7 +17,7 @@ function sync {
 
 function symlink {
     # check if the file exists
-    if [ ! -f $1 ]; then
+    if [ -h "$1" ]; then
         return 0
     fi
 
@@ -89,11 +89,11 @@ symlink jupyter/notebook.json "${JUPYTERNB_DIR}"
 ##################################################
 # ssh config
 mkdir -p ~/.ssh
-symlink ssh_config ~/.ssh/config
+symlink ssh_config ${HOME}/.ssh
 
 ##################################################
 # git config
-symlink git/.gitconfig ~/.gitconfig
-git config --global
+symlink git/.gitconfig ${HOME}
+# git config --file ~/.gitconfig
 
 printf "${LABEL} done\n"
