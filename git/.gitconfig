@@ -10,4 +10,9 @@
     lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(dim normal)%s%C(reset) %C(dim normal)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
     lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(dim normal)%s%C(reset) %C(dim normal)- %an%C(reset)' --all
     lg = !"git lg1"
+    # git basic status
+    ba = !"echo '\n[=] git status -uno' ; git status -uno; echo '\n[=] git remote -v;'; git remote -v;"
 
+[init]
+    # git config --global init.defaultBranch main
+	defaultBranch = main
