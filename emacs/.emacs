@@ -661,6 +661,8 @@
       "rg"  #'org-roam-graph
       "ri"  #'org-roam-insert
       "rt"  #'org-roam-tag-add))
+
+  (setq org-roam-v2-ack t)
   ; :bind (:map org-roam-mode-map
   ; 	      (("C-c r r" . org-roam)
   ; 	       ("C-c r f" . org-roam-find-file)
@@ -843,11 +845,21 @@
                       :box nil)
   )
 
+(use-package websocket
+  :after org-roam)
+(use-package simple-httpd)
+(use-package f)
 (use-package org-roam-ui
   :straight
     (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
     :after org-roam
-    :hook (org-roam . org-roam-ui-mode))
+    :hook (org-roam . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t)
+    )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

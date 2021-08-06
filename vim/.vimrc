@@ -242,7 +242,7 @@ match ExtraWhitespace /\s\+$/
 
 let g:indent_width=4
 
-function! CodingStyleMine ()
+function! MyCodingStyle ()
     " each tab has 2_spaces equivalent width
     execute "set tabstop=".g:indent_width
     " number of spaces in tab when editing
