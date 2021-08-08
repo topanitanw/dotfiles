@@ -260,7 +260,7 @@ function! MyCodingStyle ()
     autocmd FileType make set noexpandtab shiftwidth=4 softtabstop=0
     set cino+=(0,W4
 endfunction
-call CodingStyleMine()
+call MyCodingStyle()
 
 function! CodingStyleCompany ()
     set tabstop=3        " each tab has 2_spaces equivalent width
