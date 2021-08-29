@@ -417,6 +417,7 @@
   ;; use up and down keys to scroll the search history
   (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
   (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat)
+  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
   )
 
 ;; =======================================================================
@@ -559,6 +560,7 @@
 (use-package org
   :bind
   (("C-c a" . org-agenda))
+
   :mode (("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
          ("\\.txt\\'" . org-mode))
   :config
@@ -590,6 +592,7 @@
   (setq org-startup-indented t)
   (setq org-startup-with-inline-images t)
   (setq org-startup-truncated t)
+  (setq org-cycle-emulate-tab t)
   ;; set the archive file org-file.s_archieve
   (setq org-archive-location "%s_archive::")
   (setq org-adapt-indentation nil)

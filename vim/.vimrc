@@ -137,6 +137,10 @@ set showcmd             " show incomplete command in bottom bar
 set lazyredraw          " redraw only when we need to.
 set modeline
 set modelines=1
+" do not use the insert mode to solve the problem that when pasting the text
+" from the system clipboard, vim cannot recognize ESC.
+set noinsertmode
+
 
 if has("gui_running")
 "  set guioptions -= m  " remove Menu bar
