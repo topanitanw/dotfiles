@@ -63,9 +63,8 @@ if v:version >= 800
     Plug 'scrooloose/nerdcommenter'
 endif
 
-if has('nvim-0.3')
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-elseif has('nvim') || (v:version >= 800)
+if has('nvim') || (v:version >= 800)
+    Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     "Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
@@ -525,6 +524,29 @@ hi Search cterm=underline ctermfg=blue ctermbg=none
 "" whichkey will start when the leader key is pressed.
 "" in this case we assume that space is the leader key.
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
+"" nvim-window
+map <silent> <leader>w :lua require('nvim-window').pick()<CR>
+lua << EOF
+require('nvim-window').setup({
+  -- The characters available for hinting windows.
+  chars = {
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
+    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'
+  },
+
+  -- A group to use for overwriting the Normal highlight group in the floating
+  -- window. This can be used to change the background color.
+  normal_hl = 'Normal',
+
+  -- The highlight group to apply to the line that contains the hint characters.
+  -- This is used to make them stand out more.
+  hint_hl = 'Bold',
+
+  -- The border style to use for the floating window.
+  border = 'single'
+})
+EOF
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
