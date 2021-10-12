@@ -525,6 +525,7 @@ hi Search cterm=underline ctermfg=blue ctermbg=none
 "" in this case we assume that space is the leader key.
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
+if has("nvim")
 "" nvim-window
 map <silent> <leader>w :lua require('nvim-window').pick()<CR>
 lua << EOF
@@ -547,6 +548,7 @@ require('nvim-window').setup({
   border = 'single'
 })
 EOF
+endif
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
