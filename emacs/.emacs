@@ -723,6 +723,12 @@
       "jc" #'avy-goto-char-2))
   )
 
+(use-package ace-window
+  :bind (("C-x o" . ace-window))
+  :config
+  (global-set-key [remap other-window] 'ace-window)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+
 (use-package origami
   :hook (prog-mode . origami-mode)
   :config
@@ -863,6 +869,9 @@
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t)
     )
+
+(use-package vterm
+    :ensure t)
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
