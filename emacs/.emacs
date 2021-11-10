@@ -412,7 +412,7 @@
 
   (evil-set-initial-state 'deft-mode 'emacs)
 
-  ;; set up search in the evil mode 
+  ;; set up search in the evil mode
   (setq evil-search-module 'evil-search)
   ;; use up and down keys to scroll the search history
   (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
@@ -431,6 +431,7 @@
   (evil-leader/set-leader "<SPC>")
   ; (evil-leader/set-key "l" 'avy-goto-line)
   ; (evil-leader/set-key "c" 'avy-goto-char-2)
+  (evil-leader/set-key "w" 'ace-window)
   )
 
 ;; =======================================================================
@@ -616,6 +617,10 @@
   ;; we build a template to create a source code block
   ;; <s|
   (require 'org-tempo)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)))
   )
 
 (use-package deft
@@ -730,6 +735,7 @@
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 (use-package origami
+  :disabled
   :hook (prog-mode . origami-mode)
   :config
   (global-origami-mode)
@@ -740,6 +746,25 @@
   ;             (setq-local origami-fold-style 'triple-braces)))
   )
 
+(use-package hideshowvis
+  :diminish hs-minor-mode
+  ;; on mac (25.3) this module has a problem
+  :ensure nil
+  :init
+  (dolist (hook (list 'emacs-lisp-mode-hook
+                      'c++-mode-hook
+                      'nesc-mode-hook
+                      'python-mode-hook))
+    (add-hook hook 'hideshowvis-enable))
+  ;; (hideshowvis-symbols)
+  :config
+  (setq hideshowvis-ignore-same-line nil))
+
+(autoload 'hideshowvis-enable "hideshowvis" "Highlight foldable regions")
+(autoload 'hideshowvis-minor-mode
+  "hideshowvis"
+  "Will indicate regions foldable with hideshow in the fringe."
+  'interactive)
 ;; lsp-origami provides support for origami.el using language server protocol’s
 ;; textDocument/foldingRange functionality.
 ;; https://github.com/emacs-lsp/lsp-origami/
@@ -838,7 +863,7 @@
 
   ;; Colors
   (set-face-attribute 'tabbar-default nil
-                      :background "gray20" :foreground 
+                      :background "gray20" :foreground
                       "gray60" :distant-foreground "gray50"
                       :family "Helvetica Neue" :box nil)
   (set-face-attribute 'tabbar-unselected nil
@@ -872,6 +897,7 @@
 
 (use-package vterm
     :ensure t)
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

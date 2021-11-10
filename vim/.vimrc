@@ -32,6 +32,8 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:autoload_plugvim = expand("~/.vim/autoload/plug.vim")
     let g:plug_dir = expand("~/.vim/plugged")
     let g:editor_root = expand("~/.vim")
+    let g:python3_host_prog = '/usr/local/anaconda3/bin/python'
+    let g:python_host_prog = '/usr/local/anaconda3/bin/python'
     "endif
 endif
 
@@ -51,9 +53,10 @@ Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
 " Plug 'ctrlpvim/ctrlp.vim'
+Plug 'dense-analysis/ale'
 
 if v:version >= 800
-    Plug 'scrooloose/syntastic'   " check syntactical errors
+    " Plug 'scrooloose/syntastic'   " check syntactical errors
     Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
     Plug 'vim-scripts/indentpython.vim' " indent in python
     Plug 'scrooloose/nerdtree'     " display file tree
@@ -69,17 +72,19 @@ if has('nvim') || (v:version >= 800)
     "Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'folke/todo-comments.nvim'
 else
-    Plug 'ajh17/VimCompletesMe'
+    " Plug 'ajh17/VimCompletesMe'
 endif
 
 Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'easymotion/vim-easymotion'
-Plug 'sakshamgupta05/vim-todo-highlight'
+" Plug 'sakshamgupta05/vim-todo-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'kassio/neoterm'
-Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+Plug 'folke/which-key.nvim'
 Plug 'mhinz/vim-startify'
 call plug#end()
 
@@ -92,8 +97,10 @@ colorscheme zenburn
 let g:lightline = {
     \ 'colorscheme': 'default',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'filename', 'readonly', 'modified', 'gitbranch' ] ]
+    \     'left': [
+	\         [ 'mode', 'paste' ],
+	\         [ 'filename', 'readonly', 'modified', 'gitbranch' ]
+    \     ]
     \ },
     \ 'component_function': {
     \   'filename': 'LightLineFilename',
@@ -386,6 +393,7 @@ nnoremap <Leader>f :NERDTreeToggle<Enter>
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 let NERDTreeShowHidden=1
+let NERDTreeMinimalUI=1
 
 " NerdCommenter: Easily toggle the comment status of various amounts of code
 " based on your key mappings.
@@ -476,20 +484,74 @@ let g:indentLine_color_term = 243
 " let g:indentLine_bgcolor_term = '#3a3a3a'
 " let g:indentLine_color_dark = 1 " (default: 2)
 
-" vim-todo-highlight
-" it works only to add more keywords
-let g:todo_highlight_config = {
-            \   'BUG': {},
-            \   'REVIEW': {},
-            \   'NB': {},
-            \   'NOTE': {
-            \     'gui_fg_color': '#ffffff',
-            \     'gui_bg_color': '#ffbd2a',
-            \     'cterm_fg_color': 'red',
-            \     'cterm_bg_color': '214'
-            \   }
-            \ }
-" TODO: NOTE: FIXME: NB: BUG:
+" todo-commments.nvim
+if has("nvim")
+lua << EOF
+require("todo-comments").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+  signs = true, -- show icons in the signs column
+  sign_priority = 8, -- sign priority
+  -- keywords recognized as todo comments
+  keywords = {
+      FIX = {
+          icon = " ", -- icon used for the sign, and in search results
+          color = "#FE1100", -- can be a hex color, or a named color (see below)
+          alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
+          -- signs = false, -- configure signs for some keywords individually
+          },
+      TODO = { icon = " ", color = "#F27FA5" },
+      HACK = { icon = " ", color = "warning" },
+      WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+      PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+      NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+  },
+  merge_keywords = true, -- when true, custom keywords will be merged with the defaults
+  -- highlighting of the line containing the todo comment
+  -- * before: highlights before the keyword (typically comment characters)
+  -- * keyword: highlights of the keyword
+  -- * after: highlights after the keyword (todo text)
+  highlight = {
+      before = "bg", -- "fg" or "bg" or empty
+      keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
+      after = "bg", -- "fg" or "bg" or empty
+      pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlightng (vim regex)
+      comments_only = true, -- uses treesitter to match keywords in comments only
+      max_line_len = 400, -- ignore lines longer than this
+      exclude = {}, -- list of file types to exclude highlighting
+  },
+  -- list of named colors where we try to extract the guifg from the
+  -- list of hilight groups or use the hex color if hl not found as a fallback
+  colors = {
+      error = { "LspDiagnosticsDefaultError", "ErrorMsg", "#DC2626" },
+      warning = { "LspDiagnosticsDefaultWarning", "WarningMsg", "#FBBF24" },
+      info = { "LspDiagnosticsDefaultInformation", "#2563EB" },
+      hint = { "LspDiagnosticsDefaultHint", "#10B981" },
+      default = { "Identifier", "#7C3AED" },
+  },
+  search = {
+    command = "rg",
+    args = {
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+    },
+    -- regex that will be used to match keywords.
+    -- don't replace the (KEYWORDS) placeholder
+    pattern = [[\b(KEYWORDS):]], -- ripgrep regex
+    -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
+  },
+}
+-- TODO:
+-- HACK:
+-- BUG:
+-- WARN:
+-- FIXME:
+-- NOTE:
+EOF
+endif
 
 "" ctrlp vim
 " Ctrl-P: Find full paths to files, buffers, and tags. Open multiple files at
@@ -523,7 +585,16 @@ hi Search cterm=underline ctermfg=blue ctermbg=none
 
 "" whichkey will start when the leader key is pressed.
 "" in this case we assume that space is the leader key.
-nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+"" nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+if has("nvim")
+lua << EOF
+  require("which-key").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+endif
 
 if has("nvim")
 "" nvim-window

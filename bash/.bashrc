@@ -104,6 +104,13 @@ if [ -x /usr/bin/dircolors ]; then
     #alias vdir='vdir --color=auto' ;
 fi
 
+if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
+    function clear(){
+        vterm_printf "51;Evterm-clear-scrollback";
+        tput clear;
+    }
+fi
+
 FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
 source ${FILE_BASH_FUNCTION}
 
