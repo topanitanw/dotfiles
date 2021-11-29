@@ -32,9 +32,11 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:autoload_plugvim = expand("~/.vim/autoload/plug.vim")
     let g:plug_dir = expand("~/.vim/plugged")
     let g:editor_root = expand("~/.vim")
-    let g:python3_host_prog = '/usr/local/anaconda3/bin/python'
-    let g:python_host_prog = '/usr/local/anaconda3/bin/python'
-    "endif
+
+    if g:os == "Darwin"
+        let g:python3_host_prog = '/usr/local/anaconda3/bin/python'
+        let g:python_host_prog = '/usr/local/anaconda3/bin/python'
+    endif
 endif
 
 if empty(glob(g:autoload_plugvim))
