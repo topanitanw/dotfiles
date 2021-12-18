@@ -54,6 +54,7 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
 " Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dense-analysis/ale'
+" Plug 'mtth/scratch.vim' " removed. not quite useful
 
 if v:version >= 800
     " Plug 'scrooloose/syntastic'   " check syntactical errors
