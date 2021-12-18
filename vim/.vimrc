@@ -32,9 +32,11 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:autoload_plugvim = expand("~/.vim/autoload/plug.vim")
     let g:plug_dir = expand("~/.vim/plugged")
     let g:editor_root = expand("~/.vim")
-    let g:python3_host_prog = '/usr/local/anaconda3/bin/python'
-    let g:python_host_prog = '/usr/local/anaconda3/bin/python'
-    "endif
+
+    if g:os == "Darwin"
+        let g:python3_host_prog = '/usr/local/anaconda3/bin/python'
+        let g:python_host_prog = '/usr/local/anaconda3/bin/python'
+    endif
 endif
 
 if empty(glob(g:autoload_plugvim))
@@ -68,12 +70,12 @@ endif
 
 if has('nvim') || (v:version >= 800)
     Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    "Plug 'zchee/deoplete-clang'
+    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
     Plug 'nvim-lua/plenary.nvim'
-    Plug 'folke/todo-comments.nvim'
+    " Plug 'folke/todo-comments.nvim'
 else
     " Plug 'ajh17/VimCompletesMe'
 endif
@@ -84,7 +86,7 @@ Plug 'easymotion/vim-easymotion'
 " Plug 'sakshamgupta05/vim-todo-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'kassio/neoterm'
-Plug 'folke/which-key.nvim'
+" Plug 'folke/which-key.nvim'
 Plug 'mhinz/vim-startify'
 call plug#end()
 
@@ -484,8 +486,72 @@ let g:indentLine_color_term = 243
 " let g:indentLine_bgcolor_term = '#3a3a3a'
 " let g:indentLine_color_dark = 1 " (default: 2)
 
+"" ctrlp vim
+" Ctrl-P: Find full paths to files, buffers, and tags. Open multiple files at
+" once and create new files or directories.
+" fuzzy find files
+let g:ctrlp_map = '<Leader>p'
+let g:ctrlp_cmd = 'CtrlP'
+
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+            \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+            \ 'file': '\v\.(exe|so|dll)$',
+            \ }
+"  \ 'link': 'some_bad_symbolic_links',
+
+if g:os == "Windows"
+    set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe         " Windows
+    let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'  " Windows
+endif
+
+if g:os == "Darwin" || g:os == "Linux"
+    set wildignore+=*/tmp/*,*.so,*.swp,*.zip       " MacOSX/Linux
+    let g:ctrlp_user_command = 'find %s -type f'   " MacOSX/Linux
+endif
+
+"" http://andrewradev.com/2011/08/06/making-vim-pretty-with-custom-colors/
+"" I have to move the customized color here; otherwise, it doesn't work.
+"" change the highlight color of the current replaced text
+hi IncSearch cterm=bold,underline ctermfg=green ctermbg=none
+hi Search cterm=underline ctermfg=blue ctermbg=none
+
+if 0 " has("nvim")
+"" whichkey will start when the leader key is pressed.
+"" in this case we assume that space is the leader key.
+"" nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+lua << EOF
+  require("which-key").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+
+"" nvim-window
+map <silent> <leader>w :lua require('nvim-window').pick()<CR>
+lua << EOF
+require('nvim-window').setup({
+  -- The characters available for hinting windows.
+  chars = {
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
+    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'
+  },
+
+  -- A group to use for overwriting the Normal highlight group in the floating
+  -- window. This can be used to change the background color.
+  normal_hl = 'Normal',
+
+  -- The highlight group to apply to the line that contains the hint characters.
+  -- This is used to make them stand out more.
+  hint_hl = 'Bold',
+
+  -- The border style to use for the floating window.
+  border = 'single'
+})
+EOF
+
 " todo-commments.nvim
-if has("nvim")
 lua << EOF
 require("todo-comments").setup {
     -- your configuration comes here
@@ -550,74 +616,6 @@ require("todo-comments").setup {
 -- WARN:
 -- FIXME:
 -- NOTE:
-EOF
-endif
-
-"" ctrlp vim
-" Ctrl-P: Find full paths to files, buffers, and tags. Open multiple files at
-" once and create new files or directories.
-" fuzzy find files
-let g:ctrlp_map = '<Leader>p'
-let g:ctrlp_cmd = 'CtrlP'
-
-let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
-let g:ctrlp_custom_ignore = {
-            \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-            \ 'file': '\v\.(exe|so|dll)$',
-            \ }
-"  \ 'link': 'some_bad_symbolic_links',
-
-if g:os == "Windows"
-    set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe         " Windows
-    let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'  " Windows
-endif
-
-if g:os == "Darwin" || g:os == "Linux"
-    set wildignore+=*/tmp/*,*.so,*.swp,*.zip       " MacOSX/Linux
-    let g:ctrlp_user_command = 'find %s -type f'   " MacOSX/Linux
-endif
-
-"" http://andrewradev.com/2011/08/06/making-vim-pretty-with-custom-colors/
-"" I have to move the customized color here; otherwise, it doesn't work.
-"" change the highlight color of the current replaced text
-hi IncSearch cterm=bold,underline ctermfg=green ctermbg=none
-hi Search cterm=underline ctermfg=blue ctermbg=none
-
-"" whichkey will start when the leader key is pressed.
-"" in this case we assume that space is the leader key.
-"" nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
-if has("nvim")
-lua << EOF
-  require("which-key").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
-EOF
-endif
-
-if has("nvim")
-"" nvim-window
-map <silent> <leader>w :lua require('nvim-window').pick()<CR>
-lua << EOF
-require('nvim-window').setup({
-  -- The characters available for hinting windows.
-  chars = {
-    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
-    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'
-  },
-
-  -- A group to use for overwriting the Normal highlight group in the floating
-  -- window. This can be used to change the background color.
-  normal_hl = 'Normal',
-
-  -- The highlight group to apply to the line that contains the hint characters.
-  -- This is used to make them stand out more.
-  hint_hl = 'Bold',
-
-  -- The border style to use for the floating window.
-  border = 'single'
-})
 EOF
 endif
 
