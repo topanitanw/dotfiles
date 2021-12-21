@@ -69,8 +69,8 @@ endif
 
 if has('nvim') || (v:version >= 800)
     Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    "Plug 'zchee/deoplete-clang'
+    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
     Plug 'nvim-lua/plenary.nvim'
