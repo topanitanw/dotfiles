@@ -56,6 +56,7 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
 " Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dense-analysis/ale'
+" Plug 'mtth/scratch.vim' " removed. not quite useful
 
 if v:version >= 800
     " Plug 'scrooloose/syntastic'   " check syntactical errors
@@ -70,8 +71,8 @@ endif
 
 if has('nvim') || (v:version >= 800)
     Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    "Plug 'zchee/deoplete-clang'
+    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
     Plug 'nvim-lua/plenary.nvim'
@@ -492,59 +493,59 @@ lua << EOF
 require("todo-comments").setup {
     -- your configuration comes here
     -- or leave it empty to use the default settings
-  signs = true, -- show icons in the signs column
-  sign_priority = 8, -- sign priority
-  -- keywords recognized as todo comments
-  keywords = {
-      FIX = {
-          icon = " ", -- icon used for the sign, and in search results
-          color = "#FE1100", -- can be a hex color, or a named color (see below)
-          alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
-          -- signs = false, -- configure signs for some keywords individually
-          },
-      TODO = { icon = " ", color = "#F27FA5" },
-      HACK = { icon = " ", color = "warning" },
-      WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
-      PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-      NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
-  },
-  merge_keywords = true, -- when true, custom keywords will be merged with the defaults
-  -- highlighting of the line containing the todo comment
-  -- * before: highlights before the keyword (typically comment characters)
-  -- * keyword: highlights of the keyword
-  -- * after: highlights after the keyword (todo text)
-  highlight = {
-      before = "bg", -- "fg" or "bg" or empty
-      keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
-      after = "bg", -- "fg" or "bg" or empty
-      pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlightng (vim regex)
-      comments_only = true, -- uses treesitter to match keywords in comments only
-      max_line_len = 400, -- ignore lines longer than this
-      exclude = {}, -- list of file types to exclude highlighting
-  },
-  -- list of named colors where we try to extract the guifg from the
-  -- list of hilight groups or use the hex color if hl not found as a fallback
-  colors = {
-      error = { "LspDiagnosticsDefaultError", "ErrorMsg", "#DC2626" },
-      warning = { "LspDiagnosticsDefaultWarning", "WarningMsg", "#FBBF24" },
-      info = { "LspDiagnosticsDefaultInformation", "#2563EB" },
-      hint = { "LspDiagnosticsDefaultHint", "#10B981" },
-      default = { "Identifier", "#7C3AED" },
-  },
-  search = {
-    command = "rg",
-    args = {
-      "--color=never",
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-    },
-    -- regex that will be used to match keywords.
-    -- don't replace the (KEYWORDS) placeholder
-    pattern = [[\b(KEYWORDS):]], -- ripgrep regex
-    -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
-  },
+    signs = true, -- show icons in the signs column
+    sign_priority = 8, -- sign priority
+    -- keywords recognized as todo comments
+    keywords = {
+        FIX = {
+            icon = " ", -- icon used for the sign, and in search results
+            color = "#FE1100", -- can be a hex color, or a named color (see below)
+            alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
+            -- signs = false, -- configure signs for some keywords individually
+            },
+        TODO = { icon = " ", color = "#F27FA5" },
+        HACK = { icon = " ", color = "warning" },
+        WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+        PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+        NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+        },
+    merge_keywords = true, -- when true, custom keywords will be merged with the defaults
+    -- highlighting of the line containing the todo comment
+    -- * before: highlights before the keyword (typically comment characters)
+    -- * keyword: highlights of the keyword
+    -- * after: highlights after the keyword (todo text)
+    highlight = {
+        before = "bg", -- "fg" or "bg" or empty
+        keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
+        after = "bg", -- "fg" or "bg" or empty
+        pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlightng (vim regex)
+        comments_only = true, -- uses treesitter to match keywords in comments only
+        max_line_len = 400, -- ignore lines longer than this
+        exclude = {}, -- list of file types to exclude highlighting
+        },
+    -- list of named colors where we try to extract the guifg from the
+    -- list of hilight groups or use the hex color if hl not found as a fallback
+    colors = {
+        error = { "LspDiagnosticsDefaultError", "ErrorMsg", "#DC2626" },
+        warning = { "LspDiagnosticsDefaultWarning", "WarningMsg", "#FBBF24" },
+        info = { "LspDiagnosticsDefaultInformation", "#2563EB" },
+        hint = { "LspDiagnosticsDefaultHint", "#10B981" },
+        default = { "Identifier", "#7C3AED" },
+        },
+    search = {
+        command = "rg",
+        args = {
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            },
+        -- regex that will be used to match keywords.
+        -- don't replace the (KEYWORDS) placeholder
+        pattern = [[\b(KEYWORDS):]], -- ripgrep regex
+        -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
+        },
 }
 -- TODO:
 -- HACK:
@@ -590,11 +591,11 @@ hi Search cterm=underline ctermfg=blue ctermbg=none
 "" nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 if has("nvim")
 lua << EOF
-  require("which-key").setup {
+require("which-key").setup {
     -- your configuration comes here
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
-  }
+    }
 EOF
 endif
 
@@ -603,22 +604,22 @@ if has("nvim")
 map <silent> <leader>w :lua require('nvim-window').pick()<CR>
 lua << EOF
 require('nvim-window').setup({
-  -- The characters available for hinting windows.
-  chars = {
+-- The characters available for hinting windows.
+chars = {
     'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'
-  },
+    },
 
-  -- A group to use for overwriting the Normal highlight group in the floating
-  -- window. This can be used to change the background color.
-  normal_hl = 'Normal',
+-- A group to use for overwriting the Normal highlight group in the floating
+-- window. This can be used to change the background color.
+normal_hl = 'Normal',
 
-  -- The highlight group to apply to the line that contains the hint characters.
-  -- This is used to make them stand out more.
-  hint_hl = 'Bold',
+-- The highlight group to apply to the line that contains the hint characters.
+-- This is used to make them stand out more.
+hint_hl = 'Bold',
 
-  -- The border style to use for the floating window.
-  border = 'single'
+-- The border style to use for the floating window.
+border = 'single'
 })
 EOF
 endif
