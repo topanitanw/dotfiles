@@ -12,6 +12,9 @@
     lg = !"git lg1"
     # git basic status
     ba = !"echo '\n[=] git status -uno' ; git status -uno; echo '\n[=] git remote -v;'; git remote -v; echo '\n[=] git branch -a;'; git branch -a; "
+    lsf = !"git ls-files"
+    droot = !"git rev-parse --show-toplevel"
+
 
 [init]
     # git config --global init.defaultBranch main

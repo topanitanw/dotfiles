@@ -49,6 +49,7 @@ call plug#begin(g:plug_dir)
 Plug 'vim-scripts/Zenburn'
 Plug 'itchyny/lightline.vim'
 Plug 'ap/vim-buftabline'        " display the buffer name on top of the screen
+"TODO: https://github.com/romgrk/barbar.nvim
 Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
@@ -67,8 +68,8 @@ if v:version >= 800
     Plug 'scrooloose/nerdcommenter'
 endif
 
+Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
 if has('nvim') || (v:version >= 800)
-    Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
     " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     " Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
@@ -87,12 +88,18 @@ Plug 'qpkorr/vim-bufkill'
 Plug 'kassio/neoterm'
 Plug 'folke/which-key.nvim'
 Plug 'mhinz/vim-startify'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'p00f/nvim-ts-rainbow'
+
+"" Plug 'luochen1990/rainbow'
+"" let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 call plug#end()
 
 "----------------------------------------------------------------------
 " GUI
 "" set zenburn color scheme
-let g:zenburn_force_dark_Background = 1
+let g:zenburn_force_dark_Background = 0
 colorscheme zenburn
 
 let g:lightline = {
@@ -545,14 +552,17 @@ require("todo-comments").setup {
         -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
         },
 }
--- TODO:
--- HACK:
--- BUG:
--- WARN:
--- FIXME:
--- NOTE:
 EOF
 endif
+" TODO:
+" HACK:
+" BUG:
+" WARN:
+" FIX:
+" FIXME:
+" NOTE:
+" INFO:
+" PERF:
 
 "" ctrlp vim
 " Ctrl-P: Find full paths to files, buffers, and tags. Open multiple files at
@@ -597,28 +607,71 @@ require("which-key").setup {
 EOF
 endif
 
+hi BlackOnLightYellow guifg=#000000 guibg=#f2de91
+hi Red guifg=#af0000 guibg=#f2de91
 if has("nvim")
 "" nvim-window
 map <silent> <leader>w :lua require('nvim-window').pick()<CR>
 lua << EOF
 require('nvim-window').setup({
--- The characters available for hinting windows.
-chars = {
-    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
-    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'
+    -- The characters available for hinting windows.
+    chars = {
+        'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
+        'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'
     },
 
--- A group to use for overwriting the Normal highlight group in the floating
--- window. This can be used to change the background color.
-normal_hl = 'Normal',
+    -- A group to use for overwriting the Normal highlight group in the floating
+    -- window. This can be used to change the background color.
+    -- normal_hl = 'Normal',
+    normal_hl = 'BlackOnLightYellow',
 
--- The highlight group to apply to the line that contains the hint characters.
--- This is used to make them stand out more.
-hint_hl = 'Bold',
+    -- The highlight group to apply to the line that contains the hint characters.
+    -- This is used to make them stand out more.
+    hint_hl = 'Red',
 
--- The border style to use for the floating window.
-border = 'single'
+    -- The border style to use for the floating window.
+    border = 'single',
+    float_height = 6,
+    float_width = 12
+
 })
+EOF
+endif
+
+
+if has("nvim")
+    lua << EOF
+    require("nvim-treesitter.configs").setup {
+        -- example
+        -- https://github.com/ahmed-rezk-dev/super-nvim/blob/main/lua/treesitter-nvim.lua
+        -- One of "all", "maintained" (parsers with maintainers), or a list of languages
+    ensure_installed = {
+        "bash",
+        "c",
+        "comment",
+        "go",
+        "lua",
+        "vim",
+        },
+
+    -- Install languages synchronously (only applied to `ensure_installed`)
+    sync_install = false,
+
+    -- List of parsers to ignore installing
+    ignore_install = { "javascript" },
+    highlight = {
+        -- ...
+        },
+    -- ...
+    rainbow = {
+    enable = true,
+    -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+    max_file_lines = nil, -- Do not enable for files with more than n lines, int
+    -- colors = {}, -- table of hex strings
+    -- termcolors = {} -- table of colour name strings
+    }
+}
 EOF
 endif
 
