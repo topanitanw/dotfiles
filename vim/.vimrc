@@ -106,8 +106,8 @@ let g:lightline = {
     \ 'colorscheme': 'default',
     \ 'active': {
     \     'left': [
-	\         [ 'mode', 'paste' ],
-	\         [ 'filename', 'readonly', 'modified', 'gitbranch' ]
+    \         [ 'mode', 'paste' ],
+    \         [ 'filename', 'readonly', 'modified', 'gitbranch' ]
     \     ]
     \ },
     \ 'component_function': {
@@ -269,6 +269,8 @@ function! MyCodingStyle ()
     execute "set shiftwidth=".g:indent_width
     " make sure that the tabs are expanded.
     set expandtab
+    " wrap/truncate text to be within 80 character long.
+    " select the text and type gq
     set textwidth=80
     set wrapmargin=2
 
@@ -358,6 +360,7 @@ augroup filetype
     autocmd BufNewFile,BufRead *.mk set filetype=make
     autocmd BufNewFile,BufRead *.sc set filetype=make
     autocmd BufNewFile,BufRead *akefile.rules set filetype=make
+    autocmd BufNewFile,BufRead *.v,*.vs,*.pyv set filetype=verilog
 augroup END
 
 "----------------------------------------------------------------------
@@ -638,7 +641,6 @@ require('nvim-window').setup({
 EOF
 endif
 
-
 if has("nvim")
     lua << EOF
     require("nvim-treesitter.configs").setup {
@@ -674,6 +676,9 @@ if has("nvim")
 }
 EOF
 endif
+
+"" stop vim to render symbols and equations in tex.
+let g:tex_conceal = ""
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
