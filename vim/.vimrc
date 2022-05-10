@@ -68,8 +68,8 @@ endif
 
 if has('nvim') || (v:version >= 800)
     Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    "Plug 'zchee/deoplete-clang'
+    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " Plug 'zchee/deoplete-clang'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
     Plug 'nvim-lua/plenary.nvim'
@@ -350,6 +350,7 @@ augroup filetype
     autocmd BufNewFile,BufRead *.mk set filetype=make
     autocmd BufNewFile,BufRead *.sc set filetype=make
     autocmd BufNewFile,BufRead *akefile.rules set filetype=make
+    autocmd BufNewFile,BufRead *.v,*.vs,*.pyv set filetype=verilog
 augroup END
 
 "----------------------------------------------------------------------
@@ -499,7 +500,7 @@ require("todo-comments").setup {
             color = "#FE1100", -- can be a hex color, or a named color (see below)
             alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
             -- signs = false, -- configure signs for some keywords individually
-            },
+        },
         TODO = { icon = " ", color = "#F27FA5" },
         HACK = { icon = " ", color = "warning" },
         WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },

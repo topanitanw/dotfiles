@@ -16,7 +16,7 @@ case "${unameOut}" in
     *)          machine="UNKNOWN:${unameOut}"
 esac
 echo "machine: ${machine}"
-
+echo "path: ${PATH}"
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -111,6 +111,7 @@ if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
     }
 fi
 
+echo "path v2: ${PATH}"
 FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
 source ${FILE_BASH_FUNCTION}
 
