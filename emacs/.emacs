@@ -881,8 +881,11 @@
 
 (use-package websocket
   :after org-roam)
+
 (use-package simple-httpd)
+
 (use-package f)
+
 (use-package org-roam-ui
   :straight
     (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))

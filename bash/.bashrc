@@ -16,8 +16,9 @@ case "${unameOut}" in
     *)          machine="UNKNOWN:${unameOut}"
 esac
 echo "machine: ${machine}"
-
+echo "path: ${PATH}"
 echo "reading ~/.bashrc"
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -96,6 +97,7 @@ if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
     }
 fi
 
+echo "path v2: ${PATH}"
 FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
 source ${FILE_BASH_FUNCTION}
 
