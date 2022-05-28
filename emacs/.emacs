@@ -234,7 +234,8 @@
 ;; :ensure as well.
 (setq-default
   straight-use-package-by-default t
-  use-package-always-defer t)
+  use-package-always-defer t
+  use-package-expand-minimally t)
 
 (use-package diminish
   :demand t
@@ -631,7 +632,13 @@
   :config
   (setq deft-extensions '("txt" "org" "md"))
   (when (eq system-type 'darwin) ;; mac specific settings
-    (setq deft-directory (file-truename "~/Dropbox/notes")))
+    (setq deft-directory (file-truename "~/Dropbox/notes"))
+    (setq deft-recursive-ignore-dir-regexp
+          (concat "\\(?:"
+                  "\\."
+                  "\\|\\.\\."
+                  "\\|\\.obsidian"
+                  "\\)$")))
   (setq deft-recursive t)
   (setq deft-use-filename-as-title t)
   (setq deft-file-naming-rules '((noslash . "_")
@@ -837,6 +844,29 @@
   (when (window-system)
     (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
     (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
+
+(use-package verilog-mode
+  :ensure nil
+  :config
+  (custom-set-variables
+   '(verilog-align-ifelse t)
+   '(verilog-auto-delete-trailing-whitespace t)
+   '(verilog-auto-inst-param-value t)
+   '(verilog-auto-inst-vector nil)
+   '(verilog-auto-lineup (quote all))
+   '(verilog-auto-newline nil)
+   '(verilog-auto-save-policy nil)
+   '(verilog-auto-template-warn-unused t)
+   '(verilog-case-indent mine-space-tap-offset)
+   '(verilog-cexp-indent mine-space-tap-offset)
+   '(verilog-highlight-grouping-keywords t)
+   '(verilog-highlight-modules t)
+   '(verilog-indent-level mine-space-tap-offset)
+   '(verilog-indent-level-behavioral mine-space-tap-offset)
+   '(verilog-indent-level-declaration mine-space-tap-offset)
+   '(verilog-indent-level-module mine-space-tap-offset)
+   '(verilog-tab-to-comment t))
+  )
 
 (use-package centaur-tabs
   :disabled

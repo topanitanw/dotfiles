@@ -12,6 +12,7 @@ alias source_bash="source ~/.bashrc;";
 alias mcl="make clean;";
 alias mck="make check;";
 alias mal="make all;";
+alias mat="make format;";
 alias mii="make isoimage;";
 alias mmcf="make menuconfig;";
 

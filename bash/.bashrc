@@ -111,7 +111,6 @@ if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
     }
 fi
 
-echo "path v2: ${PATH}"
 FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
 source ${FILE_BASH_FUNCTION}
 

@@ -92,7 +92,11 @@ Plug 'mhinz/vim-startify'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'p00f/nvim-ts-rainbow'
+" Plug 'vhda/verilog_systemverilog.vim'
 
+Plug 'nachumk/systemverilog.vim'
+runtime macros/matchit.vim
+au BufNewFile,BufRead *.sv,*.svh,*.vh,*.v set filetype=systemverilog
 "" Plug 'luochen1990/rainbow'
 "" let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 call plug#end()
