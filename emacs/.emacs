@@ -631,7 +631,8 @@
       "d" #'deft))
   :config
   (setq deft-extensions '("txt" "org" "md"))
-  (when (eq system-type 'darwin) ;; mac specific settings
+  ;; mac specific settings
+  (when (eq system-type 'darwin) 
     (setq deft-directory (file-truename "~/Dropbox/notes"))
     (setq deft-recursive-ignore-dir-regexp
           (concat "\\(?:"
@@ -929,8 +930,10 @@
     )
 
 (use-package vterm
-    :ensure t)
+  :ensure t)
 
+(use-package cmake-mode
+  :ensure t)
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

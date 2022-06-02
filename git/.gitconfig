@@ -22,3 +22,6 @@
 [init]
     # git config --global init.defaultBranch main
 	defaultBranch = main
+
+[pull]
+    ff = only
