@@ -48,10 +48,13 @@ if empty(glob(g:autoload_plugvim))
 endif
 
 call plug#begin(g:plug_dir)
+" theme
 Plug 'vim-scripts/Zenburn'
+" mode line
 Plug 'itchyny/lightline.vim'
-Plug 'ap/vim-buftabline'        " display the buffer name on top of the screen
-"TODO: https://github.com/romgrk/barbar.nvim
+" display the buffer name on top of the screen
+Plug 'ap/vim-buftabline'
+"" TODO: https://github.com/romgrk/barbar.nvim
 Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
