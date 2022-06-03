@@ -1,0 +1,27 @@
+[user]
+	name = topanitanw
+	email = sassofono@hotmail.com
+
+[core]
+	editor = vim
+    whitespace = -trailing-space,-indent-with-non-tab,-tab-in-indent
+
+[alias]
+    lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(dim normal)%s%C(reset) %C(dim normal)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+    lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(dim normal)%s%C(reset) %C(dim normal)- %an%C(reset)' --all
+    lg3 = log --graph --decorate --name-status --all
+    lg = !"git lg1"
+    # git basic status
+    ba = !"echo '\n[=] git status -uno' ; git status -uno; echo '\n[=] git remote -v;'; git remote -v; echo '\n[=] git branch -a;'; git branch -a; "
+    lsf = ls-files
+    droot = rev-parse --show-toplevel
+    pso = push origin
+    plo = pull origin
+
+
+[init]
+    # git config --global init.defaultBranch main
+	defaultBranch = main
+
+[pull]
+    ff = only

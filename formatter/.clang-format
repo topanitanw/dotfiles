@@ -1,0 +1,84 @@
+# -*- mode: config -*-
+---
+Language:         Cpp
+BasedOnStyle:  Google
+IndentWidth:        4
+SortIncludes:    true
+ColumnLimit:       80
+UseTab:         Never
+
+AlwaysBreakTemplateDeclarations: true
+BreakConstructorInitializers: BeforeColon
+ContinuationIndentWidth: 4
+PenaltyBreakAssignment: 20
+PenaltyBreakBeforeFirstCallParameter: 0
+
+AlignAfterOpenBracket: AlwaysBreak
+# false:
+# void f() {
+#   f(aaaaaaaaaaaaaaaaaaaa,
+#     aaaaaaaaaaaaaaaaaaaa,
+#     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa);
+# }
+BinPackArguments: false
+
+# false:
+# void f(int aaaaaaaaaaaaaaaaaaaa,
+#        int aaaaaaaaaaaaaaaaaaaa,
+#        int aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) {}
+BinPackParameters: false
+
+# not extra indent of public:
+AccessModifierOffset: -4
+AlignTrailingComments: true
+
+BraceWrapping:
+	AfterFunction: false
+
+# true: (int) i;
+SpaceAfterCStyleCast: true
+
+# works for the clang-format 10, not 5
+# false:
+# callFunction(a,
+#              b,
+#              c,
+#              d);
+AllowAllArgumentsOnNextLine: false
+
+# false:
+# void f(
+#     int aaaaaaaaaaaaaaaaaaaa,
+#     int aaaaaaaaaaaaaaaaaaaa,
+#     int aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) {}
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# all:
+# void
+# f(
+#     int aaaaaaaaaaaaaaaaaaaa,
+#     int aaaaaaaaaaaaaaaaaaaa,
+#     int aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) {}
+AlwaysBreakAfterReturnType: All
+
+ExperimentalAutoDetectBinPacking: true
+
+BraceWrapping:
+    AfterControlStatement: true
+
+SpaceBeforeCtorInitializerColon: true
+ConstructorInitializerIndentWidth: 4
+BreakBeforeInheritanceComma: false
+BreakInheritanceList: AfterColon
+
+# false:
+# MyClass::MyClass() :
+#     member0(0),
+#     member1(2) {}
+AllowAllConstructorInitializersOnNextLine: false
+BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+
+
+BreakBeforeBinaryOperators: NonAssignment
