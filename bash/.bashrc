@@ -19,6 +19,13 @@ echo "machine: ${machine}"
 echo "path: ${PATH}"
 echo "reading ~/.bashrc"
 
+# Fig pre block. Keep at the top of this file.
+FIG_FILE="$HOME/.fig/shell/bashrc.pre.bash"
+if [ -f  "${FIG_FILE}" ]; then
+    . "${FIG_FILE}"
+    echo "reading ${FIG_FILE}"
+fi
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -105,3 +112,6 @@ check_source ${FILE_PRIVATE_ENV}
 
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
+
+# Fig post block. Keep at the bottom of this file.
+. "$HOME/.fig/shell/bashrc.post.bash"
