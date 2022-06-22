@@ -1,4 +1,17 @@
 ;; *-* mode: lisp *-*
+
+(when (string= (system-name) "serpentor.ece.northwestern.edu")
+  ; (setq user-init-file "C:/path/to/.emacs")
+  (setq user-emacs-directory "/files3/scratch/pwa732/.emacs.d")
+  (message (concat "load " user-emacs-directory))
+  ; (setq default-directory "C:/whatever/you/want/to/start/in")
+  ; (setenv "HOME" "D:/my/home/directory")
+  ;(load user-init-file)
+  )
+
+(when (<= 27 emacs-major-version)
+  (setq package-enable-at-startup nil))
+
 (defvar mine-debug-show-modes-in-modeline nil
   "show the mode symbol in the mode line")
 
@@ -210,7 +223,7 @@
 ;; =======================================================================
 ;; Straight
 ;; =======================================================================
-
+;; note that for emacs version before 27, this straight might not work.
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")))
@@ -632,7 +645,7 @@
   :config
   (setq deft-extensions '("txt" "org" "md"))
   ;; mac specific settings
-  (when (eq system-type 'darwin) 
+  (when (eq system-type 'darwin)
     (setq deft-directory (file-truename "~/Dropbox/notes"))
     (setq deft-recursive-ignore-dir-regexp
           (concat "\\(?:"
@@ -919,15 +932,15 @@
 
 (use-package org-roam-ui
   :straight
-    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
-    :after org-roam
-    :hook (org-roam . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t)
-    )
+  (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+  :after org-roam
+  :hook (org-roam . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t)
+  )
 
 (use-package vterm
   :ensure t)
