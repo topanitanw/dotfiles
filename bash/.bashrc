@@ -100,7 +100,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
-    function clear(){
+    function clear() {
         vterm_printf "51;Evterm-clear-scrollback";
         tput clear;
     }

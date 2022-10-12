@@ -1,5 +1,7 @@
 # private environment variable for the local machine
 
+echo "reading private_environment.sh"
+
 . ${HOME}/.shell_files/bash_function.sh
 
 USERNAME=$(whoami)
@@ -41,6 +43,10 @@ fi
 # autojump setup
 if [ "$(uname)" ==  "Darwin" ]; then
     AUTOJUMP_SH="/usr/local/etc/profile.d/autojump.sh"
+
+    if ! test -f $AUTOJUMP_SH; then
+        AUTOJUMP_SH="/opt/homebrew/etc/profile.d/autojump.sh"
+    fi
 fi
 
 if [ "$(uname)" == "Linux" ]; then
