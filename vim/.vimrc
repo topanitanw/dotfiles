@@ -69,6 +69,10 @@ if v:version >= 800
     Plug 'scrooloose/nerdtree'     " display file tree
     Plug 'miyakogi/conoline.vim'   " highlight the line of cursor
     Plug 'xolox/vim-misc'         " prereq of vim-session
+
+    let g:session_directory = expand("~/.vim_data/sessions")
+    call mkdir(g:session_directory, "p", 0700)
+
     Plug 'xolox/vim-session'      " save and restore vim sessions
     Plug 'scrooloose/nerdcommenter'
 endif
