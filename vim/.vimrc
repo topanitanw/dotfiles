@@ -102,6 +102,7 @@ Plug 'mhinz/vim-startify'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'p00f/nvim-ts-rainbow'
 " Plug 'vhda/verilog_systemverilog.vim'
+Plug 'lilydjwg/colorizer'
 
 Plug 'nachumk/systemverilog.vim'
 runtime macros/matchit.vim

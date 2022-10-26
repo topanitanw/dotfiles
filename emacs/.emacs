@@ -98,8 +98,7 @@
   ;; sets fn-delete to be right-delete
   (global-set-key [kp-delete] 'delete-char)
   ;; set the ispell path to the emacs for mac machines
-  (when (file-exists-p "/usr/local/bin/ispell")
-    (setq ispell-program-name "/usr/local/bin/ispell"))
+  (setq ispell-program-name (executable-find "ispell"))
   ;; set the alt key to be the option key
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'alt)
