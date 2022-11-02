@@ -946,6 +946,14 @@
 
 (use-package cmake-mode
   :ensure t)
+
+(use-package proof-general
+  :ensure t
+  :config
+  (load-file "/opt/homebrew/Cellar/math-comp//1.15.0_1/share/emacs/site-lisp/math-comp/pg-ssr.el"))
+
+(use-package company-coq
+  :ensure t)
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

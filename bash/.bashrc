@@ -1,13 +1,14 @@
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/bashrc.pre.bash" ]] && builtin source "$HOME/.fig/shell/bashrc.pre.bash"
+
 #!/bin/bash
 # .bashrc
 
 # If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-    *) return;;
-esac
+# case $- in
+#     *i*) ;;
+#     *) return;;
+# esac
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
@@ -75,9 +76,25 @@ else # normal
     # __git_ps1 git branch name
     # set if the repo is dirty, show it.
     export GIT_PS1_SHOWDIRTYSTATE=1
-    PS1='\s \[\e[1;32;40m(\e[m\] \[\e[1;31m\u\e[m\]@\[\e[1;30m\h\e[m\] : \[\e[0;36m\w\e[m\] \[\e[1;32;40m)\e[m\] $(__git_ps1 "[%s]")\n\$ '
+    black_bg="\[\e[0;40m\]"
+    white_fg="\[\e[0;1m\]"
+    lightblue_fg="\[\e[0;1;38;5;33m\]"
+    gray_fg="\[\e[0;1;38;5;247m\]"
+    lightgreen_fg="\[\e[0;38;5;70m\]"
+    cancel="\[\e[0m\]"
+    shell_prompt="${black_bg}${white_fg}\s ( ${lightblue_fg}\u ${white_fg}@ ${gray_fg}\h ${white_fg}: ${lightgreen_fg}\w ${white_fg}) $(__git_ps1 "[%s]")${cancel}\n"
+    PS1=${shell_prompt}
 fi
 
+    export GIT_PS1_SHOWDIRTYSTATE=1
+    black_bg="\[\e[107m\]"
+    white_fg="\[\e[0;1;38;5;239m\]${black_bg}"
+    lightblue_fg="\[\e[0;1;38;5;33m\]${black_bg}"
+    gray_fg="\[\e[0;1;38;5;247m\]${black_bg}"
+    lightgreen_fg="\[\e[0;38;5;70m\]${black_bg}"
+    cancel="\[\e[0m\]"
+    shell_prompt="${black_bg}${white_fg}\s ( ${lightblue_fg}\u ${white_fg}@ ${gray_fg}\h ${white_fg}: ${lightgreen_fg}\w ${white_fg}) $(__git_ps1 "[%s]")${cancel}\n"
+    PS1=${shell_prompt}
 # setting terminal to handle 256 colors
 TERM=xterm
 if [ "$TERM" == "xterm" ]; then
@@ -115,3 +132,5 @@ check_source ${FILE_PRIVATE_ENV}
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
 
+bind -m vi-command 'Control-l: clear-screen'
+bind -m vi-insert 'Control-l: clear-screen'
