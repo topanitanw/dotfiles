@@ -96,4 +96,9 @@ symlink ssh_config ${HOME}/.ssh
 symlink git/.gitconfig ${HOME}
 # git config --file ~/.gitconfig
 
+##################################################
+# inputrc
+symlink readline/.inputrc ${HOME}
+
+# git config --file ~/.gitconfig
 printf "${LABEL} done\n"

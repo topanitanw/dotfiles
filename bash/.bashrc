@@ -65,6 +65,10 @@ if [ ! -f ${SHELL_DIR}/git-prompt.sh ]; then
 fi
 source ${SHELL_DIR}/git-prompt.sh
 
+function get_git_ps1() {
+    echo '$(__git_ps1 "[%s]")'
+}
+
 # change the shell prompt
 if [ $(id -u) -eq 0 ]; then # you are root, set red colour prompt
     PS1="\\[$(tput setaf 1)\\]\\u@\\h:\\w \n#\\[$(tput sgr0)\\]"
@@ -76,25 +80,19 @@ else # normal
     # __git_ps1 git branch name
     # set if the repo is dirty, show it.
     export GIT_PS1_SHOWDIRTYSTATE=1
+    export GIT_PS1_SHOWCONFLICTSTATE="yes"
+    export GIT_PS1_SHOWUPSTREAM="verbose"
+
     black_bg="\[\e[0;40m\]"
     white_fg="\[\e[0;1m\]"
     lightblue_fg="\[\e[0;1;38;5;33m\]"
     gray_fg="\[\e[0;1;38;5;247m\]"
     lightgreen_fg="\[\e[0;38;5;70m\]"
     cancel="\[\e[0m\]"
-    shell_prompt="${black_bg}${white_fg}\s ( ${lightblue_fg}\u ${white_fg}@ ${gray_fg}\h ${white_fg}: ${lightgreen_fg}\w ${white_fg}) $(__git_ps1 "[%s]")${cancel}\n"
+    shell_prompt="${black_bg}${white_fg}\s ( ${lightblue_fg}\u ${white_fg}@ ${gray_fg}\h ${white_fg}: ${lightgreen_fg}\w ${white_fg}) $(get_git_ps1)${cancel}\n"
     PS1=${shell_prompt}
 fi
 
-    export GIT_PS1_SHOWDIRTYSTATE=1
-    black_bg="\[\e[107m\]"
-    white_fg="\[\e[0;1;38;5;239m\]${black_bg}"
-    lightblue_fg="\[\e[0;1;38;5;33m\]${black_bg}"
-    gray_fg="\[\e[0;1;38;5;247m\]${black_bg}"
-    lightgreen_fg="\[\e[0;38;5;70m\]${black_bg}"
-    cancel="\[\e[0m\]"
-    shell_prompt="${black_bg}${white_fg}\s ( ${lightblue_fg}\u ${white_fg}@ ${gray_fg}\h ${white_fg}: ${lightgreen_fg}\w ${white_fg}) $(__git_ps1 "[%s]")${cancel}\n"
-    PS1=${shell_prompt}
 # setting terminal to handle 256 colors
 TERM=xterm
 if [ "$TERM" == "xterm" ]; then
