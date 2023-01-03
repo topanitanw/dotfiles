@@ -392,6 +392,11 @@
   :after company
   :diminish
   :hook (company-mode . company-box-mode))
+
+(use-package company-lsp
+  :ensure t
+  :commands company-lsp)
+
 ;;; }}}
 ;;; evil {{{
 ;; =======================================================================
@@ -954,6 +959,13 @@
 
 (use-package company-coq
   :ensure t)
+
+(use-package go-mode
+  :ensure t
+  :mode
+  (("\\.go\\'" . go-mode)))
+
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

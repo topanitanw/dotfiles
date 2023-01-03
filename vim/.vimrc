@@ -111,6 +111,7 @@ au BufNewFile,BufRead *.sv,*.svh,*.vh,*.v set filetype=systemverilog
 "" let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
 Plug 'whonore/Coqtail'
+Plug 'github/copilot.vim'
 call plug#end()
 
 "----------------------------------------------------------------------
