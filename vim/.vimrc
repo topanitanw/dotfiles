@@ -110,6 +110,10 @@ au BufNewFile,BufRead *.sv,*.svh,*.vh,*.v set filetype=systemverilog
 "" Plug 'luochen1990/rainbow'
 "" let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
+Plug 'mileszs/ack.vim'
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 Plug 'whonore/Coqtail'
 Plug 'github/copilot.vim'
 call plug#end()
