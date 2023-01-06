@@ -1,14 +1,7 @@
 ;; *-* mode: lisp *-*
 
-(when (string= (system-name) "serpentor.ece.northwestern.edu")
-  ; (setq user-init-file "C:/path/to/.emacs")
-  (setq user-emacs-directory "/files3/scratch/pwa732/.emacs.d")
-  (message (concat "load " user-emacs-directory))
-  ; (setq default-directory "C:/whatever/you/want/to/start/in")
-  ; (setenv "HOME" "D:/my/home/directory")
-  ;(load user-init-file)
-  )
-
+;; ----------------------------------------------------------------------
+;; basic setup
 (when (<= 27 emacs-major-version)
   (setq package-enable-at-startup nil))
 
