@@ -58,7 +58,7 @@ Plug 'ap/vim-buftabline'
 Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
-" Plug 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dense-analysis/ale'
 " Plug 'mtth/scratch.vim' " removed. not quite useful
 
@@ -85,6 +85,8 @@ if has('nvim') || (v:version >= 800)
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
     Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
+    nnoremap <leader>ff <cmd>Telescope find_files<cr>
     Plug 'folke/todo-comments.nvim'
 else
     " Plug 'ajh17/VimCompletesMe'
@@ -423,7 +425,7 @@ let g:SimpylFold_docstring_preview=1
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.
 " map <<Leader>-d> :NERDTreeToggle<CR>
-nnoremap <Leader>f :NERDTreeToggle<Enter>
+nnoremap <Leader>t :NERDTreeToggle<Enter>
 "" https://medium.com/@victormours/a-better-nerdtree-setup-3d3921abc0b9
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
