@@ -61,7 +61,6 @@ Plug 'Yggdroot/indentLine'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dense-analysis/ale'
 " Plug 'mtth/scratch.vim' " removed. not quite useful
-
 if v:version >= 800
     " Plug 'scrooloose/syntastic'   " check syntactical errors
     Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
@@ -86,11 +85,21 @@ if has('nvim') || (v:version >= 800)
     Plug 'roxma/vim-hug-neovim-rpc'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
-    nnoremap <leader>ff <cmd>Telescope find_files<cr>
     Plug 'folke/todo-comments.nvim'
 else
     " Plug 'ajh17/VimCompletesMe'
 endif
+
+" if has("nvim")
+" lua << EOF
+"     require("telescope").setup()
+"     local builtin = require('telescope.builtin')
+"     vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+" EOF
+" endif
+
+" nnoremap <leader>ff <cmd>Telescope find_files<cr>
+" nnoremap <leader>gf <cmd>Telescope git_files<cr>
 
 Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'octol/vim-cpp-enhanced-highlight'
@@ -673,33 +682,39 @@ if has("nvim")
         -- example
         -- https://github.com/ahmed-rezk-dev/super-nvim/blob/main/lua/treesitter-nvim.lua
         -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-    ensure_installed = {
-        "bash",
-        "c",
-        "comment",
-        "go",
-        "lua",
-        "vim",
+        ensure_installed = {
+            "bash",
+            "c",
+            "comment",
+            "go",
+            "lua",
+            "vim",
         },
 
-    -- Install languages synchronously (only applied to `ensure_installed`)
-    sync_install = false,
+        -- Install languages synchronously (only applied to `ensure_installed`)
+        sync_install = false,
 
-    -- List of parsers to ignore installing
-    ignore_install = { "javascript" },
-    highlight = {
+        -- List of parsers to ignore installing
+        ignore_install = { "javascript" },
+        highlight = {
         -- ...
         },
-    -- ...
-    rainbow = {
-    enable = true,
-    -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
-    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-    max_file_lines = nil, -- Do not enable for files with more than n lines, int
-    -- colors = {}, -- table of hex strings
-    -- termcolors = {} -- table of colour name strings
+        -- ...
+        rainbow = {
+            enable = true,
+            -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+            extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+            max_file_lines = nil, -- Do not enable for files with more than n lines, int
+            -- colors = {}, -- table of hex strings
+            -- termcolors = {} -- table of colour name strings
+        }
     }
-}
+
+    -- should find a better place to put this
+    require("telescope").setup()
+    local builtin = require('telescope.builtin')
+    vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+    vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
 EOF
 endif
 
