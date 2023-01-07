@@ -532,7 +532,10 @@ let g:indentLine_color_term = 243
 " let g:indentLine_color_dark = 1 " (default: 2)
 
 " todo-commments.nvim
-if has("nvim")
+function! SetupTodoComment()
+if !has("nvim")
+    return
+endif
 lua << EOF
 require("todo-comments").setup {
     -- your configuration comes here
@@ -592,7 +595,6 @@ require("todo-comments").setup {
         },
 }
 EOF
-endif
 " TODO:
 " HACK:
 " BUG:
@@ -602,6 +604,9 @@ endif
 " NOTE:
 " INFO:
 " PERF:
+endfunction
+
+call SetupTodoComment()
 
 "" ctrlp vim
 " Ctrl-P: Find full paths to files, buffers, and tags. Open multiple files at
@@ -676,7 +681,10 @@ require('nvim-window').setup({
 EOF
 endif
 
-if has("nvim")
+function! SetupTreesitter()
+if !has("nvim")
+    return
+endif
 lua << EOF
     require("nvim-treesitter.configs").setup {
         -- example
@@ -710,42 +718,48 @@ lua << EOF
         }
     }
 EOF
-endif
+endfunction
+
+call SetupTreesitter()
 
 "" telescope
 " open files and search for text in a project
 function! SetupTelescope()
+if !has("nvim")
+    return
+endif
 "" lua << EOF must not be indented.
 lua << EOF
-        -- should find a better place to put this
-        require("telescope").setup {
-            extensions = {
-                live_grep_args = {
+    -- should find a better place to put this
+    require("telescope").setup {
+        extensions = {
+            live_grep_args = {
+            },
+        },
+        pickers = {
+            find_files = {
+                follow = true,
+                -- -I show the result that normally will be ignored due to
+                -- the settings in .gitignore and .fdignore
+                find_command = {
+                    "fd", "-I",
                 },
             },
-            pickers = {
-                find_files = {
-                    follow = true,
-                    -- -I show the result that normally will be ignored due to
-                    -- the settings in .gitignore and .fdignore
-                    find_command = {
-                        "fd", "-I",
-                    },
-                },
-            },
-        }
+        },
+    }
 
-        local builtin = require('telescope.builtin')
-        vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-        vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
-        vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
+    local builtin = require('telescope.builtin')
+    vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+    vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
+    vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
 
-        local telescope = require('telescope')
-        vim.keymap.set('n', '<leader>lg', telescope.extensions.live_grep_args.live_grep_args, {})
+    local telescope = require('telescope')
+    vim.keymap.set('n', '<leader>lg', telescope.extensions.live_grep_args.live_grep_args, {})
 EOF
 endfunction
 
 call SetupTelescope()
+
 "" stop vim to render symbols and equations in tex.
 let g:tex_conceal = ""
 
