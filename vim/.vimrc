@@ -2,12 +2,6 @@
 set nocompatible   " Use gVim defaults
 
 "----------------------------------------------------------------------
-" key mapping
-nnoremap <SPACE> <Nop>
-let mapleader=" "
-" map <SPACE> <Leader>
-
-"----------------------------------------------------------------------
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
 if !exists("g:os")
@@ -90,12 +84,6 @@ function! LightlineBufferline()
 endfunction
 endfunction
 
-"" telescope
-" open files and search for text in a project
-function! SetupTelescope(info)
-"" lua << EOF must not be indented.
-endfunction
-
 call plug#begin(g:plug_dir)
 " theme
 Plug 'vim-scripts/Zenburn'
@@ -135,7 +123,7 @@ if has('nvim') || (v:version >= 800)
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
     Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0', 'do': ':SetupTelescope' }
+    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
     Plug 'nvim-telescope/telescope-live-grep-args.nvim'
     Plug 'folke/todo-comments.nvim'
 else
@@ -171,33 +159,6 @@ Plug 'whonore/Coqtail'
 Plug 'github/copilot.vim'
 call plug#end()
 
-lua << EOF
-        -- should find a better place to put this
-        require("telescope").setup {
-            extensions = {
-                live_grep_args = {
-                },
-            },
-            pickers = {
-                find_files = {
-                    follow = true,
-                    -- -I show the result that normally will be ignored due to
-                    -- the settings in .gitignore and .fdignore
-                    find_command = {
-                        "fd", "-I",
-                    },
-                },
-            },
-        }
-
-        local builtin = require('telescope.builtin')
-        vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-        vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
-        vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
-
-        local telescope = require('telescope')
-        vim.keymap.set('n', '<leader>lg', telescope.extensions.live_grep_args.live_grep_args, {})
-EOF
 " nnoremap <leader>ff <cmd>Telescope find_files<cr>
 " nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 " nnoremap <A-p>      <cmd>lua require('telescope.builtin').find_files()<cr>
@@ -247,6 +208,11 @@ set guicursor=a:block
 
 " Set the status line options. Make it show more information.
 set laststatus=2     " Display the status line
+
+"----------------------------------------------------------------------
+" key mapping
+nnoremap <SPACE> <Nop>
+let mapleader=" "
 
 "----------------------------------------------------------------------
 " code representation
@@ -746,6 +712,40 @@ lua << EOF
 EOF
 endif
 
+"" telescope
+" open files and search for text in a project
+function! SetupTelescope()
+"" lua << EOF must not be indented.
+lua << EOF
+        -- should find a better place to put this
+        require("telescope").setup {
+            extensions = {
+                live_grep_args = {
+                },
+            },
+            pickers = {
+                find_files = {
+                    follow = true,
+                    -- -I show the result that normally will be ignored due to
+                    -- the settings in .gitignore and .fdignore
+                    find_command = {
+                        "fd", "-I",
+                    },
+                },
+            },
+        }
+
+        local builtin = require('telescope.builtin')
+        vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+        vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
+        vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
+
+        local telescope = require('telescope')
+        vim.keymap.set('n', '<leader>lg', telescope.extensions.live_grep_args.live_grep_args, {})
+EOF
+endfunction
+
+call SetupTelescope()
 "" stop vim to render symbols and equations in tex.
 let g:tex_conceal = ""
 
