@@ -47,94 +47,8 @@ if empty(glob(g:autoload_plugvim))
     " manually
 endif
 
-call plug#begin(g:plug_dir)
-" theme
-Plug 'vim-scripts/Zenburn'
-" mode line
-Plug 'itchyny/lightline.vim'
-" display the buffer name on top of the screen
-Plug 'ap/vim-buftabline'
-"" TODO: https://github.com/romgrk/barbar.nvim
-Plug 'mbbill/undotree'
-Plug 'ntpeters/vim-better-whitespace'
-Plug 'Yggdroot/indentLine'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'dense-analysis/ale'
-" Plug 'mtth/scratch.vim' " removed. not quite useful
-if v:version >= 800
-    " Plug 'scrooloose/syntastic'   " check syntactical errors
-    Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
-    Plug 'vim-scripts/indentpython.vim' " indent in python
-    Plug 'scrooloose/nerdtree'     " display file tree
-    Plug 'miyakogi/conoline.vim'   " highlight the line of cursor
-    Plug 'xolox/vim-misc'         " prereq of vim-session
-
-    let g:session_directory = expand("~/.vim_data/sessions")
-    call mkdir(g:session_directory, "p", 0700)
-
-    Plug 'xolox/vim-session'      " save and restore vim sessions
-    Plug 'scrooloose/nerdcommenter'
-endif
-
-Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
-if has('nvim') || (v:version >= 800)
-    Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
-    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    " Plug 'zchee/deoplete-clang'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
-    Plug 'folke/todo-comments.nvim'
-else
-    " Plug 'ajh17/VimCompletesMe'
-endif
-
-" if has("nvim")
-" lua << EOF
-"     require("telescope").setup()
-"     local builtin = require('telescope.builtin')
-"     vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-" EOF
-" endif
-
-" nnoremap <leader>ff <cmd>Telescope find_files<cr>
-" nnoremap <leader>gf <cmd>Telescope git_files<cr>
-
-Plug 'tmhedberg/SimpylFold'   " fold in python
-Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'easymotion/vim-easymotion'
-" Plug 'sakshamgupta05/vim-todo-highlight'
-Plug 'qpkorr/vim-bufkill'
-Plug 'kassio/neoterm'
-Plug 'folke/which-key.nvim'
-Plug 'mhinz/vim-startify'
-
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'p00f/nvim-ts-rainbow'
-" Plug 'vhda/verilog_systemverilog.vim'
-Plug 'lilydjwg/colorizer'
-
-Plug 'nachumk/systemverilog.vim'
-runtime macros/matchit.vim
-au BufNewFile,BufRead *.sv,*.svh,*.vh,*.v set filetype=systemverilog
-"" Plug 'luochen1990/rainbow'
-"" let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
-
-Plug 'mileszs/ack.vim'
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-endif
-Plug 'whonore/Coqtail'
-Plug 'github/copilot.vim'
-call plug#end()
-
-"----------------------------------------------------------------------
-" GUI
-"" set zenburn color scheme
-let g:zenburn_force_dark_Background = 0
-colorscheme zenburn
-
+"" lightline
+function! SetupLightline(info)
 let g:lightline = {
     \ 'colorscheme': 'default',
     \ 'active': {
@@ -166,8 +80,127 @@ function! LightlineBufferline()
     call bufferline#refresh_status()
     return [ g:bufferline_status_info.before,
                 \ g:bufferline_status_info.current,
-                \ g:bufferline_status_info.after]
+                \ g:bufferline_status_info.after ]
 endfunction
+endfunction
+
+"" telescope
+" open files and search for text in a project
+function! SetupTelescope(info)
+"" lua << EOF must not be indented.
+lua << EOF
+        -- should find a better place to put this
+        require("telescope").setup (
+        {
+            extensions = {
+                live_grep_args = {
+                },
+            },
+            pickers = {
+                find_files = {
+                    follow = true,
+                    -- -I show the result that normally will be ignored due to
+                    -- the settings in .gitignore and .fdignore
+                    find_command = {
+                        "fd", "-I",
+                    },
+                },
+            },
+        }
+        )
+
+        local builtin = require('telescope.builtin')
+        vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+        vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
+        vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
+        vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
+
+        local telescope = require('telescope')
+        vim.keymap.set('n', '<leader>lg', telescope.extensions.live_grep_args.live_grep_args, {})
+EOF
+endfunction
+
+call plug#begin(g:plug_dir)
+" theme
+Plug 'vim-scripts/Zenburn'
+" mode line
+Plug 'itchyny/lightline.vim', { 'do': ':SetupLightline' }
+" display the buffer name on top of the screen
+Plug 'ap/vim-buftabline'
+"" TODO: https://github.com/romgrk/barbar.nvim
+Plug 'mbbill/undotree'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'Yggdroot/indentLine'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'dense-analysis/ale'
+" Plug 'mtth/scratch.vim' " removed. not quite useful
+if v:version >= 800
+    " Plug 'scrooloose/syntastic'   " check syntactical errors
+    Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
+    Plug 'vim-scripts/indentpython.vim' " indent in python
+    Plug 'scrooloose/nerdtree'     " display file tree
+    Plug 'miyakogi/conoline.vim'   " highlight the line of cursor
+    Plug 'xolox/vim-misc'         " prereq of vim-session
+
+    let g:session_directory = expand("~/.vim_data/sessions")
+    call mkdir(g:session_directory, "p", 0700)
+
+    Plug 'xolox/vim-session'      " save and restore vim sessions
+    Plug 'scrooloose/nerdcommenter'
+endif
+
+Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
+
+
+if has('nvim') || (v:version >= 800)
+    Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
+    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " Plug 'zchee/deoplete-clang'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0', 'do': ':SetupTelescope' }
+    Plug 'nvim-telescope/telescope-live-grep-args.nvim'
+    Plug 'folke/todo-comments.nvim'
+else
+    " Plug 'ajh17/VimCompletesMe'
+endif
+
+Plug 'tmhedberg/SimpylFold'   " fold in python
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'easymotion/vim-easymotion'
+" Plug 'sakshamgupta05/vim-todo-highlight'
+Plug 'qpkorr/vim-bufkill'
+Plug 'kassio/neoterm'
+Plug 'folke/which-key.nvim'
+Plug 'mhinz/vim-startify'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'p00f/nvim-ts-rainbow'
+" Plug 'vhda/verilog_systemverilog.vim'
+Plug 'lilydjwg/colorizer'
+
+Plug 'nachumk/systemverilog.vim'
+runtime macros/matchit.vim
+au BufNewFile,BufRead *.sv,*.svh,*.vh,*.v set filetype=systemverilog
+"" Plug 'luochen1990/rainbow'
+"" let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+
+Plug 'mileszs/ack.vim'
+if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+endif
+
+Plug 'whonore/Coqtail'
+Plug 'github/copilot.vim'
+call plug#end()
+
+"----------------------------------------------------------------------
+" GUI
+"" set zenburn color scheme
+let g:zenburn_force_dark_Background = 0
+colorscheme zenburn
+
 
 "" set the default font and font size
 " set guifont=Dejavu\ Sans\ Mono:h12
@@ -677,7 +710,7 @@ EOF
 endif
 
 if has("nvim")
-    lua << EOF
+lua << EOF
     require("nvim-treesitter.configs").setup {
         -- example
         -- https://github.com/ahmed-rezk-dev/super-nvim/blob/main/lua/treesitter-nvim.lua
@@ -709,12 +742,6 @@ if has("nvim")
             -- termcolors = {} -- table of colour name strings
         }
     }
-
-    -- should find a better place to put this
-    require("telescope").setup()
-    local builtin = require('telescope.builtin')
-    vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-    vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
 EOF
 endif
 

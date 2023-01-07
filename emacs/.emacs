@@ -500,6 +500,7 @@
 ;; =======================================================================
 (use-package helm
   ;; disabled if emacs version is before 24.4
+  :requires helm-config
   :if (version< "24.4" emacs-version)
   :diminish (helm-mode)
   :init
@@ -958,7 +959,8 @@
   :mode
   (("\\.go\\'" . go-mode)))
 
-
+(use-package helm-projectile
+  :ensure t)
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
