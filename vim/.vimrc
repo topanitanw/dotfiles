@@ -2,6 +2,12 @@
 set nocompatible   " Use gVim defaults
 
 "----------------------------------------------------------------------
+" key mapping
+nnoremap <SPACE> <Nop>
+let mapleader=" "
+" map <SPACE> <Leader>
+
+"----------------------------------------------------------------------
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
 if !exists("g:os")
@@ -88,36 +94,6 @@ endfunction
 " open files and search for text in a project
 function! SetupTelescope(info)
 "" lua << EOF must not be indented.
-lua << EOF
-        -- should find a better place to put this
-        require("telescope").setup (
-        {
-            extensions = {
-                live_grep_args = {
-                },
-            },
-            pickers = {
-                find_files = {
-                    follow = true,
-                    -- -I show the result that normally will be ignored due to
-                    -- the settings in .gitignore and .fdignore
-                    find_command = {
-                        "fd", "-I",
-                    },
-                },
-            },
-        }
-        )
-
-        local builtin = require('telescope.builtin')
-        vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-        vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
-        vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
-        vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
-
-        local telescope = require('telescope')
-        vim.keymap.set('n', '<leader>lg', telescope.extensions.live_grep_args.live_grep_args, {})
-EOF
 endfunction
 
 call plug#begin(g:plug_dir)
@@ -195,6 +171,36 @@ Plug 'whonore/Coqtail'
 Plug 'github/copilot.vim'
 call plug#end()
 
+lua << EOF
+        -- should find a better place to put this
+        require("telescope").setup {
+            extensions = {
+                live_grep_args = {
+                },
+            },
+            pickers = {
+                find_files = {
+                    follow = true,
+                    -- -I show the result that normally will be ignored due to
+                    -- the settings in .gitignore and .fdignore
+                    find_command = {
+                        "fd", "-I",
+                    },
+                },
+            },
+        }
+
+        local builtin = require('telescope.builtin')
+        vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+        vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
+        vim.keymap.set('n', '<leader>bl', builtin.buffers, {})
+
+        local telescope = require('telescope')
+        vim.keymap.set('n', '<leader>lg', telescope.extensions.live_grep_args.live_grep_args, {})
+EOF
+" nnoremap <leader>ff <cmd>Telescope find_files<cr>
+" nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+" nnoremap <A-p>      <cmd>lua require('telescope.builtin').find_files()<cr>
 "----------------------------------------------------------------------
 " GUI
 "" set zenburn color scheme
@@ -408,11 +414,6 @@ endif
 command! Bc bp\|bd \#
 set splitbelow
 set splitright
-"----------------------------------------------------------------------
-" key mapping
-nnoremap <SPACE> <Nop>
-let mapleader=" "
-" map <SPACE> <Leader>
 
 "" press jk to escape from the insert mode
 inoremap jk <Esc>
