@@ -756,6 +756,9 @@ endif
 lua << EOF
     -- should find a better place to put this
     require("telescope").setup {
+        defaults = {
+            path_display = { 'smart' }, -- only shows the file names in the result window
+        },
         extensions = {
             live_grep_args = {
             },
