@@ -34,8 +34,8 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:editor_root = expand("~/.vim")
 
     if g:os == "Darwin"
-        let g:python3_host_prog = '/usr/local/anaconda3/bin/python'
-        let g:python_host_prog = '/usr/local/anaconda3/bin/python'
+        let g:python3_host_prog = exepath('python') "'/usr/local/anaconda3/bin/python'
+        let g:python_host_prog = exepath('python') "'/usr/local/anaconda3/bin/python'
     endif
 endif
 
@@ -113,9 +113,6 @@ if v:version >= 800
     Plug 'scrooloose/nerdcommenter'
 endif
 
-Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
-
-
 if has('nvim') || (v:version >= 800)
     Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
     " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -157,11 +154,16 @@ endif
 
 Plug 'whonore/Coqtail'
 Plug 'github/copilot.vim'
+
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
 call plug#end()
 
-" nnoremap <leader>ff <cmd>Telescope find_files<cr>
-" nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-" nnoremap <A-p>      <cmd>lua require('telescope.builtin').find_files()<cr>
+
 "----------------------------------------------------------------------
 " GUI
 "" set zenburn color scheme
@@ -474,7 +476,7 @@ let g:conoline_use_colorscheme_default_normal=1
 let g:conoline_use_colorscheme_default_insert=1
 
 " Deoplete: Autocomplete for vim8 and neovim
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
 filetype plugin indent on
 syntax enable
 
@@ -641,13 +643,35 @@ hi Search cterm=underline ctermfg=blue ctermbg=none
 "" whichkey will start when the leader key is pressed.
 "" in this case we assume that space is the leader key.
 "" nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+"
 if has("nvim")
 lua << EOF
 require("which-key").setup {
     -- your configuration comes here
     -- or leave it empty to use the default settings
-    -- refer to the configuration section below
+    key_labels = {
+        -- override the label used to display some keys. It doesn't effect WK in any other way.
+        -- For example:
+        ["<space>"] = "SPC",
+        ["<cr>"] = "RET",
+        ["<tab>"] = "TAB",
+    },-- refer to the configuration section below
+}
+
+local wk = require("which-key")
+wk.register(
+    {
+        f = {
+            -- optional group name
+            name = "file",
+            -- create a binding with label
+            f = { "<cmd>Telescope find_files<cr>", "Find File" },
+        },
+    },
+    {
+        prefix = "<leader>"
     }
+)
 EOF
 endif
 
@@ -749,7 +773,7 @@ lua << EOF
     }
 
     local builtin = require('telescope.builtin')
-    vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+    -- vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
     vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
     vim.keymap.set('n', '<leader>ls', builtin.buffers, {})
 
@@ -762,6 +786,86 @@ call SetupTelescope()
 
 "" stop vim to render symbols and equations in tex.
 let g:tex_conceal = ""
+
+"
+function! SetupCmp()
+set completeopt=menu,menuone,noselect
+if !has("nvim")
+    return
+endif
+lua <<EOF
+  -- Set up nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      end,
+    },
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+  -- Set up lspconfig.
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  require('lspconfig').gopls.setup {
+    capabilities = capabilities
+  }
+EOF
+endfunction " SetupCmp
+
+call SetupCmp()
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding

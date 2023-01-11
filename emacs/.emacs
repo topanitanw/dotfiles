@@ -499,7 +499,7 @@
 ;; helm
 ;; =======================================================================
 (use-package helm
-  ;; disabled if emacs version is before 24.4
+  ; :disabled ; if emacs version is before 24.4
   :requires helm-config
   :if (version< "24.4" emacs-version)
   :diminish (helm-mode)
@@ -529,6 +529,41 @@
   (setq helm-ff-file-name-history-use-recentf t)
   )
 
+;; Enable vertico
+(use-package vertico
+  :disabled
+  :init
+  (vertico-mode)
+
+  ;; Different scroll margin
+  ;; (setq vertico-scroll-margin 0)
+
+  ;; Show more candidates
+  ;; (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  ;; (setq vertico-cycle t)
+  )
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :disabled
+  :init
+  (savehist-mode))
+
+;; Optionally use the `orderless' completion style.
+(use-package orderless
+  :disabled
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 ;; =======================================================================
 ;; highlight the indentation of the code
 ;; =======================================================================
