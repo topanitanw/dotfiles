@@ -9,12 +9,13 @@ alias pdfgrep='pdfgrep --color=auto';
 alias source_bash="source ~/.bashrc;";
 
 ## alias make
-alias mcl="make clean;";
-alias mck="make check;";
-alias mal="make all;";
-alias mat="make format;";
-alias mii="make isoimage;";
-alias mmcf="make menuconfig;";
+alias mcl="make clean";
+alias mck="make check";
+alias mru="make run";
+alias mbu="make build";
+alias mal="make all";
+alias mfo="make format";
+alias mme="make menuconfig";
 
 alias wcon="watch -n 2 condor_q;";
 alias conhold="condor_q -hold -af HoldReason;";
@@ -40,7 +41,7 @@ alias condor-mq="printf \"%9s | %7s | %37s | %s | %s \\n\" \"Id\" \"Owner\" \"Ho
 ### trash-put should be install by pip install trash-cli
 ### use trash-list to access the file in the trash
 ### If you need to use the rm command, please use \rm to escape the rm.
-alias rm="echo 'You are supposed to use trash-put instead'";
+# alias rm="echo 'You are supposed to use trash-put instead'";
 alias rmswp="rm .*.swp; rm *~;";
 
 ## alias ls

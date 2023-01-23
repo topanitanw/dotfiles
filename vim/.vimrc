@@ -33,10 +33,8 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:plug_dir = expand("~/.vim/plugged")
     let g:editor_root = expand("~/.vim")
 
-    if g:os == "Darwin"
-        let g:python3_host_prog = exepath('python') "'/usr/local/anaconda3/bin/python'
-        let g:python_host_prog = exepath('python') "'/usr/local/anaconda3/bin/python'
-    endif
+    let g:python3_host_prog = exepath('python') "'/usr/local/anaconda3/bin/python'
+    let g:python_host_prog = exepath('python') "'/usr/local/anaconda3/bin/python'
 endif
 
 if empty(glob(g:autoload_plugvim))
@@ -158,8 +156,8 @@ Plug 'github/copilot.vim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
+" Plug 'hrsh7th/cmp-path'
+" Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 call plug#end()
 

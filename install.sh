@@ -16,8 +16,8 @@ function sync {
 }
 
 function symlink {
-    # check if the file exists
-    if [ -h "$1" ]; then
+    # don't symlink if the file exists
+    if [ -f "$1" ]; then
         return 0
     fi
 
