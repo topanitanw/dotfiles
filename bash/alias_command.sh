@@ -9,12 +9,13 @@ alias pdfgrep='pdfgrep --color=auto';
 alias source_bash="source ~/.bashrc;";
 
 ## alias make
+alias mal="make all";
+alias mbu="make build";
 alias mcl="make clean";
 alias mck="make check";
-alias mru="make run";
-alias mbu="make build";
-alias mal="make all";
 alias mfo="make format";
+alias mru="make run";
+alias mte="make test";
 alias mme="make menuconfig";
 
 alias wcon="watch -n 2 condor_q;";
