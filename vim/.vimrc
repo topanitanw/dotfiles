@@ -45,6 +45,15 @@ if empty(glob(g:autoload_plugvim))
     " manually
 endif
 
+" check if the plugin is loaded with an assumption that you use the vimplug
+" to install the plugins.
+function! PlugLoaded(name)
+    return (
+        \ has_key(g:plugs, a:name) &&
+        \ isdirectory(g:plugs[a:name].dir) &&
+        \ stridx(&rtp, g:plugs[a:name].dir) >= 0)
+endfunction
+
 "" lightline
 function! SetupLightline(info)
 let g:lightline = {
@@ -747,6 +756,9 @@ call SetupTreesitter()
 "" telescope
 " open files and search for text in a project
 function! SetupTelescope()
+if !PlugLoaded('Telescope')
+    return
+endif
 if !has("nvim")
     return
 endif
@@ -790,6 +802,9 @@ let g:tex_conceal = ""
 
 "
 function! SetupCmp()
+if !PlugLoaded('cmp')
+    return
+endif
 set completeopt=menu,menuone,noselect
 if !has("nvim")
     return
