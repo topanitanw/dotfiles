@@ -14,6 +14,7 @@ alias mbu="make build";
 alias mcl="make clean";
 alias mck="make check";
 alias mfo="make format";
+alias mre="make report";
 alias mru="make run";
 alias mte="make test";
 alias mme="make menuconfig";

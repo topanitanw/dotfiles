@@ -33,8 +33,8 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:plug_dir = expand("~/.vim/plugged")
     let g:editor_root = expand("~/.vim")
 
-    let g:python3_host_prog = exepath('python') "'/usr/local/anaconda3/bin/python'
-    let g:python_host_prog = exepath('python') "'/usr/local/anaconda3/bin/python'
+    let g:python3_host_prog = exepath('python')
+    let g:python_host_prog = exepath('python')
 endif
 
 if empty(glob(g:autoload_plugvim))
@@ -48,10 +48,7 @@ endif
 " check if the plugin is loaded with an assumption that you use the vimplug
 " to install the plugins.
 function! PlugLoaded(name)
-    return (
-        \ has_key(g:plugs, a:name) &&
-        \ isdirectory(g:plugs[a:name].dir) &&
-        \ stridx(&rtp, g:plugs[a:name].dir) >= 0)
+    return has_key(g:plugs, a:name)
 endfunction
 
 "" lightline
@@ -443,7 +440,7 @@ let g:SimpylFold_docstring_preview=1
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.
 " map <<Leader>-d> :NERDTreeToggle<CR>
-nnoremap <Leader>t :NERDTreeToggle<Enter>
+nnoremap <Leader>n :NERDTreeToggle<Enter>
 "" https://medium.com/@victormours/a-better-nerdtree-setup-3d3921abc0b9
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
@@ -486,14 +483,6 @@ let g:conoline_use_colorscheme_default_insert=1
 let g:deoplete#enable_at_startup = 0
 filetype plugin indent on
 syntax enable
-
-" if the g:loaded_python3_provider is set to 1, it would cancel the python3
-" path that we set in the g:python3_host_prog.
-" let g:loaded_python3_provider=1
-" let g:python_host_prog = '/usr/local/bin/python'
-"let g:python3_host_prog=system('which python3')
-"let g:python3_host_prog = '/user/local/anaconda3/bin/python3'
-"echo g:python3_host_prog
 
 "" set tab and s-tab to choose the autocomplete word options
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
@@ -672,7 +661,7 @@ wk.register(
             -- optional group name
             name = "file",
             -- create a binding with label
-            f = { "<cmd>Telescope find_files<cr>", "Find File" },
+            -- f = { "<cmd>Telescope find_files<cr>", "Find File" },
         },
     },
     {
@@ -756,7 +745,8 @@ call SetupTreesitter()
 "" telescope
 " open files and search for text in a project
 function! SetupTelescope()
-if !PlugLoaded('Telescope')
+if !PlugLoaded('telescope.nvim')
+    echom "telescope.nvim is not loaded"
     return
 endif
 if !has("nvim")
@@ -786,7 +776,7 @@ lua << EOF
     }
 
     local builtin = require('telescope.builtin')
-    -- vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+    vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
     vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
     vim.keymap.set('n', '<leader>ls', builtin.buffers, {})
 
@@ -802,7 +792,8 @@ let g:tex_conceal = ""
 
 "
 function! SetupCmp()
-if !PlugLoaded('cmp')
+if !PlugLoaded('nvim-cmp')
+    echom "nvim-cmp is not loaded"
     return
 endif
 set completeopt=menu,menuone,noselect
