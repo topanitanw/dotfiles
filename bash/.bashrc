@@ -5,10 +5,12 @@
 # .bashrc
 
 # If not running interactively, don't do anything
-# case $- in
-#     *i*) ;;
-#     *) return;;
-# esac
+case $- in
+    *i*) # this is an interactive shell.
+        ;;
+    *)   # this is the non-interactive shell
+        return;;
+esac
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
@@ -18,15 +20,15 @@ case "${unameOut}" in
     MINGW*)     machine=mingw;;
     *)          machine="UNKNOWN:${unameOut}"
 esac
-echo "machine: ${machine}"
-echo "path: ${PATH}"
-echo "reading ~/.bashrc"
+# echo "machine: ${machine}"
+# echo "path: ${PATH}"
+# echo "reading ~/.bashrc"
 
 # Fig pre block. Keep at the top of this file.
 FIG_FILE="$HOME/.fig/shell/bashrc.pre.bash"
 if [ -f  "${FIG_FILE}" ]; then
     . "${FIG_FILE}"
-    echo "reading ${FIG_FILE}"
+    # echo "reading ${FIG_FILE}"
 fi
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -130,5 +132,5 @@ check_source ${FILE_PRIVATE_ENV}
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
 
-bind -m vi-command 'Control-l: clear-screen'
-bind -m vi-insert 'Control-l: clear-screen'
+# bind -m vi-command 'Control-l: clear-screen'
+# bind -m vi-insert 'Control-l: clear-screen'
