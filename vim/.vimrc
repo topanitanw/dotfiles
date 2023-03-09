@@ -114,7 +114,7 @@ if v:version >= 800
     call mkdir(g:session_directory, "p", 0700)
 
     Plug 'xolox/vim-session'      " save and restore vim sessions
-    Plug 'scrooloose/nerdcommenter'
+    " Plug 'scrooloose/nerdcommenter'
 endif
 
 if has('nvim') || (v:version >= 800)
@@ -127,6 +127,7 @@ if has('nvim') || (v:version >= 800)
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
     Plug 'nvim-telescope/telescope-live-grep-args.nvim'
     Plug 'folke/todo-comments.nvim'
+    Plug 'terrortylor/nvim-comment'
 else
     " Plug 'ajh17/VimCompletesMe'
 endif
@@ -874,5 +875,38 @@ endfunction " SetupCmp
 
 call SetupCmp()
 
+function! SetupComment()
+if !PlugLoaded('nvim-cmp')
+    echom "nvim-cmp is not loaded"
+    return
+endif
+set completeopt=menu,menuone,noselect
+if !has("nvim")
+    return
+endif
+
+lua <<EOF
+    require("nvim_comment").setup({
+        -- Linters prefer comment and line to have a space in between markers
+        marker_padding = true,
+        -- should comment out empty or whitespace only lines
+        comment_empty = true,
+        -- trim empty comment whitespace
+        comment_empty_trim_whitespace = true,
+        -- Should key mappings be created
+        create_mappings = true,
+        -- Normal mode mapping left hand side
+        line_mapping = "gcc",
+        -- Visual/Operator mapping left hand side
+        operator_mapping = "gc",
+        -- text object mapping, comment chunk,,
+        comment_chunk_text_object = "ic",
+        -- Hook function to call before commenting takes place
+        hook = nil
+    })
+EOF
+endfunction " SetupPlugins
+
+call SetupComment()
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
