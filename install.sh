@@ -18,6 +18,7 @@ function sync {
 function symlink {
     # don't symlink if the file exists
     if [ -f "$1" ]; then
+        printf "${LABEL} skipping ${1} exists\n"
         return 0
     fi
 
