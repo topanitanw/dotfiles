@@ -128,6 +128,7 @@ if has('nvim') || (v:version >= 800)
     Plug 'nvim-telescope/telescope-live-grep-args.nvim'
     Plug 'folke/todo-comments.nvim'
     Plug 'terrortylor/nvim-comment'
+    Plug 'ggandor/leap.nvim'
 else
     " Plug 'ajh17/VimCompletesMe'
 endif
@@ -908,5 +909,8 @@ EOF
 endfunction " SetupPlugins
 
 call SetupComment()
+
+lua require('leap').add_default_mappings()
+
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding

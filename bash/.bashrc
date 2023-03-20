@@ -132,5 +132,5 @@ check_source ${FILE_PRIVATE_ENV}
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
 
-# bind -m vi-command 'Control-l: clear-screen'
-# bind -m vi-insert 'Control-l: clear-screen'
+bind -m vi-command 'Control-l: clear-screen'
+bind -m vi-insert 'Control-l: clear-screen'
