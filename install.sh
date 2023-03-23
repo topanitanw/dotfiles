@@ -17,14 +17,15 @@ function sync {
 
 function symlink {
     # don't symlink if the file exists
-    if [ -f "$1" ]; then
-        printf "${LABEL} skipping ${1} exists\n"
+    local filename=`basename $1`
+    local dst_file_path="$2/$filename"
+    if [ -f "$dst_file_path" ]; then
+        printf "${LABEL} skipping ${dst_file_path} exists\n"
         return 0
     fi
 
-    local filename=`basename $1`
     printf "${LABEL} symlink ${1} ${2}/$filename\n"
-    ln -sf `pwd`/$1 $2/${filename}
+    ln -sf `pwd`/$1 $dst_file_path
 }
 
 function cp_template {
