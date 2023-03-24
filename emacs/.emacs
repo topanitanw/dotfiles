@@ -892,8 +892,12 @@
     (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
     (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
 
+
 (use-package verilog-mode
   :ensure nil
+  :init 
+  (setq auto-mode-alist (cons '("\\.v\\'" . verilog-mode) auto-mode-alist))
+  (setq auto-mode-alist (cons '("\\.sv\\'" . verilog-mode) auto-mode-alist))
   :config
   (custom-set-variables
    '(verilog-align-ifelse t)
@@ -983,6 +987,7 @@
 
 (use-package proof-general
   :ensure t
+  :disabled
   :config
   (load-file "/opt/homebrew/Cellar/math-comp//1.15.0_1/share/emacs/site-lisp/math-comp/pg-ssr.el"))
 
@@ -995,6 +1000,9 @@
   (("\\.go\\'" . go-mode)))
 
 (use-package helm-projectile
+  :ensure t)
+
+(use-package dockerfile-mode
   :ensure t)
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
