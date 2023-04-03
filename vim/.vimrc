@@ -95,8 +95,9 @@ Plug 'vim-scripts/Zenburn'
 Plug 'itchyny/lightline.vim', { 'do': ':SetupLightline' }
 " display the buffer name on top of the screen
 Plug 'ap/vim-buftabline'
-"" TODO: https://github.com/romgrk/barbar.nvim
+" create an undo tree for each buffer
 Plug 'mbbill/undotree'
+" clean the whitespace and highlight the trailing whitespace
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
 Plug 'ctrlpvim/ctrlp.vim'
@@ -158,14 +159,14 @@ if executable('ag')
     let g:ackprg = 'ag --vimgrep'
 endif
 
-Plug 'whonore/Coqtail'
+" Plug 'whonore/Coqtail'
 Plug 'github/copilot.vim'
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
-" Plug 'hrsh7th/cmp-path'
-" Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 call plug#end()
 
@@ -901,15 +902,19 @@ lua <<EOF
         -- Visual/Operator mapping left hand side
         operator_mapping = "gc",
         -- text object mapping, comment chunk,,
-        comment_chunk_text_object = "ic",
+        comment_chunk_text_object = "<leader>co",
         -- Hook function to call before commenting takes place
-        hook = nil
+        hook = function()
+            if vim.api.nvim_buf_get_option(0, "filetype") == "verilog" then
+                vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
+            end
+        end,
     })
 EOF
 endfunction " SetupPlugins
 
 call SetupComment()
-
+" s{c1}{c2}
 lua require('leap').add_default_mappings()
 
 " Reference

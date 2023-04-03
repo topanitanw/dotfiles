@@ -3,7 +3,19 @@
 
 #!/bin/bash
 # .bashrc
+#!/bin/bash
 
+# if [[ $- == *i* ]]; then
+#     echo "This is an interactive shell"
+# else
+#     echo "This is a non-interactive shell"
+# fi
+#
+# if shopt -q login_shell; then
+#     echo "This is a login shell"
+# else
+#     echo "This is a non-login shell"
+# fi
 # If not running interactively, don't do anything
 case $- in
     *i*) # this is an interactive shell.
@@ -12,6 +24,7 @@ case $- in
         return;;
 esac
 
+bind -f ~/.inputrc
 unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)     machine=linux;;
@@ -22,7 +35,7 @@ case "${unameOut}" in
 esac
 # echo "machine: ${machine}"
 # echo "path: ${PATH}"
-# echo "reading ~/.bashrc"
+echo "reading ~/.bashrc"
 
 # Fig pre block. Keep at the top of this file.
 FIG_FILE="$HOME/.fig/shell/bashrc.pre.bash"

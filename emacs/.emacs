@@ -103,19 +103,14 @@
   ;; mouse setup with iterm2
   (setq mouse-wheel-follow-mouse 't)
   (require 'mouse) ;; needed for iterm2 compatibility
-  (global-set-key [mouse-4] '(lambda ()
-                               (interactive)
-                               (scroll-down 1)))
-  (global-set-key [mouse-5] '(lambda ()
-                               (interactive)
-                               (scroll-up 1)))
   (setq mouse-sel-mode t)
   (defun track-mouse (e))
 
   ;; add the pdflatex path
-  (setenv "PATH" (concat "/Library/TeX/texbin"
-                         ":"
-                         (getenv "PATH")))
+  (when (executable-find "pdflatex")
+    (setenv "PATH" (concat (file-name-directory (executable-find "pdflatex"))
+                    ":"
+                    (getenv "PATH"))))
  )
 
 ;;; coding convention {{{
@@ -418,8 +413,8 @@
   ;; For the vim-like motions of ">>" and "<<"
   (setq evil-shift-width mine-space-tap-offset)
   ;; define :ls, :buffers to open ibuffer
-  (evil-ex-define-cmd "ls" 'ibuffer)
-  (evil-ex-define-cmd "buffers" 'ibuffer)
+  (evil-ex-define-cmd "ls" 'helm-buffers-list)
+  (evil-ex-define-cmd "buffers" 'helm-buffers-list)
 
   (evil-set-initial-state 'deft-mode 'emacs)
 
@@ -867,8 +862,8 @@
   ;; ignore repeated words
   (setq flyspell-mark-duplications-flag nil)
   (when (and (string-equal 'gnu/linux system-type)
-             (file-exists-p "/usr/bin/aspell"))
-    (setq-default ispell-program-name "/usr/bin/aspell"))
+             (executable-find "aspell"))
+    (setq-default ispell-program-name (executable-find "aspell")))
   (setq-default ispell-list-command "list")
   )
 
@@ -1004,6 +999,15 @@
 
 (use-package dockerfile-mode
   :ensure t)
+
+(use-package copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'copilot-mode)
+  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+  )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
