@@ -165,8 +165,8 @@ Plug 'github/copilot.vim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
+" Plug 'hrsh7th/cmp-path'
+" Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 call plug#end()
 
@@ -497,8 +497,8 @@ let g:session_autoload='no'
 
 " Buftabline: display a list of buffers on the tab line
 " set hidden
-nnoremap <C-N> :bnext<CR>
-nnoremap <C-P> :bprev<CR>
+nnoremap <C-;> :bnext<CR>
+nnoremap <C-j> :bprev<CR>
 " always show the buftabline
 let g:buftabline_show=2
 " show the tab number which corresponds with the buffer number in vim
@@ -876,7 +876,7 @@ lua <<EOF
 EOF
 endfunction " SetupCmp
 
-call SetupCmp()
+" call SetupCmp()
 
 function! SetupComment()
 if !PlugLoaded('nvim-cmp')
