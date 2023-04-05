@@ -497,8 +497,8 @@ let g:session_autoload='no'
 
 " Buftabline: display a list of buffers on the tab line
 " set hidden
-nnoremap <C-;> :bnext<CR>
-nnoremap <C-j> :bprev<CR>
+nnoremap <C-l> :bnext<CR>
+nnoremap <C-h> :bprev<CR>
 " always show the buftabline
 let g:buftabline_show=2
 " show the tab number which corresponds with the buffer number in vim
