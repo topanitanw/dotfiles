@@ -861,7 +861,8 @@
 
   ;; ignore repeated words
   (setq flyspell-mark-duplications-flag nil)
-  (when (and (string-equal 'gnu/linux system-type)
+  (when (and (or (eq system-type 'gnu/linux)
+                 (eq system-type 'darwin))
              (executable-find "aspell"))
     (setq-default ispell-program-name (executable-find "aspell")))
   (setq-default ispell-list-command "list")
@@ -894,24 +895,28 @@
   (setq auto-mode-alist (cons '("\\.v\\'" . verilog-mode) auto-mode-alist))
   (setq auto-mode-alist (cons '("\\.sv\\'" . verilog-mode) auto-mode-alist))
   :config
-  (custom-set-variables
-   '(verilog-align-ifelse t)
-   '(verilog-auto-delete-trailing-whitespace t)
-   '(verilog-auto-inst-param-value t)
-   '(verilog-auto-inst-vector nil)
-   '(verilog-auto-lineup (quote all))
-   '(verilog-auto-newline nil)
-   '(verilog-auto-save-policy nil)
-   '(verilog-auto-template-warn-unused t)
-   '(verilog-case-indent mine-space-tap-offset)
-   '(verilog-cexp-indent mine-space-tap-offset)
-   '(verilog-highlight-grouping-keywords t)
-   '(verilog-highlight-modules t)
-   '(verilog-indent-level mine-space-tap-offset)
-   '(verilog-indent-level-behavioral mine-space-tap-offset)
-   '(verilog-indent-level-declaration mine-space-tap-offset)
-   '(verilog-indent-level-module mine-space-tap-offset)
-   '(verilog-tab-to-comment t))
+  (setq verilog-align-ifelse t
+        verilog-auto-delete-trailing-whitespace t
+        verilog-auto-inst-param-value t
+        verilog-auto-inst-vector nil
+        verilog-auto-lineup nil ;(quote all)
+        verilog-auto-indent-on-newline t
+        verilog-auto-newline nil
+        verilog-auto-save-policy nil
+        verilog-auto-template-warn-unused t
+        verilog-case-indent mine-space-tap-offset
+        verilog-cexp-indent mine-space-tap-offset
+        verilog-highlight-grouping-keywords t
+        verilog-highlight-modules t
+        verilog-indent-lists nil
+        verilog-indent-level mine-space-tap-offset
+        verilog-indent-level-behavioral mine-space-tap-offset
+        verilog-indent-level-declaration mine-space-tap-offset
+        verilog-indent-level-module mine-space-tap-offset
+        verilog-indent-level-directive mine-space-tap-offset
+        verilog-tab-to-comment t
+        verilog-indent-begin-after-if nil
+        verilog-case-indent mine-space-tap-offset)
   )
 
 (use-package centaur-tabs
@@ -1038,3 +1043,11 @@
 ;; 2. evil setup
 ;;    http://evgeni.io/posts/quick-start-evil-mode/
 ;; }}}
+
+;; Note
+;; - To write the emacs configurations in the org mode, put this
+;;   following lines in the .emacs or init.el file.
+;;   (require 'org)
+;;   (org-babel-load-file
+;;      (expand-file-name "config.org"
+;;      		   user-emacs-directory))
