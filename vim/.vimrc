@@ -128,7 +128,8 @@ if has('nvim') || (v:version >= 800)
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
     Plug 'nvim-telescope/telescope-live-grep-args.nvim'
     Plug 'folke/todo-comments.nvim'
-    Plug 'terrortylor/nvim-comment'
+    " Plug 'terrortylor/nvim-comment'
+    Plug 'numToStr/Comment.nvim'
     Plug 'ggandor/leap.nvim'
 else
     " Plug 'ajh17/VimCompletesMe'
@@ -163,11 +164,12 @@ endif
 Plug 'github/copilot.vim'
 
 Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
+" Plug 'hrsh7th/cmp-nvim-lsp'
+" Plug 'hrsh7th/cmp-buffer'
 " Plug 'hrsh7th/cmp-path'
 " Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
+" Plug 'hrsh7th/nvim-cmp'
+Plug 'ms-jpq/coq_nvim'
 call plug#end()
 
 
@@ -914,9 +916,25 @@ lua <<EOF
 EOF
 endfunction " SetupPlugins
 
-call SetupComment()
-" s{c1}{c2}
+" call SetupComment()
+lua require('Comment').setup()
+"----------------------------------------------------------------------
+" - use s{c1}{c2}
 lua require('leap').add_default_mappings()
+
+"----------------------------------------------------------------------
+lua<<EOF
+vim.g.coq_settings = {
+    auto_start = 'shut-up',
+    keymap = {
+        recommended = false,
+        jump_to_mark = "<C-,>"
+    },
+}
+EOF
+
+ino <silent><expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+ino <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
