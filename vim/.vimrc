@@ -800,132 +800,125 @@ call SetupTelescope()
 let g:tex_conceal = ""
 
 "
-function! SetupCmp()
-if !PlugLoaded('nvim-cmp')
-    echom "nvim-cmp is not loaded"
-    return
-endif
-set completeopt=menu,menuone,noselect,noinsert
-if !has("nvim")
-    return
-endif
-lua <<EOF
-  -- Set up nvim-cmp.
-  local cmp = require'cmp'
-
-  cmp.setup({
-    snippet = {
-      -- REQUIRED - you must specify a snippet engine
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-      end,
-    },
-    window = {
-      -- completion = cmp.config.window.bordered(),
-      -- documentation = cmp.config.window.bordered(),
-    },
-    mapping = cmp.mapping.preset.insert({
-      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-Space>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    }),
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-      -- { name = 'luasnip' }, -- For luasnip users.
-      -- { name = 'ultisnips' }, -- For ultisnips users.
-      -- { name = 'snippy' }, -- For snippy users.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Set configuration for specific filetype.
-  cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources({
-      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      { name = 'buffer' }
-    }
-  })
-
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    })
-  })
-
-  -- Set up lspconfig.
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
-  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  require('lspconfig').gopls.setup {
-    capabilities = capabilities
-  }
-EOF
-endfunction " SetupCmp
-
+" function! SetupCmp()
+" if !PlugLoaded('nvim-cmp')
+"     echom "nvim-cmp is not loaded"
+"     return
+" endif
+" set completeopt=menu,menuone,noselect
+" if !has("nvim")
+"     return
+" endif
+" lua <<EOF
+"   -- Set up nvim-cmp.
+"   local cmp = require'cmp'
+"
+"   cmp.setup({
+"     snippet = {
+"       -- REQUIRED - you must specify a snippet engine
+"       expand = function(args)
+"         vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+"         -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+"         -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+"         -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+"       end,
+"     },
+"     window = {
+"       -- completion = cmp.config.window.bordered(),
+"       -- documentation = cmp.config.window.bordered(),
+"     },
+"     mapping = cmp.mapping.preset.insert({
+"       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+"       ['<C-f>'] = cmp.mapping.scroll_docs(4),
+"       ['<C-Space>'] = cmp.mapping.complete(),
+"       ['<C-e>'] = cmp.mapping.abort(),
+"       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+"     }),
+"     sources = cmp.config.sources({
+"       { name = 'nvim_lsp' },
+"       { name = 'vsnip' }, -- For vsnip users.
+"       -- { name = 'luasnip' }, -- For luasnip users.
+"       -- { name = 'ultisnips' }, -- For ultisnips users.
+"       -- { name = 'snippy' }, -- For snippy users.
+"     }, {
+"       { name = 'buffer' },
+"     })
+"   })
+"
+"   -- Set configuration for specific filetype.
+"   cmp.setup.filetype('gitcommit', {
+"     sources = cmp.config.sources({
+"       { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+"     }, {
+"       { name = 'buffer' },
+"     })
+"   })
+"
+"   -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+"   cmp.setup.cmdline({ '/', '?' }, {
+"     mapping = cmp.mapping.preset.cmdline(),
+"     sources = {
+"       { name = 'buffer' }
+"     }
+"   })
+"
+"   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+"   cmp.setup.cmdline(':', {
+"     mapping = cmp.mapping.preset.cmdline(),
+"     sources = cmp.config.sources({
+"       { name = 'path' }
+"     }, {
+"       { name = 'cmdline' }
+"     })
+"   })
+"
+"   -- Set up lspconfig.
+"   local capabilities = require('cmp_nvim_lsp').default_capabilities()
+"   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+"   require('lspconfig').gopls.setup {
+"     capabilities = capabilities
+"   }
+" EOF
+" endfunction " SetupCmp
 " call SetupCmp()
 
-function! SetupComment()
-if !PlugLoaded('nvim_comment')
-    echom "nvim-cmp is not loaded"
-    return
-endif
-set completeopt=menu,menuone,noselect
-if !has("nvim")
-    return
-endif
-
-lua <<EOF
-    require("nvim_comment").setup({
-        -- Linters prefer comment and line to have a space in between markers
-        marker_padding = true,
-        -- should comment out empty or whitespace only lines
-        comment_empty = true,
-        -- trim empty comment whitespace
-        comment_empty_trim_whitespace = true,
-        -- Should key mappings be created
-        create_mappings = true,
-        -- Normal mode mapping left hand side
-        line_mapping = "gcc",
-        -- Visual/Operator mapping left hand side
-        operator_mapping = "gc",
-        -- text object mapping, comment chunk,,
-        comment_chunk_text_object = "<leader>co",
-        -- Hook function to call before commenting takes place
-        hook = function()
-            if vim.api.nvim_buf_get_option(0, "filetype") == "verilog" then
-                vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
-            end
-            if vim.api.nvim_buf_get_option(0, "filetype") == "Condor" then
-                vim.api.nvim_buf_set_option(0, "commentstring", "# %s")
-            end
-            if vim.api.nvim_buf_get_option(0, "filetype") == "asm" then
-                vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
-            end
-        end,
-    })
-EOF
-endfunction " SetupPlugins
-
+" function! SetupComment()
+" if !PlugLoaded('nvim-cmp')
+"     echom "nvim-cmp is not loaded"
+"     return
+" endif
+" set completeopt=menu,menuone,noselect
+" if !has("nvim")
+"     return
+" endif
+"
+" lua <<EOF
+"     require("nvim_comment").setup({
+"         -- Linters prefer comment and line to have a space in between markers
+"         marker_padding = true,
+"         -- should comment out empty or whitespace only lines
+"         comment_empty = true,
+"         -- trim empty comment whitespace
+"         comment_empty_trim_whitespace = true,
+"         -- Should key mappings be created
+"         create_mappings = true,
+"         -- Normal mode mapping left hand side
+"         line_mapping = "gcc",
+"         -- Visual/Operator mapping left hand side
+"         operator_mapping = "gc",
+"         -- text object mapping, comment chunk,,
+"         comment_chunk_text_object = "<leader>co",
+"         -- Hook function to call before commenting takes place
+"         hook = function()
+"             if vim.api.nvim_buf_get_option(0, "filetype") == "verilog" then
+"                 vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
+"             end
+"         end,
+"     })
+" EOF
+" endfunction " SetupComment
 " call SetupComment()
+
 lua require('Comment').setup()
 "----------------------------------------------------------------------
 " - use s{c1}{c2}
@@ -949,6 +942,26 @@ ino <silent><expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 ino <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 " enter to select the element
 ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
+
+lua<<EOF
+local lspconfig = require("lspconfig")
+lspconfig.pyright.setup{}
+local util = require("lspconfig/util")
+
+lspconfig.gopls.setup {
+    cmd = {"gopls", "serve"},
+    filetypes = {"go", "gomod"},
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
+}
+EOF
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
