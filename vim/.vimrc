@@ -131,7 +131,6 @@ if has('nvim') || (v:version >= 800)
     Plug 'folke/todo-comments.nvim'
     " Plug 'terrortylor/nvim-comment'
     Plug 'numToStr/Comment.nvim'
-    Plug 'ggandor/leap.nvim'
 else
     " Plug 'ajh17/VimCompletesMe'
 endif
@@ -139,6 +138,9 @@ endif
 Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'easymotion/vim-easymotion'
+" - remove leap because it is similar to to the easymotion.
+" Plug 'ggandor/leap.nvim'
+" Plug 'sakshamgupta05/vim-todo-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'kassio/neoterm'
 Plug 'folke/which-key.nvim'
@@ -927,7 +929,7 @@ endfunction " SetupPlugins
 lua require('Comment').setup()
 "----------------------------------------------------------------------
 " - use s{c1}{c2}
-lua require('leap').add_default_mappings()
+" lua require('leap').add_default_mappings()
 
 "----------------------------------------------------------------------
 lua<<EOF
