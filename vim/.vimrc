@@ -103,6 +103,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dense-analysis/ale'
 " Plug 'mtth/scratch.vim' " removed. not quite useful
+Plug 'Gullumluvl/vim-Condor'
 if v:version >= 800
     " Plug 'scrooloose/syntastic'   " check syntactical errors
     Plug 'itchyny/vim-gitbranch'  " put the branch name on the command bar
@@ -138,7 +139,6 @@ endif
 Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'easymotion/vim-easymotion'
-" Plug 'sakshamgupta05/vim-todo-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'kassio/neoterm'
 Plug 'folke/which-key.nvim'
@@ -173,6 +173,7 @@ Plug 'ms-jpq/coq_nvim'
 call plug#end()
 
 
+au BufNewFile,BufRead *.con set syntax=Condor
 "----------------------------------------------------------------------
 " GUI
 "" set zenburn color scheme
@@ -881,7 +882,7 @@ endfunction " SetupCmp
 " call SetupCmp()
 
 function! SetupComment()
-if !PlugLoaded('nvim-cmp')
+if !PlugLoaded('nvim_comment')
     echom "nvim-cmp is not loaded"
     return
 endif
@@ -909,6 +910,12 @@ lua <<EOF
         -- Hook function to call before commenting takes place
         hook = function()
             if vim.api.nvim_buf_get_option(0, "filetype") == "verilog" then
+                vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
+            end
+            if vim.api.nvim_buf_get_option(0, "filetype") == "Condor" then
+                vim.api.nvim_buf_set_option(0, "commentstring", "# %s")
+            end
+            if vim.api.nvim_buf_get_option(0, "filetype") == "asm" then
                 vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
             end
         end,
