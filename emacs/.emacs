@@ -113,7 +113,6 @@
                     (getenv "PATH"))))
  )
 
-;;; coding convention {{{
 (defun mine-coding-style ()
   "My coding style."
   (interactive)
@@ -153,7 +152,7 @@
 (c-set-offset 'inclass mine-space-tap-offset)
 
 
-;;; ibuffer {{{
+;;; ibuffer
 ;; ----------------------------------------------------------------------
 ;; Ensure ibuffer opens with point at the current buffer's entry.
 ;; How to use iBuffer
@@ -185,7 +184,6 @@
               " " filename)))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-;;; }}}
 
 ;;----------------------------------------------------------------------
 ;; remove the ^M
@@ -206,7 +204,6 @@
 ;;    - C-q C-M RET
 ;;    - RET
 ;;    - ! (replace the entire file)
-;;; package manager {{{
 ;; =======================================================================
 ;; Straight
 ;; =======================================================================
@@ -255,8 +252,6 @@
   )
 
 (use-package delight)
-;;; }}}
-;;; theme {{{
 ;; =======================================================================
 ;; Zenburn
 ;; =======================================================================
@@ -322,14 +317,12 @@
           ("REVIEW"     font-lock-keyword-face bold)
           ("NOTE"       success bold italic)
           ("DEPRECATED" font-lock-doc-face bold))))
-;;; }}}
 ;; =======================================================================
 ;; restart emacs
 ;; =======================================================================
 (use-package restart-emacs
   :defer t)
 
-;;; autocomplete {{{
 ;; =======================================================================
 ;; Company
 ;; =======================================================================
@@ -374,7 +367,9 @@
   ;; press tab to complete the common characters and cycle to the next option
   (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
   (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
-  (rename-minor-mode "company" company-mode "Com"))
+  (rename-minor-mode "company" company-mode "Com")
+  (add-hook 'after-init-hook 'global-company-mode)
+  )
 
 (use-package company-box
   :after company
@@ -382,11 +377,10 @@
   :hook (company-mode . company-box-mode))
 
 (use-package company-lsp
+  :demand t
   :ensure t
   :commands company-lsp)
 
-;;; }}}
-;;; evil {{{
 ;; =======================================================================
 ;; Evil
 ;; =======================================================================
@@ -424,6 +418,7 @@
   (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
   (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat)
   (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
+  (evil-set-leader nil (kbd "SPC"))
   )
 
 ;; =======================================================================
@@ -437,7 +432,6 @@
   (evil-leader/set-leader "<SPC>")
   ; (evil-leader/set-key "l" 'avy-goto-line)
   ; (evil-leader/set-key "c" 'avy-goto-char-2)
-  (evil-leader/set-key "w" 'ace-window)
   )
 
 ;; =======================================================================
@@ -457,7 +451,6 @@
   (setq-default evil-escape-delay 0.2)
   ; (rename-minor-mode "evil-escape" evil-escape-mode "jk")
   )
-;;; }}}
 ;; =======================================================================
 ;; Undo Tree
 ;; =======================================================================
@@ -599,7 +592,7 @@
   :config
   (setq LaTeX-item-indent 0))
 
-;;; org {{{
+;;; org
 (use-package org
   :bind
   (("C-c a" . org-agenda))
@@ -761,7 +754,6 @@
 	org-roam-server-network-label-truncate-length 60
 	org-roam-server-network-label-wrap-length 20)
   )
-;;; }}}
 ;; =======================================================================
 ;; Avy
 ;; =======================================================================
@@ -781,7 +773,10 @@
   :bind (("C-x o" . ace-window))
   :config
   (global-set-key [remap other-window] 'ace-window)
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (when (featurep 'evil-leader)
+    (evil-leader/set-key "w" 'ace-window))
+  )
 
 (use-package origami
   :disabled
@@ -822,7 +817,6 @@
   :hook ((lsp-after-open . lsp-origami-mode))
   )
 
-;{{{
 (use-package vimish-fold
   :disabled
   :after evil
@@ -837,7 +831,6 @@
   (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))
   :config
   (global-evil-vimish-fold-mode))
-;}}}
 
 (use-package vimrc-mode
   :config
@@ -1013,11 +1006,43 @@
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
   )
+
+(use-package lsp-mode
+  :ensure t
+  :config
+  ;; Start lsp when you open a file for each langauge
+  (add-hook 'python-mode-hook #'lsp)
+  (add-hook 'go-mode-hook     #'lsp)
+  (add-hook 'verilog-mode-hook #'lsp)
+  (setq lsp-prefer-flymake nil)
+  )
+
+(use-package lsp-ui
+  :config
+  ;; Show the peek view even if there is only 1 cross reference
+  (setq lsp-ui-peek-always-show t)
+  (setq lsp-ui-peek-fontify (quote always))
+  ;; sideline config
+  (setq lsp-ui-sideline-show-diagnostics t)
+  (setq lsp-ui-sideline-show-hover t)
+  (setq lsp-ui-sideline-show-code-actions t)
+  (setq lsp-ui-sideline-diagnostic-max-line-length 80) ; we have treemacs taking up space
+  (setq lsp-ui-sideline-ignore-duplicate t)
+  ;; doc popup config
+  (setq lsp-ui-doc-show-with-cursor nil)
+  (setq lsp-ui-doc-show-with-mouse nil)
+  ;; remap xref bindings to use peek
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+  ;; custom sideline
+  :bind ("M-RET" . lsp-execute-code-action)
+  :bind ("C-c h" . lsp-ui-doc-show)
+  )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
                      (lambda () (message "emacs-init-time: %s" (emacs-init-time))))
-;; # Emacs Lisp {{{
+;; # Emacs Lisp 
 ;; ## Basic Settings
 ;; Use (setq ...) to set value locally to a buffer
 ;; Use (setq-default ...) to set value globally
@@ -1042,7 +1067,6 @@
 ;;    https://github.com/chadhs/dotfiles/blob/master/editors/emacs-config.org
 ;; 2. evil setup
 ;;    http://evgeni.io/posts/quick-start-evil-mode/
-;; }}}
 
 ;; Note
 ;; - To write the emacs configurations in the org mode, put this
@@ -1052,3 +1076,4 @@
 ;;      (expand-file-name "config.org"
 ;;      		   user-emacs-directory))
 ;; - To render the html file, run the command 
+;; - https://www.reddit.com/r/emacs/comments/x7ahgz/how_many_of_you_switched_from_ivycounsel_or_helm/
