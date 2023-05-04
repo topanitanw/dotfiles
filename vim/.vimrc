@@ -805,7 +805,7 @@ if !PlugLoaded('nvim-cmp')
     echom "nvim-cmp is not loaded"
     return
 endif
-set completeopt=menu,menuone,noselect
+set completeopt=menu,menuone,noselect,noinsert
 if !has("nvim")
     return
 endif
@@ -942,8 +942,13 @@ vim.g.coq_settings = {
 }
 EOF
 
+set completeopt=menu,menuone,noselect,noinsert
+" tab to go to the next element
 ino <silent><expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+" shift-tab to go to the previous element
 ino <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
+" enter to select the element
+ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
 
 " Reference
 " https://dougblack.io/words/a-good-vimrc.html til folding
