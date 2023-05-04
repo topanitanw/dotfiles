@@ -407,8 +407,6 @@
   ;; For the vim-like motions of ">>" and "<<"
   (setq evil-shift-width mine-space-tap-offset)
   ;; define :ls, :buffers to open ibuffer
-  (evil-ex-define-cmd "ls" 'helm-buffers-list)
-  (evil-ex-define-cmd "buffers" 'helm-buffers-list)
 
   (evil-set-initial-state 'deft-mode 'emacs)
 
@@ -430,8 +428,10 @@
   :config
   (global-evil-leader-mode)
   (evil-leader/set-leader "<SPC>")
+
   ; (evil-leader/set-key "l" 'avy-goto-line)
   ; (evil-leader/set-key "c" 'avy-goto-char-2)
+
   )
 
 ;; =======================================================================
@@ -487,7 +487,7 @@
 ;; helm
 ;; =======================================================================
 (use-package helm
-  ; :disabled ; if emacs version is before 24.4
+  :disabled ; if emacs version is before 24.4
   :requires helm-config
   :if (version< "24.4" emacs-version)
   :diminish (helm-mode)
@@ -511,47 +511,136 @@
    ; ("M-y" . helm-show-kill-ring)
    ("C-x C-f" . helm-find-files)
    ("C-c h" . helm-mini))
+
   :config
   (recentf-mode 1)
   (setq-default recent-save-file "~/.emacs.d/recentf")
   (setq helm-ff-file-name-history-use-recentf t)
+  (when (featurep 'evil-leader)
+    (evil-leader/set-key
+      "ls" #'helm-buffers-list
+      "gf" #'helm-projectile-find-file
+      "d" 'helm-projectile-find-file-dwim
+      "ff" 'helm-projectile-find-file
+      )
+    )
   )
 
-;; Enable vertico
 (use-package vertico
-  :disabled
   :init
-  (vertico-mode)
+  (vertico-mode +1))
 
-  ;; Different scroll margin
-  ;; (setq vertico-scroll-margin 0)
-
-  ;; Show more candidates
-  ;; (setq vertico-count 20)
-
-  ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
-
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion))))
   )
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
-  :disabled
   :init
   (savehist-mode))
 
-;; Optionally use the `orderless' completion style.
-(use-package orderless
-  :disabled
+(use-package marginalia
+  :config
+  (marginalia-mode)
+  (marginalia-max-relative-age 0)
+  (marginalia-align 'right)
+  )
+
+(use-package general
+  :demand t)
+
+(use-package consult
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :config
+  (recentf-mode)
+  (setq completion-ignore-case t)
+  (setq read-file-name-completion-ignore-case t)
+  (when (featurep 'evil-leader)
+    (evil-leader/set-key
+      "ls" #'consult-buffer
+      "ff" #'consult-find
+      "fr" #'consult-recent-file
+      "gf" #'consult-grep
+      ))
+  )
+
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+ :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; strategy, if you want to see the documentation from multiple providers.
+  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+  (define-key minibuffer-local-map (kbd "M-.") #'my-embark-preview)
+  (defun my-embark-preview ()
+    "Previews candidate in vertico buffer, unless it's a consult command"
+    (interactive)
+    (unless (bound-and-true-p consult--preview-function)
+      (save-selected-window
+        (let ((embark-quit-after-action nil))
+          (embark-dwim)))))  
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package corfu
+  ;; Optional customizations
+  :custom
+  (corfu-cycle t)                 ; Allows cycling through candidates
+  (corfu-auto t)                  ; Enable auto completion
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.0)
+  (corfu-echo-documentation 0.25) ; Enable documentation for completions
+  (corfu-preview-current 'insert) ; Do not preview current candidate
+  (corfu-preselect-first nil)
+  (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
+
+  ;; Optionally use TAB for cycling, default is `corfu-complete'.
+  :bind (:map corfu-map
+              ("M-SPC" . corfu-insert-separator)
+              ("TAB"     . corfu-next)
+              ([tab]     . corfu-next)
+              ("S-TAB"   . corfu-previous)
+              ([backtab] . corfu-previous)
+              ("S-<return>" . corfu-insert)
+              ("RET"     . nil) ;; leave my enter alone!
+              )
+
   :init
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+  (global-corfu-mode)
+
+  :config
+  (setq tab-always-indent 'complete)
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq-local corfu-quit-at-boundary t
+                          corfu-quit-no-match t
+                          corfu-auto nil)
+              (corfu-mode)))
+  )
+
 ;; =======================================================================
 ;; highlight the indentation of the code
 ;; =======================================================================
@@ -881,7 +970,6 @@
     (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
     (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
 
-
 (use-package verilog-mode
   :ensure nil
   :init 
@@ -1000,6 +1088,7 @@
 
 (use-package copilot
   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :demand t
   :ensure t
   :config
   (add-hook 'prog-mode-hook 'copilot-mode)
@@ -1037,6 +1126,12 @@
   ;; custom sideline
   :bind ("M-RET" . lsp-execute-code-action)
   :bind ("C-c h" . lsp-ui-doc-show)
+  )
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
   )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer

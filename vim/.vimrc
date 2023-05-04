@@ -925,6 +925,15 @@ lua require('Comment').setup()
 " lua require('leap').add_default_mappings()
 
 "----------------------------------------------------------------------
+function! SetupCoq()
+if !PlugLoaded('coq_nvim')
+    echom "coq_nvim is not loaded"
+    return
+endif
+if !has("nvim")
+    return
+endif
+
 lua<<EOF
 vim.g.coq_settings = {
     auto_start = 'shut-up',
@@ -934,6 +943,7 @@ vim.g.coq_settings = {
     },
 }
 EOF
+endfunction
 
 ino <silent><expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 ino <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
