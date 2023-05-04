@@ -53,9 +53,12 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then
-    echo "reading bash_completion.sh"
-    . "/usr/local/etc/profile.d/bash_completion.sh"
+if test "${machine}" == "mac"; then
+    bash_completion_path="/opt/homebrew/etc/profile.d/bash_completion.sh"
+    if test -f "${bash_completion_path}"; then
+        echo "reading bash_completion.sh"
+        . "${bash_completion_path}"
+    fi
 fi
 
 SHELL_DIR="${HOME}/.shell_files"
