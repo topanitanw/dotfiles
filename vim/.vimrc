@@ -800,6 +800,7 @@ call SetupTelescope()
 let g:tex_conceal = ""
 
 "
+<<<<<<< HEAD
 " function! SetupCmp()
 " if !PlugLoaded('nvim-cmp')
 "     echom "nvim-cmp is not loaded"
