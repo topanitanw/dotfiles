@@ -800,7 +800,6 @@ call SetupTelescope()
 let g:tex_conceal = ""
 
 "
-<<<<<<< HEAD
 " function! SetupCmp()
 " if !PlugLoaded('nvim-cmp')
 "     echom "nvim-cmp is not loaded"
@@ -921,6 +920,19 @@ let g:tex_conceal = ""
 " call SetupComment()
 
 lua require('Comment').setup()
+lua <<EOF
+local ft = require('Comment.ft')
+ft.set(
+    'asm',
+    -- {
+    --     prefer_single_line_comments = true,
+    --     ignore_whitespace = true,
+    --     padding = true,
+    --     ignore = '^\\s*//\\s*',
+    -- }
+    '// %s'
+)
+EOF
 "----------------------------------------------------------------------
 " - use s{c1}{c2}
 " lua require('leap').add_default_mappings()
