@@ -919,6 +919,15 @@ let g:tex_conceal = ""
 " endfunction " SetupComment
 " call SetupComment()
 
+function! SetupComment()
+if !PlugLoaded('Comment')
+    echom "Comment is not loaded"
+    return
+endif
+if !has("nvim")
+    return
+endif
+
 lua require('Comment').setup()
 lua <<EOF
 local ft = require('Comment.ft')
@@ -932,7 +941,15 @@ ft.set(
     -- }
     '// %s'
 )
+ft.set(
+    'verilog',
+    '// %s
+)
 EOF
+endfunction
+
+call SetupComment()
+
 "----------------------------------------------------------------------
 " - use s{c1}{c2}
 " lua require('leap').add_default_mappings()

@@ -553,6 +553,7 @@
   :demand t)
 
 (use-package consult
+  :demand t
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
@@ -567,6 +568,34 @@
       "fr" #'consult-recent-file
       "gf" #'consult-grep
       ))
+  )
+
+(use-package consult-notes
+  :demand t
+  :after consult
+  :straight (:type git :host github :repo "mclear-tools/consult-notes")
+  :commands (
+             consult-notes
+             consult-notes-search-in-all-notes
+             )
+  :config
+  (setq consult-notes-use-rg nil)
+
+  (when (featurep 'evil-leader)
+    (evil-leader/set-key
+      "nn" #'consult-notes
+      "ng" #'consult-notes-search-in-all-notes))
+
+  (setq consult-notes-file-dir-sources
+        '(("obsidian"  ?o  "~/Dropbox/notes")))
+
+  ;; set notes dir(s), see below
+  ;; Set org-roam integration, denote integration, or org-heading integration e.g.:
+  ;; (setq consult-notes-org-headings-files '("~/path/to/file1.org"
+  ;;                                          "~/path/to/file2.org"))
+  ;; (consult-notes-org-headings-mode)
+  ;; (when (locate-library "denote")
+  ;;   (consult-notes-denote-mode))
   )
 
 (use-package embark
@@ -747,7 +776,9 @@
    '((python . t)))
   )
 
+;; use the consult-note instead
 (use-package deft
+  :disabled
   :init
   (when (featurep 'evil-leader)
     (evil-leader/set-key
@@ -1002,7 +1033,7 @@
 
 (use-package centaur-tabs
   :disabled
-  :demand
+  :demand t
   :config
   (centaur-tabs-mode t)
   :bind
@@ -1130,9 +1161,19 @@
 
 (use-package dashboard
   :ensure t
+  :demand t
   :config
   (dashboard-setup-startup-hook)
   )
+
+(use-package which-key
+  :ensure t
+  :demand t
+  :config
+  (which-key-mode)
+  (which-key-setup-side-window-bottom)
+  )
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
