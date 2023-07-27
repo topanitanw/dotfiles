@@ -98,6 +98,8 @@ symlink ssh_config ${HOME}/.ssh
 symlink git/.gitconfig ${HOME}
 # git config --file ~/.gitconfig
 
+symlink git/.gitignore ${HOME}/.gitignore_global
+
 ##################################################
 # inputrc
 symlink readline/.inputrc ${HOME}

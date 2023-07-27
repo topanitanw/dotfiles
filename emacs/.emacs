@@ -1159,12 +1159,12 @@
   :bind ("C-c h" . lsp-ui-doc-show)
   )
 
-(use-package dashboard
-  :ensure t
-  :demand t
-  :config
-  (dashboard-setup-startup-hook)
-  )
+;; (use-package dashboard
+;;   :ensure t
+;;   :demand t
+;;   :config
+;;   (dashboard-setup-startup-hook)
+;;   )
 
 (use-package which-key
   :ensure t
