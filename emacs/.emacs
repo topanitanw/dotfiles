@@ -43,6 +43,7 @@
 ;; enable the highlight current line
 (global-hl-line-mode +1)
 
+;; enable the line number mode
 (if (version< emacs-version "26")
     (global-linum-mode 1)
     (global-display-line-numbers-mode))
@@ -713,7 +714,8 @@
 ;;; org
 (use-package org
   :bind
-  (("C-c a" . org-agenda))
+  (("C-c a" . org-agenda)
+   ("C-c SPC" . org-table-blank-field))
 
   :mode (("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
          ("\\.txt\\'" . org-mode))
