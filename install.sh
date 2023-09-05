@@ -75,7 +75,6 @@ cp_template bash/bash_function.sh ${SHELLFILES_DIR}
 # shell file
 ##################################################
 # etc
-symlink .tmux.conf "${DST_DIR}"
 symlink .pylintrc "${DST_DIR}"
 
 ##################################################
@@ -103,6 +102,14 @@ symlink git/.gitignore ${HOME}/.gitignore_global
 ##################################################
 # inputrc
 symlink readline/.inputrc ${HOME}
+
+##################################################
+# tmux
+# set up
+# tmux must be 1.9 or higher
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+symlink .tmux.conf "${DST_DIR}"
 
 # git config --file ~/.gitconfig
 printf "${LABEL} done\n"
