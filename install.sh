@@ -111,5 +111,5 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 symlink .tmux.conf "${DST_DIR}"
 
-# git config --file ~/.gitconfig
+## git config --file ~/.gitconfig
 printf "${LABEL} done\n"
