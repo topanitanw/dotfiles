@@ -137,6 +137,9 @@ endif
 
 Plug 'tmhedberg/SimpylFold'   " fold in python
 Plug 'octol/vim-cpp-enhanced-highlight'
+" we might need to change the vim-easymotion to hop.nvim
+" https://github.com/smoka7/hop.nvim
+" However, I still don't have time to do this at the moment. 
 Plug 'easymotion/vim-easymotion'
 " - remove leap because it is similar to to the easymotion.
 " Plug 'ggandor/leap.nvim'

@@ -554,6 +554,7 @@
   :demand t)
 
 (use-package consult
+  :ensure t
   :demand t
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
