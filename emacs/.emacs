@@ -1035,7 +1035,6 @@
   )
 
 (use-package centaur-tabs
-  :disabled
   :demand t
   :config
   (centaur-tabs-mode t)
@@ -1176,6 +1175,16 @@
   (which-key-mode)
   (which-key-setup-side-window-bottom)
   )
+
+;; https://amaikinono.github.io/introduce-awesome-tab.html
+;; (use-package awesome-tab
+;;   :disabled
+;;   :ensure nil
+;;   :demand nil
+;;   :config
+;;   (awesome-tab-mode t)
+;;   (setq awesome-tab-show-tab-index t)
+;;   )
 
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
