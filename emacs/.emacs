@@ -1177,14 +1177,14 @@
   )
 
 ;; https://amaikinono.github.io/introduce-awesome-tab.html
-;; (use-package awesome-tab
-;;   :disabled
-;;   :ensure nil
-;;   :demand nil
-;;   :config
-;;   (awesome-tab-mode t)
-;;   (setq awesome-tab-show-tab-index t)
-;;   )
+(use-package awesome-tab
+  :disabled
+  :ensure nil
+  :demand nil
+  :config
+  (awesome-tab-mode t)
+  (setq awesome-tab-show-tab-index t)
+  )
 
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
@@ -1203,7 +1203,7 @@
 ;; (package-installed-p 'package-name) = check whether the package is installed
 ;; or not
 ;; (progn
-;;   ...
+
 ;;   ...)    =  execute the statements in sequence and return the value
 ;;              of the last one
 ;; (load-file "directory/file.el")
