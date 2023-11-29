@@ -15,6 +15,11 @@ function sync {
     rsync $1 $2
 }
 
+# symlink the file to the destination directory
+# if the file exists, do not symlink
+# $1: source file
+# $2: destination directory
+# Ex: symlink .bashrc ${HOME}
 function symlink {
     # don't symlink if the file exists
     local filename=`basename $1`
@@ -64,13 +69,14 @@ symlink bash/.bashrc "${DST_DIR}"
 SHELLFILES_DIR="${DST_DIR}/.shell_files"
 mkdir -p "${SHELLFILES_DIR}"
 
-cp_template bash/alias_command.sh \
-    "${SHELLFILES_DIR}"/alias_command.sh
+symlink bash/alias_command.sh \
+    "${SHELLFILES_DIR}"
+
+symlink bash/bash_function.sh \
+    "${SHELLFILES_DIR}"
 
 cp_template bash/private_environment.sh \
     "${SHELLFILES_DIR}"/private_environment.sh
-
-cp_template bash/bash_function.sh ${SHELLFILES_DIR}
 
 # shell file
 ##################################################

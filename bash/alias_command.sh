@@ -18,6 +18,7 @@ alias mre="make report";
 alias mru="make run";
 alias mte="make test";
 alias mme="make menuconfig";
+alias cdgr='cd "$(git rev-parse --show-toplevel)"'
 
 alias wcon="watch -n 2 condor_q;";
 alias conhold="condor_q -hold -af HoldReason;";
