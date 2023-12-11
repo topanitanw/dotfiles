@@ -117,5 +117,9 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 symlink .tmux.conf "${DST_DIR}"
 
+YADF_CONFIG_DIR="${HOME}/.config/yapf/style"
+mkdir -p "${YADF_CONFIG_DIR}"
+symlink formatter/.style.yapf "${YADF_CONFIG_DIR}"
+
 ## git config --file ~/.gitconfig
 printf "${LABEL} done\n"
