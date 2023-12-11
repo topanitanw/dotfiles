@@ -19,10 +19,16 @@ function sync {
 # if the file exists, do not symlink
 # $1: source file
 # $2: destination directory
+# $3: destination filename
 # Ex: symlink .bashrc ${HOME}
 function symlink {
     # don't symlink if the file exists
     local filename=`basename $1`
+    # if the 3rd argument is not empty, use it as the filename
+    if [ ! -z "$3" ]; then
+        filename="$3"
+    fi
+
     local dst_file_path="$2/$filename"
     if [ -f "$dst_file_path" ]; then
         printf "${LABEL} skipping ${dst_file_path} exists\n"
@@ -103,7 +109,7 @@ symlink ssh_config ${HOME}/.ssh
 symlink git/.gitconfig ${HOME}
 # git config --file ~/.gitconfig
 
-symlink git/.gitignore ${HOME}/.gitignore_global
+symlink git/.gitignore ${HOME} .gitignore_global
 
 ##################################################
 # inputrc
@@ -113,7 +119,15 @@ symlink readline/.inputrc ${HOME}
 # tmux
 # set up
 # tmux must be 1.9 or higher
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+# test if tpm exists
+if test -d ~/.tmux/plugins/tpm; then
+    printf "${LABEL} tpm exists\n"
+else
+    printf "${LABEL} tpm does not exist\n"
+    pushd ${HOME}
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    popd
+fi
 
 symlink .tmux.conf "${DST_DIR}"
 
