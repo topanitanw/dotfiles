@@ -1186,6 +1186,70 @@
   (setq awesome-tab-show-tab-index t)
   )
 
+(use-package rainbow-delimiters
+  :ensure t
+  :demand t
+  :hook
+  ((racket-mode . rainbow-delimiters-mode)))
+
+(use-package color
+  :ensure t
+  :config
+  (defun gen-col-list (length s v &optional hval)
+    (cl-flet ( (random-float () (/ (random 10000000000) 10000000000.0))
+               (mod-float (f) (- f (ffloor f))) )
+      (unless hval
+        (setq hval (random-float)))
+      (let ((golden-ratio-conjugate (/ (- (sqrt 5) 1) 2))
+            (h hval)
+            (current length)
+            (ret-list '()))
+        (while (> current 0)
+
+          (setq ret-list
+                (append ret-list
+                        (list (apply 'color-rgb-to-hex (color-hsl-to-rgb h s v)))))
+          (setq h (mod-float (+ h golden-ratio-conjugate)))
+          (setq current (- current 1)))
+        ret-list)))
+
+  (defun set-random-rainbow-colors (s l &optional h)
+    ;; Output into message buffer in case you get a scheme you REALLY like.
+    ;; (message "set-random-rainbow-colors %s" (list s l h))
+    (rainbow-delimiters-mode t)
+
+    ;; I also want css style colors in my code.
+    ;; (xah-syntax-color-hex)
+    ;; This function and fg-from-bg are redundant with rainbow mode.
+
+    ;; Show mismatched braces in bright red.
+    (set-face-background 'rainbow-delimiters-unmatched-face "red")
+
+    ;; Rainbow delimiters based on golden ratio
+    (let ( (colors (gen-col-list 9 s l h))
+           (i 1) )
+      (let ( (length (length colors)) )
+        ;;(message (concat "i " (number-to-string i) " length " (number-to-string length)))
+        (while (<= i length)
+          (let ( (rainbow-var-name (concat "rainbow-delimiters-depth-"
+                                           (number-to-string i)
+                                           "-face"))
+                 (col (nth i colors)) )
+            ;; (message (concat rainbow-var-name " => " col))
+            (set-face-foreground (intern rainbow-var-name) col))
+          (setq i (+ i 1))))))
+
+  ;; saturation: s [gray 0 - 1 pure color]
+  ;; lightness: l [dark 0 - 1 fully illuminated (completely white)]
+  ;; the default values of s and l are 0.5 and 0.49, and
+  ;; the color of braskets looks quite nice for the theme with the
+  ;; white background.
+  ;; (add-hook 'emacs-lisp-mode-hook
+  ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
+  ;; (add-hook 'lisp-mode-hook
+  ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
+  (add-hook 'prog-mode-hook
+            '(lambda () (set-random-rainbow-colors 0.8 0.6 0.7))))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
