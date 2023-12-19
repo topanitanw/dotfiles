@@ -991,7 +991,7 @@
   (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
   (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
   :config
-  (setq racket-mode-pretty-lambda t)
+  (setq racket-mode-pretty-lambda nil)
   ;; (type-case FAW a-fae
   ;     [a ...
   ;     [b ...
@@ -1000,9 +1000,16 @@
   (put '+ 'racket-indent-function nil)
   (put '- 'racket-indent-function nil)
   (setq tab-always-indent 'complete)
-  (when (window-system)
+  (when (eq system-type 'windows-nt)
     (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
-    (setq racket-raco-program "c:/Program Files/Racket/raco.exe")))
+    (setq racket-raco-program "c:/Program Files/Racket/raco.exe"))
+  (when (eq system-type 'darwin) ;; mac specific settings
+    (setq racket-racket-program "/opt/homebrew/bin/racket")
+    (setq racket-raco-program "/opt/homebrew/bin/raco"))
+  )
+
+(use-package geiser-mit
+  :ensure t)
 
 (use-package verilog-mode
   :ensure nil
@@ -1034,45 +1041,7 @@
         verilog-case-indent mine-space-tap-offset)
   )
 
-(use-package centaur-tabs
-  :demand t
-  :config
-  (centaur-tabs-mode t)
-  :bind
-  ("C-<prior>" . centaur-tabs-backward)
-  ("C-<next>" . centaur-tabs-forward))
-
 (use-package yaml-mode)
-
-(use-package tabbar
-  :disabled
-  :config
-  (customize-set-variable 'tabbar-background-color "gray20")
-  (customize-set-variable 'tabbar-separator '(0.5))
-  (customize-set-variable 'tabbar-use-images nil)
-  (tabbar-mode 1)
-
-  ;; My preferred keys
-  (define-key global-map [(alt j)] 'tabbar-backward)
-  (define-key global-map [(alt k)] 'tabbar-forward)
-
-  ;; Colors
-  (set-face-attribute 'tabbar-default nil
-                      :background "gray20" :foreground
-                      "gray60" :distant-foreground "gray50"
-                      :family "Helvetica Neue" :box nil)
-  (set-face-attribute 'tabbar-unselected nil
-                      :background "gray80" :foreground "black" :box nil)
-  (set-face-attribute 'tabbar-modified nil
-                      :foreground "red4" :box nil
-                      :inherit 'tabbar-unselected)
-  (set-face-attribute 'tabbar-selected nil
-                      :background "#4090c0" :foreground "white" :box nil)
-  (set-face-attribute 'tabbar-selected-modified nil
-                      :inherit 'tabbar-selected :foreground "GoldenRod2" :box nil)
-  (set-face-attribute 'tabbar-button nil
-                      :box nil)
-  )
 
 (use-package websocket
   :after org-roam)
@@ -1176,16 +1145,6 @@
   (which-key-setup-side-window-bottom)
   )
 
-;; https://amaikinono.github.io/introduce-awesome-tab.html
-(use-package awesome-tab
-  :disabled
-  :ensure nil
-  :demand nil
-  :config
-  (awesome-tab-mode t)
-  (setq awesome-tab-show-tab-index t)
-  )
-
 (use-package rainbow-delimiters
   :ensure t
   :demand t
@@ -1239,17 +1198,51 @@
             (set-face-foreground (intern rainbow-var-name) col))
           (setq i (+ i 1))))))
 
-  ;; saturation: s [gray 0 - 1 pure color]
-  ;; lightness: l [dark 0 - 1 fully illuminated (completely white)]
-  ;; the default values of s and l are 0.5 and 0.49, and
-  ;; the color of braskets looks quite nice for the theme with the
-  ;; white background.
-  ;; (add-hook 'emacs-lisp-mode-hook
-  ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
-  ;; (add-hook 'lisp-mode-hook
-  ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
-  (add-hook 'prog-mode-hook
-            '(lambda () (set-random-rainbow-colors 0.8 0.6 0.7))))
+(use-package centaur-tabs
+  :disabled
+  :demand t
+  :config
+  (centaur-tabs-mode t)
+  :bind
+  ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward))
+
+;; https://amaikinono.github.io/introduce-awesome-tab.html
+(use-package awesome-tab
+  :disabled
+  :config
+  (awesome-tab-mode t)
+  (setq awesome-tab-show-tab-index t))
+
+(use-package tabbar
+  :disabled
+  :config
+  (customize-set-variable 'tabbar-background-color "gray20")
+  (customize-set-variable 'tabbar-separator '(0.5))
+  (customize-set-variable 'tabbar-use-images nil)
+  (tabbar-mode 1)
+
+  ;; My preferred keys
+  (define-key global-map [(alt j)] 'tabbar-backward)
+  (define-key global-map [(alt k)] 'tabbar-forward)
+
+  ;; Colors
+  (set-face-attribute 'tabbar-default nil
+                      :background "gray20" :foreground
+                      "gray60" :distant-foreground "gray50"
+                      :family "Helvetica Neue" :box nil)
+  (set-face-attribute 'tabbar-unselected nil
+                      :background "gray80" :foreground "black" :box nil)
+  (set-face-attribute 'tabbar-modified nil
+                      :foreground "red4" :box nil
+                      :inherit 'tabbar-unselected)
+  (set-face-attribute 'tabbar-selected nil
+                      :background "#4090c0" :foreground "white" :box nil)
+  (set-face-attribute 'tabbar-selected-modified nil
+                      :inherit 'tabbar-selected :foreground "GoldenRod2" :box nil)
+  (set-face-attribute 'tabbar-button nil
+                      :box nil)
+  )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

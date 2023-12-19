@@ -131,9 +131,9 @@ fi
 
 symlink .tmux.conf "${DST_DIR}"
 
-YADF_CONFIG_DIR="${HOME}/.config/yapf/style"
+YADF_CONFIG_DIR="${HOME}/.config/yapf"
 mkdir -p "${YADF_CONFIG_DIR}"
-symlink formatter/.style.yapf "${YADF_CONFIG_DIR}"
+symlink formatter/.style.yapf "${YADF_CONFIG_DIR}" "style"
 
 ## git config --file ~/.gitconfig
 printf "${LABEL} done\n"
