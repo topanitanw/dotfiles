@@ -349,7 +349,7 @@
         ;; make the text completion output case-sensitive
         company-dabbrev-downcase nil ;; set it globally
         ;; need to type at least 3 characters until the autocompletion starts
-        company-minimum-prefix-length 3
+        company-minimum-prefix-length 2
         company-tooltip-align-annotations 't
         company-show-numbers t
         company-tooltip-align-annotations 't
@@ -1130,12 +1130,12 @@
   :bind ("C-c h" . lsp-ui-doc-show)
   )
 
-;; (use-package dashboard
-;;   :ensure t
-;;   :demand t
-;;   :config
-;;   (dashboard-setup-startup-hook)
-;;   )
+(use-package dashboard
+  :ensure t
+  :demand t
+  :config
+  (dashboard-setup-startup-hook)
+  )
 
 (use-package which-key
   :ensure t
@@ -1154,6 +1154,7 @@
 (use-package color
   :ensure t
   :config
+  ;; referene: https://github.com/mariusk/emacs-color
   (defun gen-col-list (length s v &optional hval)
     (cl-flet ( (random-float () (/ (random 10000000000) 10000000000.0))
                (mod-float (f) (- f (ffloor f))) )
@@ -1197,53 +1198,64 @@
             ;; (message (concat rainbow-var-name " => " col))
             (set-face-foreground (intern rainbow-var-name) col))
           (setq i (+ i 1))))))
+  ;; saturation: s [gray 0 - 1 pure color]
+  ;; lightness: l [dark 0 - 1 fully illuminated (completely white)]
+  ;; the default values of s and l are 0.5 and 0.49, and
+  ;; the color of braskets looks quite nice for the theme with the
+  ;; white background.
+  ;; (add-hook 'emacs-lisp-mode-hook
+  ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
+  ;; (add-hook 'lisp-mode-hook
+  ;;           '(lambda () (set-random-rainbow-colors 0.5 0.49)))
+  (add-hook 'prog-mode-hook
+            '(lambda () (set-random-rainbow-colors 0.8 0.6 0.7))))
 
-(use-package centaur-tabs
-  :disabled
-  :demand t
-  :config
-  (centaur-tabs-mode t)
-  :bind
-  ("C-<prior>" . centaur-tabs-backward)
-  ("C-<next>" . centaur-tabs-forward))
+;; (use-package centaur-tabs
+;;   :disabled
+;;   :demand t
+;;   :config
+;;   (centaur-tabs-mode t)
+;;   :bind
+;;   ("C-<prior>" . centaur-tabs-backward)
+;;   ("C-<next>" . centaur-tabs-forward))
 
-;; https://amaikinono.github.io/introduce-awesome-tab.html
-(use-package awesome-tab
-  :disabled
-  :config
-  (awesome-tab-mode t)
-  (setq awesome-tab-show-tab-index t))
+;; ;; https://amaikinono.github.io/introduce-awesome-tab.html
+;; (use-package awesome-tab
+;;   :disabled
+;;   :config
+;;   (awesome-tab-mode t)
+;;   (setq awesome-tab-show-tab-index t))
 
-(use-package tabbar
-  :disabled
-  :config
-  (customize-set-variable 'tabbar-background-color "gray20")
-  (customize-set-variable 'tabbar-separator '(0.5))
-  (customize-set-variable 'tabbar-use-images nil)
-  (tabbar-mode 1)
+;; (use-package tabbar
+;;   :disabled
+;;   :config
+;;   (customize-set-variable 'tabbar-background-color "gray20")
+;;   (customize-set-variable 'tabbar-separator '(0.5))
+;;   (customize-set-variable 'tabbar-use-images nil)
+;;   (tabbar-mode 1)
 
-  ;; My preferred keys
-  (define-key global-map [(alt j)] 'tabbar-backward)
-  (define-key global-map [(alt k)] 'tabbar-forward)
+;;   ;; My preferred keys
+;;   (define-key global-map [(alt j)] 'tabbar-backward)
+;;   (define-key global-map [(alt k)] 'tabbar-forward)
 
-  ;; Colors
-  (set-face-attribute 'tabbar-default nil
-                      :background "gray20" :foreground
-                      "gray60" :distant-foreground "gray50"
-                      :family "Helvetica Neue" :box nil)
-  (set-face-attribute 'tabbar-unselected nil
-                      :background "gray80" :foreground "black" :box nil)
-  (set-face-attribute 'tabbar-modified nil
-                      :foreground "red4" :box nil
-                      :inherit 'tabbar-unselected)
-  (set-face-attribute 'tabbar-selected nil
-                      :background "#4090c0" :foreground "white" :box nil)
-  (set-face-attribute 'tabbar-selected-modified nil
-                      :inherit 'tabbar-selected :foreground "GoldenRod2" :box nil)
-  (set-face-attribute 'tabbar-button nil
-                      :box nil)
-  )
-;; ==================================================================
+;;   ;; Colors
+;;   (set-face-attribute 'tabbar-default nil
+;;                       :background "gray20" :foreground
+;;                       "gray60" :distant-foreground "gray50"
+;;                       :family "Helvetica Neue" :box nil)
+;;   (set-face-attribute 'tabbar-unselected nil
+;;                       :background "gray80" :foreground "black" :box nil)
+;;   (set-face-attribute 'tabbar-modified nil
+;;                       :foreground "red4" :box nil
+;;                       :inherit 'tabbar-unselected)
+;;   (set-face-attribute 'tabbar-selected nil
+;;                       :background "#4090c0" :foreground "white" :box nil)
+;;   (set-face-attribute 'tabbar-selected-modified nil
+;;                       :inherit 'tabbar-selected :foreground "GoldenRod2" :box nil)
+;;   (set-face-attribute 'tabbar-button nil
+;;                       :box nil)
+;;   )
+;; ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
                      (lambda () (message "emacs-init-time: %s" (emacs-init-time))))
