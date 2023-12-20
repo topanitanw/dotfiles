@@ -205,6 +205,17 @@
 ;;    - C-q C-M RET
 ;;    - RET
 ;;    - ! (replace the entire file)
+
+;;----------------------------------------------------------------------
+;; file storage
+(defvar mine-backup-directory-path "~/.emacs.data")
+(make-directory mine-backup-directory-path t)
+(defvar mine-recentf-directory-name "recentf")
+(defvar mine-recentf-directory-path
+  (file-name-concat mine-backup-directory-path
+                    mine-recentf-directory-name))
+(setq recentf-save-file mine-recentf-directory-path)
+
 ;; =======================================================================
 ;; Straight
 ;; =======================================================================
@@ -362,12 +373,12 @@
   ;; (define-key company-active-map (kbd "TAB") 'company-select-next)
 
   ;; press S-TAB to select the previous option
-  (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
-  (define-key company-active-map (kbd "<backtab>") 'company-select-previous)
+  (define-key company-active-map (kbd "S-TAB") #'company-select-previous)
+  (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
 
   ;; press tab to complete the common characters and cycle to the next option
-  (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "<tab>") #'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "TAB")   #'company-complete-common-or-cycle)
   (rename-minor-mode "company" company-mode "Com")
   (add-hook 'after-init-hook 'global-company-mode)
   )
@@ -414,8 +425,8 @@
   ;; set up search in the evil mode
   (setq evil-search-module 'evil-search)
   ;; use up and down keys to scroll the search history
-  (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
-  (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat)
+  (define-key isearch-mode-map (kbd "<down>") #'isearch-ring-advance)
+  (define-key isearch-mode-map (kbd "<up>")   #'isearch-ring-retreat)
   (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
   (evil-set-leader nil (kbd "SPC"))
   )
@@ -515,14 +526,13 @@
 
   :config
   (recentf-mode 1)
-  (setq-default recent-save-file "~/.emacs.d/recentf")
   (setq helm-ff-file-name-history-use-recentf t)
   (when (featurep 'evil-leader)
     (evil-leader/set-key
       "ls" #'helm-buffers-list
       "gf" #'helm-projectile-find-file
-      "d" 'helm-projectile-find-file-dwim
-      "ff" 'helm-projectile-find-file
+      "d"  #'helm-projectile-find-file-dwim
+      "ff" #'helm-projectile-find-file
       )
     )
   )
@@ -984,11 +994,14 @@
   (setq-default ispell-list-command "list")
   )
 
+;; https://www.linw1995.com/en/blog/Write-Racket-With-Emacs/
+;; https://marketsplash.com/tutorials/emacs/how-to-use-racket-mode-in-emacs/
 (use-package racket-mode
   :bind
   (("C-c r" . racket-run))
   :init
   (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+  (add-hook 'racket-mode-hook      #'racket-xp-mode)
   (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
   :config
   (setq racket-mode-pretty-lambda nil)
@@ -1000,12 +1013,12 @@
   (put '+ 'racket-indent-function nil)
   (put '- 'racket-indent-function nil)
   (setq tab-always-indent 'complete)
-  (when (eq system-type 'windows-nt)
-    (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
-    (setq racket-raco-program "c:/Program Files/Racket/raco.exe"))
-  (when (eq system-type 'darwin) ;; mac specific settings
-    (setq racket-racket-program "/opt/homebrew/bin/racket")
-    (setq racket-raco-program "/opt/homebrew/bin/raco"))
+  ;; (when (eq system-type 'windows-nt)
+  ;;   (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
+  ;;   (setq racket-raco-program "c:/Program Files/Racket/raco.exe"))
+  ;; (when (eq system-type 'darwin) ;; mac specific settings
+  ;;   (setq racket-racket-program "/opt/homebrew/bin/racket")
+  ;;   (setq racket-raco-program "/opt/homebrew/bin/raco"))
   )
 
 (use-package geiser-mit
