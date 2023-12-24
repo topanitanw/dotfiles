@@ -110,8 +110,11 @@
   ;; add the pdflatex path
   (when (executable-find "pdflatex")
     (setenv "PATH" (concat (file-name-directory (executable-find "pdflatex"))
-                    ":"
-                    (getenv "PATH"))))
+                           ":"
+                           (getenv "PATH"))))
+
+  (when (not (executable-find "node"))
+    (push "/opt/homebrew/bin" exec-path))
  )
 
 (defun mine-coding-style ()
@@ -349,6 +352,7 @@
   ((racket-mode . company-mode)
    (racket-repl-mode . company-mode))
   :config
+  (setq lsp-completion-provider :capf)
   ;; decrease delay before autocompletion popup shows
   (setq company-idle-delay 0.2
         ;; remove annoying blinking
@@ -1013,12 +1017,9 @@
   (put '+ 'racket-indent-function nil)
   (put '- 'racket-indent-function nil)
   (setq tab-always-indent 'complete)
-  ;; (when (eq system-type 'windows-nt)
-  ;;   (setq racket-racket-program "c:/Program Files/Racket/Racket.exe")
-  ;;   (setq racket-raco-program "c:/Program Files/Racket/raco.exe"))
-  ;; (when (eq system-type 'darwin) ;; mac specific settings
-  ;;   (setq racket-racket-program "/opt/homebrew/bin/racket")
-  ;;   (setq racket-raco-program "/opt/homebrew/bin/raco"))
+  (when (eq system-type 'darwin) ;; mac specific settings
+    (setq racket-program "/opt/homebrew/bin/racket")
+    )
   )
 
 (use-package geiser-mit
@@ -1111,37 +1112,37 @@
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
   )
 
-(use-package lsp-mode
-  :ensure t
-  :config
-  ;; Start lsp when you open a file for each langauge
-  (add-hook 'python-mode-hook #'lsp)
-  (add-hook 'go-mode-hook     #'lsp)
-  (add-hook 'verilog-mode-hook #'lsp)
-  (setq lsp-prefer-flymake nil)
-  )
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :config
+;;   ;; Start lsp when you open a file for each langauge
+;;   (add-hook 'python-mode-hook #'lsp)
+;;   (add-hook 'go-mode-hook     #'lsp)
+;;   (add-hook 'verilog-mode-hook #'lsp)
+;;   (setq lsp-prefer-flymake nil)
+;;   )
 
-(use-package lsp-ui
-  :config
-  ;; Show the peek view even if there is only 1 cross reference
-  (setq lsp-ui-peek-always-show t)
-  (setq lsp-ui-peek-fontify (quote always))
-  ;; sideline config
-  (setq lsp-ui-sideline-show-diagnostics t)
-  (setq lsp-ui-sideline-show-hover t)
-  (setq lsp-ui-sideline-show-code-actions t)
-  (setq lsp-ui-sideline-diagnostic-max-line-length 80) ; we have treemacs taking up space
-  (setq lsp-ui-sideline-ignore-duplicate t)
-  ;; doc popup config
-  (setq lsp-ui-doc-show-with-cursor nil)
-  (setq lsp-ui-doc-show-with-mouse nil)
-  ;; remap xref bindings to use peek
-  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
-  ;; custom sideline
-  :bind ("M-RET" . lsp-execute-code-action)
-  :bind ("C-c h" . lsp-ui-doc-show)
-  )
+;; (use-package lsp-ui
+;;   :config
+;;   ;; Show the peek view even if there is only 1 cross reference
+;;   (setq lsp-ui-peek-always-show t)
+;;   (setq lsp-ui-peek-fontify (quote always))
+;;   ;; sideline config
+;;   (setq lsp-ui-sideline-show-diagnostics t)
+;;   (setq lsp-ui-sideline-show-hover t)
+;;   (setq lsp-ui-sideline-show-code-actions t)
+;;   (setq lsp-ui-sideline-diagnostic-max-line-length 80) ; we have treemacs taking up space
+;;   (setq lsp-ui-sideline-ignore-duplicate t)
+;;   ;; doc popup config
+;;   (setq lsp-ui-doc-show-with-cursor nil)
+;;   (setq lsp-ui-doc-show-with-mouse nil)
+;;   ;; remap xref bindings to use peek
+;;   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+;;   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+;;   ;; custom sideline
+;;   :bind ("M-RET" . lsp-execute-code-action)
+;;   :bind ("C-c h" . lsp-ui-doc-show)
+;;   )
 
 (use-package dashboard
   :ensure t
