@@ -129,7 +129,7 @@ else
     popd
 fi
 
-symlink .tmux.conf "${DST_DIR}"
+symlink ./tmux/.tmux.conf "${DST_DIR}"
 
 YADF_CONFIG_DIR="${HOME}/.config/yapf"
 mkdir -p "${YADF_CONFIG_DIR}"
