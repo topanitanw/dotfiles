@@ -1110,6 +1110,8 @@
   (add-hook 'prog-mode-hook 'copilot-mode)
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+  (setq copilot-use-auto-complete t
+        copilot--indent-warning-printed-p nil)
   )
 
 ;; (use-package lsp-mode
@@ -1269,6 +1271,7 @@
 ;;   (set-face-attribute 'tabbar-button nil
 ;;                       :box nil)
 ;;   )
+
 ;; ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

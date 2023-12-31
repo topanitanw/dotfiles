@@ -176,6 +176,7 @@ Plug 'neovim/nvim-lspconfig'
 " Plug 'hrsh7th/nvim-cmp'
 Plug 'ms-jpq/coq_nvim'
 
+"" highlight the matching parenthesis with different colors
 Plug 'luochen1990/rainbow'
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
