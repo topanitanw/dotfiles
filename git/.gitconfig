@@ -15,6 +15,7 @@
     # git basic status
     ba = !"echo '\n[=] git status -uno' ; git status -uno; echo '\n[=] git remote -v;'; git remote -v; echo '\n[=] git branch -a;'; git branch -a; "
     lsf = ls-files
+    lsfu = ls-files --exclude-standard --others
     droot = rev-parse --show-toplevel
     pso = push origin
     plo = pull origin

@@ -86,7 +86,7 @@ function! LightlineBufferline()
                 \ g:bufferline_status_info.current,
                 \ g:bufferline_status_info.after ]
 endfunction
-endfunction
+endfunction " function! SetupLightline(info)
 
 call plug#begin(g:plug_dir)
 " theme
@@ -209,7 +209,6 @@ set modelines=1
 " do not use the insert mode to solve the problem that when pasting the text
 " from the system clipboard, vim cannot recognize ESC.
 set noinsertmode
-
 
 if has("gui_running")
 "  set guioptions -= m  " remove Menu bar
@@ -452,6 +451,7 @@ endif
 "----------------------------------------------------------------------
 " SimpylFold: folding the python code
 let g:SimpylFold_docstring_preview=1
+autocmd FileType python setlocal foldmethod=indent
 
 " NerdTree: Display your file system as a tree, enabling you to easily explore
 " and open various files and directories.
