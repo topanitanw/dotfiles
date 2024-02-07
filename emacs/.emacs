@@ -584,10 +584,15 @@
     (recentf-mode)
     (setq completion-ignore-case t)
     (setq read-file-name-completion-ignore-case t)
+    (defun consult-find-notes ()
+        "Find notes in the notes directory."
+        (interactive)
+        (consult-find mine-obsidian-notes-path))
     (when (featurep 'evil-leader)
         (evil-leader/set-key
             "ls" #'consult-buffer
             "ff" #'consult-find
+            "fn" #'consult-find-notes
             "fr" #'consult-recent-file
             "gf" #'consult-grep
             "bl" #'consult-bookmark
@@ -735,7 +740,7 @@
         ("\\.md\\'" . markdown-mode)
         ("\\.markdown\\'" . markdown-mode))
     :init
-                                        ;(setq markdown-command "multimarkdown")
+    ;;(setq markdown-command "multimarkdown")
     (setq markdown-enable-math t)
     )
 
@@ -1186,8 +1191,10 @@
 (use-package rainbow-delimiters
     :ensure t
     :demand t
-    :hook
-    ((racket-mode . rainbow-delimiters-mode)))
+    :init
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+    (add-hook 'latex-mode 'rainbow-delimiters-mode)
+    )
 
 (use-package color
     :ensure t
@@ -1332,6 +1339,15 @@
             (ediff file1 file2)))
     ;; show the ediff command buffer in the same frame
     (add-to-list 'command-switch-alist '("-diff" . my/command-line-diff)))
+
+;; show weird characters
+;; (use-package xeft
+;;     :disabled
+;;     :config
+;;     (setq xeft-extensions '("txt" "org" "md"))
+;;     (setq xeft-recursive t)
+;;     (setq xeft-directory mine-obsidian-notes-path)
+;;     )
 ;; ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
