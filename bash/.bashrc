@@ -150,3 +150,4 @@ check_source ${FILE_ALIAS_COM}
 
 bind -m vi-command 'Control-l: clear-screen'
 bind -m vi-insert 'Control-l: clear-screen'
+
