@@ -1021,7 +1021,10 @@ lspconfig.gopls.setup {
 EOF
 
 lua<<EOF
-vim.o.foldcolumn = '1' -- '0' is not bad
+-- turn off the fold column, which is an extra column on the left hand side
+-- of the buffer to indicate the fold level. I don't quite understand why
+-- it is important for a user. 
+vim.o.foldcolumn = '0' -- '0' is not bad
 vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
