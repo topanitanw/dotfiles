@@ -715,13 +715,10 @@
 ;; highlight the indentation of the code
 ;; =======================================================================
 (use-package highlight-indent-guides
-                                        ;:delight '(:eval (if mine-debug-show-modes-in-modeline
-                                        ;		       highlight-indent-guides
-                                        ;                     ""))
     :delight '(:eval (show-mode-in-modeline 'highlight-indent-guides))
     :demand t
+    :hook ((prog-mode . highlight-indent-guides-mode))
     :config
-    (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
     (setq highlight-indent-guides-method 'character)
     (setq highlight-indent-guides-auto-enabled nil)
 
