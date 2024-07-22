@@ -745,8 +745,13 @@
     :mode ("\\.tex\\'" . latex-mode)
     :init
     (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+    (setq
+        Tex-brace-indent-level mine-space-tap-offset
+        LaTeX-indent-level mine-space-tap-offset
+        LaTeX-item-indent 0 ;;mine-space-tap-offset
+        )
     :config
-    (setq LaTeX-item-indent 0))
+    )
 
 ;;; org
 (use-package org
@@ -1337,6 +1342,9 @@
     ;; show the ediff command buffer in the same frame
     (add-to-list 'command-switch-alist '("-diff" . my/command-line-diff)))
 
+(use-package woman
+    :disabled)
+
 ;; show weird characters
 ;; (use-package xeft
 ;;     :disabled
@@ -1384,3 +1392,12 @@
 ;;      		   user-emacs-directory))
 ;; - To render the html file, run the command 
 ;; - https://www.reddit.com/r/emacs/comments/x7ahgz/how_many_of_you_switched_from_ivycounsel_or_helm/
+;; TODO list:
+;; install
+;; - https://github.com/emacscollective/no-littering
+;; I recommend installing no-littering. It automatically puts backup files (file~) in ~/.emacs.d/var/backup/.
+;; It doesn't do anything about autosaves (#file#), but there is a note about putting those files in a specified directory in the README:
+;; 
+;; (setq auto-save-file-name-transforms
+;;      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+

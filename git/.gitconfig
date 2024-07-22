@@ -3,7 +3,7 @@
 	email = sassofono@hotmail.com
 
 [core]
-	editor = vim
+	editor = nvim
     whitespace = -trailing-space,-indent-with-non-tab,-tab-in-indent
     excludesfile = ~/.gitignore_global
 

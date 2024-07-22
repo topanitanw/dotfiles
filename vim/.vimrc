@@ -241,7 +241,7 @@ let mapleader=" "
 "----------------------------------------------------------------------
 " code representation
 "" folding
-set foldmethod=indent
+" set foldmethod=indent
 
 "" enable code folding for shell scripts
 au FileType sh let g:is_bash=1
