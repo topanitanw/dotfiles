@@ -1,6 +1,7 @@
 "" Use gVim settings
 set nocompatible   " Use gVim defaults
-
+set modeline
+set modelines=1
 "----------------------------------------------------------------------
 " how to install vim-plug
 " https://vi.stackexchange.com/questions/613/how-do-i-install-a-plugin-in-vim-vi
