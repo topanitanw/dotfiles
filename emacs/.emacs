@@ -1129,6 +1129,7 @@
 (use-package dockerfile-mode
     :ensure t)
 
+;; you can disable the copilot mode by M-x copilot-mode
 (use-package copilot
     :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
     :demand t
