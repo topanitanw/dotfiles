@@ -92,6 +92,7 @@ endfunction " function! SetupLightline(info)
 call plug#begin(g:plug_dir)
 " theme
 Plug 'vim-scripts/Zenburn'
+" Plug "phha/zenburn.nvim"
 " mode line
 Plug 'itchyny/lightline.vim', { 'do': ':SetupLightline' }
 " display the buffer name on top of the screen
@@ -162,8 +163,6 @@ Plug 'lilydjwg/colorizer'
 Plug 'nachumk/systemverilog.vim'
 runtime macros/matchit.vim
 au BufNewFile,BufRead *.sv,*.svh,*.vh,*.v set filetype=systemverilog
-"" Plug 'luochen1990/rainbow'
-"" let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
 Plug 'mileszs/ack.vim'
 if executable('ag')
@@ -257,7 +256,7 @@ set wildmenu            " visual autocomplete for command menu
 set wildmode=longest:full,full
 set encoding=utf-8      " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
-set termencoding=utf-8
+" set termencoding=utf-8
 set ffs=unix,dos,mac
 " intelligent comments
 set comments=sl:/*,mb:\ *,elx:\ */
@@ -1070,6 +1069,16 @@ require('ufo').setup({
     end
 })
 EOF
+
+let g:rainbow_conf = {
+	\	'guifgs': ['lightblue', 'darkorange3', 'seagreen3', 'firebrick'],
+	\	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+	\	'guis': [''],
+	\	'cterms': [''],
+	\	'operators': '_,_',
+	\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold']
+	\}
+
 " highlight Cursor guifg=white guibg=black
 " highlight iCursor guifg=white guibg=steelblue
 " set guicursor=n-v-c:block-Cursor
