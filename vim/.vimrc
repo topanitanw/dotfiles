@@ -1083,23 +1083,23 @@ let g:rainbow_conf = {
 lua << EOF
 -- Ensure termguicolors is enabled if not already
 require('nvim-highlight-colors').setup({
-	---Highlight hex colors, e.g. '#FFFFFF'
-	enable_hex = true,
+---Highlight hex colors, e.g. '#FFFFFF'
+enable_hex = true,
 
-    	---Highlight short hex colors e.g. '#fff'
-	enable_short_hex = true,
+---Highlight short hex colors e.g. '#fff'
+enable_short_hex = true,
 
-	---Highlight rgb colors, e.g. 'rgb(0 0 0)'
-	enable_rgb = true,
+---Highlight rgb colors, e.g. 'rgb(0 0 0)'
+enable_rgb = true,
 
-	---Highlight hsl colors, e.g. 'hsl(150deg 30% 40%)'
-	enable_hsl = true,
+---Highlight hsl colors, e.g. 'hsl(150deg 30% 40%)'
+enable_hsl = true,
 
-	---Highlight CSS variables, e.g. 'var(--testing-color)'
-	enable_var_usage = true,
+---Highlight CSS variables, e.g. 'var(--testing-color)'
+enable_var_usage = true,
 
-	---Highlight named colors, e.g. 'green'
-	enable_named_colors = true,
+---Highlight named colors, e.g. 'green'
+enable_named_colors = true,
 })
 require("nvim-highlight-colors").turnOn()
 vim.opt.termguicolors = true
