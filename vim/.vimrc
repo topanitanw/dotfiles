@@ -152,7 +152,7 @@ Plug 'easymotion/vim-easymotion'
 " Plug 'sakshamgupta05/vim-todo-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'kassio/neoterm'
-Plug 'folke/which-key.nvim'
+" Plug 'folke/which-key.nvim'
 Plug 'mhinz/vim-startify'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -184,6 +184,7 @@ Plug 'ms-jpq/coq_nvim'
 Plug 'luochen1990/rainbow'
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
+Plug 'brenoprata10/nvim-highlight-colors'
 call plug#end()
 
 au BufNewFile,BufRead *.con set syntax=Condor
@@ -660,36 +661,36 @@ hi Search cterm=underline ctermfg=blue ctermbg=none
 "" in this case we assume that space is the leader key.
 "" nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 "
-if has("nvim")
-lua << EOF
-require("which-key").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    key_labels = {
-        -- override the label used to display some keys. It doesn't effect WK in any other way.
-        -- For example:
-        ["<space>"] = "SPC",
-        ["<cr>"] = "RET",
-        ["<tab>"] = "TAB",
-    },-- refer to the configuration section below
-}
-
-local wk = require("which-key")
-wk.register(
-    {
-        f = {
-            -- optional group name
-            name = "file",
-            -- create a binding with label
-            -- f = { "<cmd>Telescope find_files<cr>", "Find File" },
-        },
-    },
-    {
-        prefix = "<leader>"
-    }
-)
-EOF
-endif
+" if has("nvim")
+" lua << EOF
+" require("which-key").setup {
+"     -- your configuration comes here
+"     -- or leave it empty to use the default settings
+"     key_labels = {
+"         -- override the label used to display some keys. It doesn't effect WK in any other way.
+"         -- For example:
+"         ["<space>"] = "SPC",
+"         ["<cr>"] = "RET",
+"         ["<tab>"] = "TAB",
+"     },-- refer to the configuration section below
+" }
+"
+" local wk = require("which-key")
+" wk.register(
+"     {
+"         f = {
+"             -- optional group name
+"             name = "file",
+"             -- create a binding with label
+"             -- f = { "<cmd>Telescope find_files<cr>", "Find File" },
+"         },
+"     },
+"     {
+"         prefix = "<leader>"
+"     }
+" )
+" EOF
+" endif
 
 hi BlackOnLightYellow guifg=#000000 guibg=#f2de91
 hi Red guifg=#af0000 guibg=#f2de91
@@ -1078,6 +1079,31 @@ let g:rainbow_conf = {
 	\	'operators': '_,_',
 	\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold']
 	\}
+
+lua << EOF
+-- Ensure termguicolors is enabled if not already
+require('nvim-highlight-colors').setup({
+	---Highlight hex colors, e.g. '#FFFFFF'
+	enable_hex = true,
+
+    	---Highlight short hex colors e.g. '#fff'
+	enable_short_hex = true,
+
+	---Highlight rgb colors, e.g. 'rgb(0 0 0)'
+	enable_rgb = true,
+
+	---Highlight hsl colors, e.g. 'hsl(150deg 30% 40%)'
+	enable_hsl = true,
+
+	---Highlight CSS variables, e.g. 'var(--testing-color)'
+	enable_var_usage = true,
+
+	---Highlight named colors, e.g. 'green'
+	enable_named_colors = true,
+})
+require("nvim-highlight-colors").turnOn()
+vim.opt.termguicolors = true
+EOF
 
 " highlight Cursor guifg=white guibg=black
 " highlight iCursor guifg=white guibg=steelblue
