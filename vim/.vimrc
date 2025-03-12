@@ -160,9 +160,9 @@ Plug 'p00f/nvim-ts-rainbow'
 " Plug 'vhda/verilog_systemverilog.vim'
 Plug 'lilydjwg/colorizer'
 
-Plug 'nachumk/systemverilog.vim'
-runtime macros/matchit.vim
-au BufNewFile,BufRead *.sv,*.svh,*.vh,*.v set filetype=systemverilog
+" Plug 'nachumk/systemverilog.vim'
+" runtime macros/matchit.vim
+" au BufNewFile,BufRead *.sv,*.svh,*.vh,*.v set filetype=systemverilog
 
 Plug 'mileszs/ack.vim'
 if executable('ag')
@@ -294,6 +294,7 @@ filetype indent on
 " needed, and have indentation at 8 chars to be sure that all indents are tabs
 " (despite the mappings later):
 autocmd FileType make set noexpandtab shiftwidth=4 softtabstop=0
+autocmd FileType systemverilog set expandtab shiftwidth=4 softtabstop=0
 
 set autoindent
 """ once the setup is done, please type :retab to convert the existing files
