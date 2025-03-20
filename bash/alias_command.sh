@@ -9,15 +9,16 @@ alias pdfgrep='pdfgrep --color=auto';
 alias source_bash="source ~/.bashrc;";
 
 ## alias make
-alias mal="make all";
-alias mbu="make build";
-alias mcl="make clean";
-alias mck="make check";
-alias mfo="make format";
-alias mre="make report";
-alias mru="make run";
-alias mte="make test";
-alias mme="make menuconfig";
+alias mkal="make all";
+alias mkbu="make build";
+alias mkcl="make clean";
+alias mkck="make check";
+alias mkfo="make format";
+alias mkre="make report";
+alias mkru="make run";
+alias mkte="make test";
+alias mkme="make menuconfig";
+
 alias cdgr='cd "$(git rev-parse --show-toplevel)"'
 
 alias wcon="watch -n 2 condor_q;";
