@@ -46,6 +46,7 @@ alias condor-mq="printf \"%9s | %7s | %37s | %s | %s \\n\" \"Id\" \"Owner\" \"Ho
 ### use trash-list to access the file in the trash
 ### If you need to use the rm command, please use \rm to escape the rm.
 # alias rm="echo 'You are supposed to use trash-put instead'";
+alias rm="trash-put";
 alias rmswp="rm .*.swp; rm *~;";
 
 ## alias ls

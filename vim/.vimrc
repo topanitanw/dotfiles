@@ -375,7 +375,8 @@ if has('mouse')
 endif
 set nobackup         " Cancel the backup files
 set nowb
-set noswapfile
+" set noswapfile
+set dir=~/.vim/tmp
 set history=1000
 set undolevels=1000
 set undofile         " maintain undo history between sessions
