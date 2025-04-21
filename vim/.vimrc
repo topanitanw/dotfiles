@@ -199,6 +199,7 @@ colorscheme zenburn
 " set guifont=Dejavu\ Sans\ Mono:h12
 set guifont=JetBrains\ Mono:h14
 
+
 " enable syntax highlighting
 set colorcolumn=80
 set number              " enable line number
@@ -213,6 +214,12 @@ set modelines=1
 " do not use the insert mode to solve the problem that when pasting the text
 " from the system clipboard, vim cannot recognize ESC.
 set noinsertmode
+
+
+" for neovim
+" highlight the matching parenthesis with different colors
+" https://stackoverflow.com/questions/10746750/set-vim-bracket-highlighting-colors
+hi MatchParen guibg=orange guifg=white
 
 if has("gui_running")
 "  set guioptions -= m  " remove Menu bar
