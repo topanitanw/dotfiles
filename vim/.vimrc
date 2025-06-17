@@ -308,6 +308,9 @@ set autoindent
 """ to the new settings.
 set expandtab 		   " Tabs are expanded to spaces
 set smarttab
+""" fix the indentation of python and allow the >> command to work 
+""" properly in python scripts
+set cindent
 
 set ai               " Auto indent
 set si               " Smart indent
