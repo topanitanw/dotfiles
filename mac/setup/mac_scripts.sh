@@ -6,10 +6,10 @@
 sudo nvram SystemAudioVolume=" "
 
 # Set the default shell to bash
-chsh -s /bin/bash
+# chsh -s /bin/bash
 
 # set computer name
-COMPUTERNAME="panitanw_mbp_m1"
+COMPUTERNAME="panitanw_nvidia_mbp_m4"
 sudo scutil --set ComputerName ${COMPUTERNAME}
 sudo scutil --set HostName ${COMPUTERNAME}
 sudo scutil --set LocalHost ${COMPUTERNAME}

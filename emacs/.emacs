@@ -759,8 +759,10 @@
     (("C-c a" . org-agenda)
         ("C-c SPC" . org-table-blank-field))
 
-    :mode (("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
-              ("\\.txt\\'" . org-mode))
+    :mode
+    (("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
+        ("\\.txt\\'" . org-mode))
+
     :config
     ;; hide the structural markers in the org-mode
     (setq org-hide-emphasis-markers t)
