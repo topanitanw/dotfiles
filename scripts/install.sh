@@ -5,16 +5,16 @@ DST_DIR="${HOME}"
 
 printf "${LABEL} home directory: ${DST_DIR}\n"
 
-function sync {
-    # check if the file exists
-    if [ ! -f "$1" ]; then
-        return 0
-    fi
-
-    printf "${LABEL} sync ${1} ${2}\n"
-    rsync $1 $2
-}
-
+# function sync {
+#     # check if the file exists
+#     if [ ! -f "$1" ]; then
+#         return 0
+#     fi
+#
+#     printf "${LABEL} sync ${1} ${2}\n"
+#     rsync $1 $2
+# }
+#
 # symlink the file to the destination directory
 # if the file exists, do not symlink
 # $1: source file
