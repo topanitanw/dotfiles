@@ -5,17 +5,18 @@
 # .bashrc
 #!/bin/bash
 
-# if [[ $- == *i* ]]; then
-#     echo "This is an interactive shell"
-# else
-#     echo "This is a non-interactive shell"
-# fi
-#
-# if shopt -q login_shell; then
-#     echo "This is a login shell"
-# else
-#     echo "This is a non-login shell"
-# fi
+if [[ $- == *i* ]]; then
+    echo "This is an interactive shell"
+else
+    echo "This is a non-interactive shell"
+fi
+
+if shopt -q login_shell; then
+    echo "This is a login shell"
+else
+    echo "This is a non-login shell"
+fi
+
 # If not running interactively, don't do anything
 case $- in
     *i*) # this is an interactive shell.
@@ -24,7 +25,6 @@ case $- in
         return;;
 esac
 
-bind -f ~/.inputrc
 unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)     machine=linux;;
@@ -57,7 +57,6 @@ if test "${machine}" == "mac"; then
     bash_completion_path="/opt/homebrew/etc/profile.d/bash_completion.sh"
     if test -f "${bash_completion_path}"; then
         echo "reading bash_completion.sh"
-    #     . "${bash_completion_path}"
     fi
 fi
 
@@ -148,6 +147,9 @@ check_source ${FILE_PRIVATE_ENV}
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
 
+echo "reading the inputrc"
+INPUTRC="~/.inputrc"
+echo "inputrc=$INPUTRC"
+bind -f ~/.inputrc
 bind -m vi-command 'Control-l: clear-screen'
 bind -m vi-insert 'Control-l: clear-screen'
-

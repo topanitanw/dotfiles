@@ -1131,7 +1131,15 @@
 (use-package dockerfile-mode
     :ensure t)
 
-;; you can disable the copilot mode by M-x copilot-mode
+;; Setup:
+;; - There are two ways to install copilot language server
+;;   1. npm install -g @github/copilot-language-server
+;;   2. M-x copilot-install-server
+;; - Log in to copilot by M-x copilot-login
+;;
+;; Etc.
+;; - You can disable the copilot mode by M-x copilot-mode
+;;
 (use-package copilot
     :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
     :demand t
@@ -1307,10 +1315,11 @@
 ;;   )
 
 (use-package obsidian
+  :disabled
   :ensure t
   :demand t
   :config
-  (obsidian-specify-path mine-obsidian-notes-path)
+  ;; (obsidian-specify-path mine-obsidian-notes-path)
   (global-obsidian-mode t)
   :custom
   ;; This directory will be used for `obsidian-capture' if set.

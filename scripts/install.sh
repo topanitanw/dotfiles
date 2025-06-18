@@ -14,7 +14,7 @@ printf "${LABEL} home directory: ${DST_DIR}\n"
 #     printf "${LABEL} sync ${1} ${2}\n"
 #     rsync $1 $2
 # }
-#
+
 # symlink the file to the destination directory
 # if the file exists, do not symlink
 # $1: source file
@@ -67,9 +67,9 @@ symlink vim/init.vim "${NVIM_DIR}"
 
 ##################################################
 # bash shell file
-# fsync bash/.bashrc "${DST_DIR}"
-# fsync bash/.bash_profile "${DST_DIR}"
-# fsync bash/.inputrc "${DST_DIR}"
+symlink bash/.bashrc "${DST_DIR}"
+symlink bash/.bash_profile "${DST_DIR}"
+symlink bash/.inputrc "${DST_DIR}"
 
 symlink bash/.bashrc "${DST_DIR}"
 SHELLFILES_DIR="${DST_DIR}/.shell_files"
