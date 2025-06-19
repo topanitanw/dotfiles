@@ -36,8 +36,7 @@ cd emacs-"$version"
 make
 sudo make \
     \
-    prefix=/usr/local/stow/emacs-"$version" # install-arch-dep \
-# install-arch-indep \
+    prefix=/usr/local/stow/emacs-"$version"# install-arch-indep # install-arch-dep \
 
 cd /usr/local/stow
 sudo stow emacs-"$version"

@@ -93,10 +93,10 @@ function pjr {
 # $1: source file
 # $2: destination directory
 # $3: destination filename
-# Ex: symlink .bashrc ${HOME}
+# Ex: symlink .bashrc ${HOME} .bash
 function symlink() {
     # don't symlink if the file exists
-    local filename=`basename $1`
+    local filename=$(basename $1)
 
     # if the 3rd argument is not empty, use it as the filename
     if [ ! -z "$3" ]; then
@@ -110,12 +110,18 @@ function symlink() {
     fi
 
     echo "${LABEL} symlink ${1} ${2}/$filename"
-    ln -sf `pwd`/$1 $dst_file_path
+    ln -sf $(pwd)/$1 $dst_file_path
 }
 
+# symlink the file to the destination directory
+# if the file exists, do not symlink
+# $1: source file
+# $2: destination directory
+# $3: destination filename
+# Ex: symlink .bashrc ${HOME}
 function symlink_force() {
     # don't symlink if the file exists
-    local filename=`basename $1`
+    local filename=$(basename $1)
 
     # if the 3rd argument is not empty, use it as the filename
     if [ ! -z "$3" ]; then
@@ -124,5 +130,5 @@ function symlink_force() {
 
     local dst_file_path="$2/$filename"
     echo "${LABEL} symlink ${1} ${2}/$filename"
-    ln -sf `pwd`/$1 $dst_file_path
+    ln -sf $(pwd)/$1 $dst_file_path
 }
