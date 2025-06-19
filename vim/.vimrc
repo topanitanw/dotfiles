@@ -944,6 +944,8 @@ let g:tex_conceal = ""
 " endfunction " SetupComment
 " call SetupComment()
 
+" ----------------------------------------------------------------------
+" gc
 function! SetupComment()
 if !PlugLoaded('Comment.nvim')
     echom "Comment is not loaded"

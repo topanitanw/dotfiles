@@ -1,9 +1,14 @@
+#!/bin/bash
 # Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/bashrc.pre.bash" ]] && builtin source "$HOME/.fig/shell/bashrc.pre.bash"
+# [[ -f "$HOME/.fig/shell/bashrc.pre.bash" ]] && builtin source "$HOME/.fig/shell/bashrc.pre.bash"
 
-#!/bin/bash
-# .bashrc
-#!/bin/bash
+bash_func_file_path="${HOME}/.shell_files/bash_function.sh"
+if test -f "${bash_func_file_path}"; then
+    # echo "reading ${bash_func_file_path}"
+    source "${bash_func_file_path}"
+else
+    echo "bash function file not found: ${bash_func_file_path}"
+fi
 
 if [[ $- == *i* ]]; then
     echo "This is an interactive shell"
@@ -38,11 +43,11 @@ esac
 echo "reading ~/.bashrc"
 
 # Fig pre block. Keep at the top of this file.
-FIG_FILE="$HOME/.fig/shell/bashrc.pre.bash"
-if [ -f  "${FIG_FILE}" ]; then
-    . "${FIG_FILE}"
-    # echo "reading ${FIG_FILE}"
-fi
+# FIG_FILE="$HOME/.fig/shell/bashrc.pre.bash"
+# if [ -f  "${FIG_FILE}" ]; then
+#     . "${FIG_FILE}"
+#     # echo "reading ${FIG_FILE}"
+# fi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -141,7 +146,10 @@ fi
 FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
 source ${FILE_BASH_FUNCTION}
 
-FILE_PRIVATE_ENV=${SHELL_DIR}/private_environment.sh
+FILE_PRIVATE_ENV=${SHELL_DIR}/machine_specific_personal_m1.sh
+check_source ${FILE_PRIVATE_ENV}
+
+FILE_PRIVATE_ENV=${SHELL_DIR}/machine_specific_work_m4.sh
 check_source ${FILE_PRIVATE_ENV}
 
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh

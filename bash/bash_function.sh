@@ -3,6 +3,9 @@
 # configurable parameters
 DEBUG_LEVEL=2
 
+# logging function
+# $1 (string) level of the log
+# $2 (string) message to log
 function log_message() {
     local level="$1"
     local message="$2"
@@ -31,6 +34,8 @@ function errorp() {
     log_message "ERROR" "$@"
 }
 
+# check if the source file exists and source it
+# $1 (string) source file path
 function check_source {
     local sourcefile="$1"
     debugp 1 "$sourcefile"
