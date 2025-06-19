@@ -3,32 +3,39 @@
 # configurable parameters
 DEBUG_LEVEL=2
 
+function log_message() {
+    local level="$1"
+    local message="$2"
+    local script_name=$(basename "$0")
+    echo "[$script_name $level] $message"
+}
+
 # dedug print only when the debug flag is greater than DEBUG_LEVEL.
 # $1 (int) debug flag
 # ${@:2} (string) message
 function debugp() {
     if [ "$1" -ge "$DEBUG_LEVEL" ]; then
-        printf "[DEBUG] ${@:2}\n"
+        log_message "DEBUG ${@:2}\n"
     fi
 }
 
 # info print
 # $@ (string) message
 function infop() {
-    printf "[INFO] $@\n"
+    log_message "INFO" "$@"
 }
 
 # error print
 # $@ (string) message
 function errorp() {
-    printf "[ERROR] $@\n"
+    log_message "ERROR" "$@"
 }
 
 function check_source {
     local sourcefile="$1"
     debugp 1 "$sourcefile"
 
-    if test -f "$sourcefile" ; then
+    if test -f "$sourcefile"; then
         source "$sourcefile"
         printf "source $sourcefile\n"
     else
@@ -81,3 +88,41 @@ function pjr {
     echo "$(git rev-parse --show-toplevel)"
 }
 
+# symlink the file to the destination directory
+# if the file exists, do not symlink
+# $1: source file
+# $2: destination directory
+# $3: destination filename
+# Ex: symlink .bashrc ${HOME}
+function symlink() {
+    # don't symlink if the file exists
+    local filename=`basename $1`
+
+    # if the 3rd argument is not empty, use it as the filename
+    if [ ! -z "$3" ]; then
+        filename="$3"
+    fi
+
+    local dst_file_path="$2/$filename"
+    if [ -f "$dst_file_path" ]; then
+        echo "${LABEL} skipping ${dst_file_path} exists"
+        return 0
+    fi
+
+    echo "${LABEL} symlink ${1} ${2}/$filename"
+    ln -sf `pwd`/$1 $dst_file_path
+}
+
+function symlink_force() {
+    # don't symlink if the file exists
+    local filename=`basename $1`
+
+    # if the 3rd argument is not empty, use it as the filename
+    if [ ! -z "$3" ]; then
+        filename="$3"
+    fi
+
+    local dst_file_path="$2/$filename"
+    echo "${LABEL} symlink ${1} ${2}/$filename"
+    ln -sf `pwd`/$1 $dst_file_path
+}

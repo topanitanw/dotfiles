@@ -6,17 +6,9 @@
 # In Mac Terminal.app this setting is Preferences > Profiles tab >
 # Keyboard sub-tab > at the bottom "Use option as meta key."
 
-function print_prefix {
-    echo "$@"
-}
+git_root=$(git rev-parse --show-toplevel 2>/dev/null)
 
-function print_info {
-    print_prefix "[INFO] $@"
-}
-
-function print_warning {
-    print_prefix "[WARNING] $@"
-}
+source "$git_root/bash/bash_function.sh"
 
 # iTerm2 Setup
 # - set alt keys
@@ -41,57 +33,57 @@ sudo -v
 
 xcode-select --install
 
-print_info "installing homebrew"
-if test -z "`which brew`"; then
+infop "installing homebrew"
+if test -z "$(which brew)"; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-else 
-    print_warning "brew exists. Skip its installation"
+else
+    errorp "brew exists. Skip its installation"
 fi
 
-print_info "running brew update"
+infop "running brew update"
 brew update
 
-print_info "running brew upgrade"
+infop "running brew upgrade"
 brew upgrade
 
-print_info "setting bash as the default shell"
-chsh -s /bin/bash;
+infop "setting bash as the default shell"
+chsh -s /bin/bash
 
-print_info "install programs from Brewfile"
+infop "install programs from Brewfile"
 brewfile_path=mac/Brewfile
 if test -f $brewfile_path; then
     # install the packages from the brewfile
     brew bundle --file brewfile_path
 else
-    echo "pwd: `pwd`"
-    print_warning "there is no Brewfile\n"
+    echo "pwd: $(pwd)"
+    errorp "there is no Brewfile\n"
     exit -1
 fi
 
 # there is a setup for iterm in mac_script.txt
-print_info "running mac_scripts.sh"
+infop "running mac_scripts.sh"
 mac_setup_script_path=mac/setup/mac_scripts.sh
 if test -f $mac_setup_script_path; then
     bash $mac_setup_script_path
 else
-    print_warning "there is no $mac_setup_script_path\n"
+    errorp "there is no $mac_setup_script_path\n"
 fi
 
-print_info "creating ~/.config"
-if ! test -d ~/.config ; then
+infop "creating ~/.config"
+if ! test -d ~/.config; then
     mkdir -p ~/.config
 fi
 
 # create the directory to store git repositories if it does not exist
 repo_dir=~/work/git_repository
-print_info "creating $repo_dir"
+infop "creating $repo_dir"
 if ! test -d $repo_dir; then
     mkdir -p $repo_dir
 fi
 
 # create the .nvim directory if it does not exist
 nvim_config_path=~/.config/nvim
-if ! test -d $nvim_config_path ; then
+if ! test -d $nvim_config_path; then
     mkdir -p $nvim_config_path
 fi
 
@@ -104,7 +96,7 @@ ln -s ~/.vimrc ~/.config/nvim/init.vim
 # git clone https://github.com/topanitanw/dotfiles.git
 # cd dotfiles && bash install.sh
 
-print_info "running brew cleanup"
+infop "running brew cleanup"
 brew cleanup -s
 
 # GUI

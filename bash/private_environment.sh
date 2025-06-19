@@ -41,7 +41,7 @@ fi
 # unset SSH_ASKPASS
 
 # autojump setup
-if [ "$(uname)" ==  "Darwin" ]; then
+if [ "$(uname)" == "Darwin" ]; then
     AUTOJUMP_SH="/usr/local/etc/profile.d/autojump.sh"
 
     if ! test -f $AUTOJUMP_SH; then

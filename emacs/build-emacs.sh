@@ -14,16 +14,16 @@ readonly version="25.1"
 # uninstall the old version
 # sudo apt-get remove emacs emacs24
 sudo apt-get install -y stow build-essential libx11-dev xaw3dg-dev \
-     libjpeg-dev libpng12-dev libgif-dev libtiff5-dev libncurses5-dev \
-     libxft-dev librsvg2-dev libmagickcore-dev libmagick++-dev \
-     libxml2-dev libgpm-dev libotf-dev libm17n-dev \
-     libgnutls-dev
+    libjpeg-dev libpng12-dev libgif-dev libtiff5-dev libncurses5-dev \
+    libxft-dev librsvg2-dev libmagickcore-dev libmagick++-dev \
+    libxml2-dev libgpm-dev libotf-dev libm17n-dev \
+    libgnutls-dev
 
 # download source package
 cd ~/Downloads
 if [[ ! -d emacs-"$version" ]]; then
-   wget http://ftp.gnu.org/gnu/emacs/emacs-"$version".tar.xz
-   tar xvf emacs-"$version".tar.xz
+    wget http://ftp.gnu.org/gnu/emacs/emacs-"$version".tar.xz
+    tar xvf emacs-"$version".tar.xz
 fi
 
 # build and install
@@ -35,9 +35,9 @@ cd emacs-"$version"
 
 make
 sudo make \
-    # install-arch-dep \
-    # install-arch-indep \
-    prefix=/usr/local/stow/emacs-"$version"
+    \
+    prefix=/usr/local/stow/emacs-"$version" # install-arch-dep \
+# install-arch-indep \
 
 cd /usr/local/stow
 sudo stow emacs-"$version"

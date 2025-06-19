@@ -28,7 +28,8 @@ defaults write com.apple.screensaver askForPasswordDelay -int 0
 # Finder Setup
 ######################################################################
 # show full path in finder
-defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES; killall Finder
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES
+killall Finder
 
 # Finder: show hidden files by default
 defaults write com.apple.finder AppleShowAllFiles -bool true
@@ -38,7 +39,8 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
 # cmd+H to hidden the apps
 # this command will add transparency to all of your hidden apps.
-defaults write com.apple.dock showhidden -bool TRUE; killall Dock
+defaults write com.apple.dock showhidden -bool TRUE
+killall Dock
 
 # Show indicator lights for open applications in the Dock
 defaults write com.apple.dock show-process-indicators -bool true
@@ -65,7 +67,8 @@ defaults write com.apple.dock mru-spaces -bool false
 # Disable Magnification
 defaults write com.apple.dock magnification -bool false
 # set the dock position
-defaults write com.apple.Dock orientation -string left;killall Dock
+defaults write com.apple.Dock orientation -string left
+killall Dock
 
 ######################################################################
 # Hot corners
@@ -119,7 +122,6 @@ defaults write com.apple.screencapture type -string 'jpg'
 # enable key repeats on mac
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
-
 ######################################################################
 # menu bar
 ######################################################################
@@ -130,14 +132,14 @@ PreferredMenuExtras=(
     "/System/Library/CoreServices/Menu Extras/Volume.menu"
 )
 
-currentUser=$( ls -l /dev/console | awk '{print $3}' )
-userHome=$( dscl . read /Users/$currentUser NFSHomeDirectory | awk '{print $NF}' )
+currentUser=$(ls -l /dev/console | awk '{print $3}')
+userHome=$(dscl . read /Users/$currentUser NFSHomeDirectory | awk '{print $NF}')
 
-MenuExtras=$( defaults read "$userHome/Library/Preferences/com.apple.systemuiserver.plist" menuExtras | awk -F'"' '{print $2}' )
+MenuExtras=$(defaults read "$userHome/Library/Preferences/com.apple.systemuiserver.plist" menuExtras | awk -F'"' '{print $2}')
 
 for menuExtra in "${PreferredMenuExtras[@]}"; do
-    menuShortName=$( echo "${menuExtra}" | awk -F'/' '{print $NF}' )
-    if [[ $( echo "${MenuExtras}" | grep "${menuExtra}" ) ]]; then
+    menuShortName=$(echo "${menuExtra}" | awk -F'/' '{print $NF}')
+    if [[ $(echo "${MenuExtras}" | grep "${menuExtra}") ]]; then
         echo "Menu Extra \"${menuShortName}\" present"
     else
         echo "Menu Extra \"${menuShortName}\" not in plist. Opening..."
