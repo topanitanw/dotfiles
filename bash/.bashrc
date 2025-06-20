@@ -2,13 +2,13 @@
 # Fig pre block. Keep at the top of this file.
 # [[ -f "$HOME/.fig/shell/bashrc.pre.bash" ]] && builtin source "$HOME/.fig/shell/bashrc.pre.bash"
 
-bash_func_file_path="${HOME}/.shell_files/bash_function.sh"
-if test -f "${bash_func_file_path}"; then
-    # echo "reading ${bash_func_file_path}"
-    source "${bash_func_file_path}"
-else
-    echo "bash function file not found: ${bash_func_file_path}"
-fi
+# bash_func_file_path="${HOME}/.shell_files/bash_function.sh"
+# if test -f "${bash_func_file_path}"; then
+#     # echo "reading ${bash_func_file_path}"
+#     source "${bash_func_file_path}"
+# else
+#     echo "bash function file not found: ${bash_func_file_path}"
+# fi
 
 if [[ $- == *i* ]]; then
     echo "This is an interactive shell"
@@ -146,10 +146,7 @@ fi
 FILE_BASH_FUNCTION=${SHELL_DIR}/bash_function.sh
 source ${FILE_BASH_FUNCTION}
 
-FILE_PRIVATE_ENV=${SHELL_DIR}/machine_specific_personal_m1.sh
-check_source ${FILE_PRIVATE_ENV}
-
-FILE_PRIVATE_ENV=${SHELL_DIR}/machine_specific_work_m4.sh
+FILE_PRIVATE_ENV=${SHELL_DIR}/machine_specific.sh
 check_source ${FILE_PRIVATE_ENV}
 
 FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
