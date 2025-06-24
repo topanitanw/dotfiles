@@ -57,7 +57,7 @@ symlink bash/alias_command.sh "${SHELLFILES_DIR}"
 
 symlink_force bash/bash_function.sh "${SHELLFILES_DIR}"
 
-cp_template bash/private_environment.sh "${SHELLFILES_DIR}"/private_environment.sh
+cp_template bash/machine_specific.sh "${SHELLFILES_DIR}"/machine_specific.sh
 
 # shell file
 ##################################################
