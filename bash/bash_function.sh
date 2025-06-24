@@ -9,7 +9,17 @@ DEBUG_LEVEL=2
 function log_message() {
     local level="$1"
     local message="$2"
-    local script_name=$(basename "$0")
+    # echo "\$0: |$0|"
+    if test "-bash" = "$0"; then
+        # if the script is run as a bash script, use the basename of the script
+        # to get the script name.
+        local script_name=$0
+    else
+        # if the script is run as a source, use the basename of the script
+        # to get the script name.
+        local script_name=$(basename -a "$0")
+    fi
+    # local script_name="test1"
     echo "[$script_name $level] $message"
 }
 
@@ -42,7 +52,7 @@ function check_source {
 
     if test -f "$sourcefile"; then
         source "$sourcefile"
-        printf "source $sourcefile\n"
+        infop "source $sourcefile"
     else
         errorp "no $sourcefile"
     fi
