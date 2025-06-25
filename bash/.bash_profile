@@ -1,4 +1,13 @@
 # .bash_profile
+#
+# Note that some commands such as scp require that
+# remote shell produces no output for non-interactive sessions.
+#
+# Thus, if not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
 
 echo "reading bash_profile"
 bashrc_path=$HOME/.bashrc
@@ -14,12 +23,6 @@ if test -f $INPUTRC; then
     bind -f $INPUTRC
 fi
 
-# # If not running interactively, don't do anything
-# case $- in
-#     *i*) ;;
-#       *) return;;
-# esac
-#
 # echo "reading ~/.bash_profile"
 #
 # export PATH="/usr/local/sbin:$PATH"
