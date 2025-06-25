@@ -10,8 +10,8 @@ INPUTRC=~/.inputrc
 export INPUTRC=~/.inputrc
 echo "INPUTRC=$INPUTRC"
 
-if test -f $inputrc_path; then
-    bind -f $inputrc_path
+if test -f $INPUTRC; then
+    bind -f $INPUTRC
 fi
 
 # # If not running interactively, don't do anything
@@ -30,6 +30,6 @@ fi
 # export LC_ALL=en_IN.UTF-8
 # export LANG=en_IN.UTF-8
 #
-source ~/.bashrc
-bind -f ~/.inputrc
-INPUTRC=${HOME}/.inputrc
+# source ~/.bashrc
+# bind -f ~/.inputrc
+# INPUTRC=${HOME}/.inputrc

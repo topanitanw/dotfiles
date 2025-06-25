@@ -6,6 +6,7 @@
 set editing-mode vi
 
 # Show the vi mode indicators
+## Note that this command was introduced in bash version 4.3.
 set show-mode-in-prompt on
 
 # The following is a little hard to understand
