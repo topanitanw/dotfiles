@@ -10,7 +10,7 @@ function log_message() {
     local level="$1"
     local message="$2"
     # echo "\$0: |$0|"
-    if test "-bash" = "$0"; then
+    if test "-bash" = "$0" || test "bash" == "$0"; then
         # if the script is run as a bash script, use the basename of the script
         # to get the script name.
         local script_name=$0
