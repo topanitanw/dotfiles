@@ -10,18 +10,6 @@
 #     echo "bash function file not found: ${bash_func_file_path}"
 # fi
 
-if [[ $- == *i* ]]; then
-    echo "This is an interactive shell"
-else
-    echo "This is a non-interactive shell"
-fi
-
-if shopt -q login_shell; then
-    echo "This is a login shell"
-else
-    echo "This is a non-login shell"
-fi
-
 # If not running interactively, don't do anything
 case $- in
     *i*) # this is an interactive shell.
@@ -29,6 +17,18 @@ case $- in
     *)   # this is the non-interactive shell
         return;;
 esac
+
+# if [[ $- == *i* ]]; then
+#     echo "This is an interactive shell"
+# else
+#     echo "This is a non-interactive shell"
+# fi
+#
+# if shopt -q login_shell; then
+#     echo "This is a login shell"
+# else
+#     echo "This is a non-login shell"
+# fi
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
