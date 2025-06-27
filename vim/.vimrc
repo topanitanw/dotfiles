@@ -185,6 +185,10 @@ Plug 'luochen1990/rainbow'
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
 Plug 'brenoprata10/nvim-highlight-colors'
+
+" Plug 'sitiom/nvim-numbertoggle' " toggle the relative number of lines in the
+" current buffer, and use the absolute number in other buffers.
+Plug 'sitiom/nvim-numbertoggle'
 call plug#end()
 
 au BufNewFile,BufRead *.con set syntax=Condor
