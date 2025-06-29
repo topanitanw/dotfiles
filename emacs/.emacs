@@ -1141,6 +1141,7 @@
 ;; - You can disable the copilot mode by M-x copilot-mode
 ;;
 (use-package copilot
+    :disabled
     :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
     :demand t
     :ensure t

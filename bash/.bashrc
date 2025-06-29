@@ -2,6 +2,17 @@
 # Fig pre block. Keep at the top of this file.
 # [[ -f "$HOME/.fig/shell/bashrc.pre.bash" ]] && builtin source "$HOME/.fig/shell/bashrc.pre.bash"
 
+# Note that some commands such as scp require that
+# remote shell produces no output for non-interactive sessions.
+#
+# Thus, if not running interactively, don't do anything
+case $- in
+    *i*) # this is an interactive shell.
+        ;;
+    *)   # this is the non-interactive shell
+        return;;
+esac
+
 # bash_func_file_path="${HOME}/.shell_files/bash_function.sh"
 # if test -f "${bash_func_file_path}"; then
 #     # echo "reading ${bash_func_file_path}"
@@ -9,14 +20,6 @@
 # else
 #     echo "bash function file not found: ${bash_func_file_path}"
 # fi
-
-# If not running interactively, don't do anything
-case $- in
-    *i*) # this is an interactive shell.
-        ;;
-    *)   # this is the non-interactive shell
-        return;;
-esac
 
 # if [[ $- == *i* ]]; then
 #     echo "This is an interactive shell"

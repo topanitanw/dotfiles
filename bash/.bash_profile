@@ -10,21 +10,20 @@ case $- in
 esac
 
 echo "reading bash_profile"
+
 bashrc_path=$HOME/.bashrc
 if test -f $bashrc_path; then
+    echo "reading $bashrc_path"
     source $bashrc_path
 fi
 
 INPUTRC=~/.inputrc
 export INPUTRC=~/.inputrc
-echo "INPUTRC=$INPUTRC"
-
 if test -f $INPUTRC; then
+    echo "reading $INPUTRC"
     bind -f $INPUTRC
 fi
 
-# echo "reading ~/.bash_profile"
-#
 # export PATH="/usr/local/sbin:$PATH"
 #
 # # added by Anaconda3 installer
@@ -32,7 +31,10 @@ fi
 
 # export LC_ALL=en_IN.UTF-8
 # export LANG=en_IN.UTF-8
-#
+
+# git diff HEAD will throw a warning if this is not set.
+export TERM=xterm-256color
+
 # source ~/.bashrc
 # bind -f ~/.inputrc
 # INPUTRC=${HOME}/.inputrc
