@@ -158,3 +158,4 @@ echo "inputrc=$INPUTRC"
 bind -f ~/.inputrc
 bind -m vi-command 'Control-l: clear-screen'
 bind -m vi-insert 'Control-l: clear-screen'
+bind '"jk":vi-movement-mode'
