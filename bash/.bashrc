@@ -119,6 +119,7 @@ else # normal
 fi
 
 # setting terminal to handle 256 colors
+# git diff HEAD will throw a warning if this is not set.
 TERM=xterm
 if [ "$TERM" == "xterm" ]; then
     export TERM=xterm-256color

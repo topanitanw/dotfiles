@@ -32,8 +32,6 @@ fi
 # export LC_ALL=en_IN.UTF-8
 # export LANG=en_IN.UTF-8
 
-# git diff HEAD will throw a warning if this is not set.
-export TERM=xterm-256color
 
 # source ~/.bashrc
 # bind -f ~/.inputrc
