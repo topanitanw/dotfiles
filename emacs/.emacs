@@ -1,5 +1,8 @@
 ;; *-* mode: lisp *-*
 
+;; Note that if there is an error when you start up emacs. You should restart it with --debug-init flag.
+;; Once the debugger can pinpoint where the error happens, you can type M-x goto-char and type in the error
+;; position in the .emacs buffer in order to jump to that position.
 ;; ----------------------------------------------------------------------
 ;; basic setup
 (when (<= 27 emacs-major-version)
@@ -606,7 +609,9 @@
     (marginalia-max-relative-age 0)
     (marginalia-align 'right))
 
+;; we enable this package only it is in mac.
 (use-package consult-notes
+    :if (eq system-type `darwin)
     :demand t
     :after consult
     :straight (:type git :host github :repo "mclear-tools/consult-notes")
@@ -621,12 +626,14 @@
         (evil-leader/set-key
             "nn" #'consult-notes
             "ng" #'consult-notes-search-in-all-notes))
+
     ;; note that the consult-notes-file-dir-sources is a list of alist
     ;; we put a quote in front of the list so that it is not evaluated
     ;; and we put a comma in front of a variable so that it is evaluated.
     ;; so that the value of the variable is used.
-    (setq consult-notes-file-dir-sources
-        `(("obsidian"  ?o  ,mine-obsidian-notes-path)))
+    (when (boundp `mine-obsidian-notes-path)
+        (setq consult-notes-file-dir-sources
+            `(("obsidian"  ?o  ,mine-obsidian-notes-path))))
 
     ;; set notes dir(s), see below
     ;; Set org-roam integration, denote integration, or org-heading integration e.g.:
@@ -1370,25 +1377,26 @@
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
     (lambda () (message "emacs-init-time: %s" (emacs-init-time))))
+
 ;; # Emacs Lisp 
 ;; ## Basic Settings
-;; Use (setq ...) to set value locally to a buffer
-;; Use (setq-default ...) to set value globally
-;; set the default font
-;; (set-frame-font Fontname-Size)
-;; (member 1 (cons 1 (cons 2 '()))) -> return (1)
-;; (display-grpahic-p) = check whether emacs is on the terminal mode or not
-;; (interactive) = it will call this function if we press M-x function-name
-;; function name = mode-name/what-to-type -> read what we type in that mode
-;; (package-installed-p 'package-name) = check whether the package is installed
+;; - Use (setq ...) to set value locally to a buffer
+;; - Use (setq-default ...) to set value globally
+;; - Set the default font
+;;   (set-frame-font Fontname-Size)
+;; - (member 1 (cons 1 (cons 2 '()))) -> return (1)
+;; - (display-grpahic-p) = check whether emacs is on the terminal mode or not
+;; - (interactive) = it will call this function if we press M-x function-name
+;; - function name = mode-name/what-to-type -> read what we type in that mode
+;; - (package-installed-p 'package-name) = check whether the package is installed
 ;; or not
-;; (progn
+;; - (progn
 
 ;;   ...)    =  execute the statements in sequence and return the value
 ;;              of the last one
-;; (load-file "directory/file.el")
+;; - (load-file "directory/file.el")
 
-;; window-system = this is a window system
+;; - window-system = this is a window system
 
 ;; Reference:
 ;; 1. general emacs setup
