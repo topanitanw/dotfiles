@@ -170,6 +170,8 @@ if executable('ag')
 endif
 
 " Plug 'whonore/Coqtail'
+
+" To disable this copilot version permanently, run :Copilot signout 
 Plug 'github/copilot.vim'
 
 Plug 'neovim/nvim-lspconfig'
@@ -564,6 +566,42 @@ let g:indentLine_setColors = 1
 let g:indentLine_color_term = 243
 " let g:indentLine_bgcolor_term = '#3a3a3a'
 " let g:indentLine_color_dark = 1 " (default: 2)
+
+" function! SetupCopilot()
+" if !has("nvim")
+"     return
+" endif
+" lua << EOF
+" require("copilot").setup({
+"     suggestion = {
+"         enabled = false,
+"         auto_trigger = true,
+"         debounce = 75,
+"         keymap = {
+"             accept = "<C-l>",
+"             accept_word = false,
+"             accept_line = false,
+"             next = "<C-n>",
+"             prev = "<C-p>",
+"             dismiss = "<C-e>",
+"         },
+"     },
+"     panel = {
+"         enabled = false,
+"         auto_refresh = true,
+"         keymap = {
+"             jump_prev = "[[",
+"             jump_next = "]]",
+"             accept = "<C-l>",
+"             refresh = "<C-r>",
+"             dismiss = "<C-e>",
+"         },
+"     },
+" })
+" EOF
+" endfunction
+"
+" call SetupCopilot()
 
 " todo-commments.nvim
 function! SetupTodoComment()
