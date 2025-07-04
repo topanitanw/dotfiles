@@ -8,6 +8,10 @@
 (when (<= 27 emacs-major-version)
     (setq package-enable-at-startup nil))
 
+;; load a customized machine specific file
+(when (file-exists-p "~/.emacs-init-machine.el")
+    (load-file "~/.emacs-init-machine.el"))
+
 (defvar mine-debug-show-modes-in-modeline nil
     "show the mode symbol in the mode line")
 
@@ -1148,8 +1152,8 @@
 ;; - You can disable the copilot mode by M-x copilot-mode
 ;;
 (use-package copilot
-    :disabled
     :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+    :disabled copilot-disabled
     :demand t
     :ensure t
     :config
