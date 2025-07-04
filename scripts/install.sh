@@ -7,7 +7,7 @@ source $git_root/bash/bash_function.sh
 LABEL="[INSTALL]"
 DST_DIR="${HOME}"
 
-printf "${LABEL} home directory: ${DST_DIR}\n"
+infop "destination directory = ${DST_DIR}"
 
 # function sync {
 #     # check if the file exists
@@ -15,7 +15,7 @@ printf "${LABEL} home directory: ${DST_DIR}\n"
 #         return 0
 #     fi
 #
-#     printf "${LABEL} sync ${1} ${2}\n"
+#     infop "sync ${1} ${2}\n"
 #     rsync $1 $2
 # }
 
@@ -25,13 +25,14 @@ function cp_template {
         return 0
     fi
 
-    printf "${LABEL} cp_template ${1} ${2}\n"
+    infop "cp_template ${1} ${2}\n"
     rsync $1 $2
 }
 
 ##################################################
 # text editor
 symlink emacs/.emacs "${DST_DIR}"
+cp_template emacs/.emacs-init-machine.el "${DST_DIR}/.emacs-init-machine.el"
 symlink vim/.vimrc "${DST_DIR}"
 
 ##################################################
@@ -96,9 +97,9 @@ symlink readline/.inputrc ${HOME}
 # tmux must be 1.9 or higher
 # test if tpm exists
 if test -d ~/.tmux/plugins/tpm; then
-    echo "${LABEL} tpm exists"
+    infop "tpm exists"
 else
-    echo "${LABEL} tpm does not exist"
+    infop "tpm does not exist"
     pushd ${HOME}
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
     popd
@@ -111,4 +112,4 @@ mkdir -p "${YADF_CONFIG_DIR}"
 symlink formatter/.style.yapf "${YADF_CONFIG_DIR}" "style"
 
 ## git config --file ~/.gitconfig
-printf "${LABEL} done\n"
+infop "done\n"

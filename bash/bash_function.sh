@@ -120,11 +120,11 @@ function symlink() {
 
     local dst_file_path="$2/$filename"
     if [ -f "$dst_file_path" ]; then
-        echo "${LABEL} skipping ${dst_file_path} exists"
+        infop "skipping ${dst_file_path} exists"
         return 0
     fi
 
-    echo "${LABEL} symlink ${1} ${2}/$filename"
+    infop "symlink ${1} ${2}/$filename"
     ln -sf $(pwd)/$1 $dst_file_path
 }
 
@@ -144,6 +144,6 @@ function symlink_force() {
     fi
 
     local dst_file_path="$2/$filename"
-    echo "${LABEL} symlink ${1} ${2}/$filename"
+    infop "symlink ${1} ${2}/$filename"
     ln -sf $(pwd)/$1 $dst_file_path
 }
