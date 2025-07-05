@@ -104,7 +104,7 @@
     (setq mac-option-modifier 'meta)
     (setq mac-command-modifier 'alt)
 
-                                        ; (prefer-coding-system 'utf-8)
+    ;; (prefer-coding-system 'utf-8)
     ;; set the background mode
     (setq frame-background-mode 'light)
 
@@ -357,14 +357,13 @@
 ;; =======================================================================
 ;; restart emacs
 ;; =======================================================================
-(use-package restart-emacs
-    :defer t)
+(use-package restart-emacs)
 
 ;; =======================================================================
 ;; Company
 ;; =======================================================================
 (use-package company
-    :defer 2
+    :defer 8
     :bind
     (("C-p" . company-complete))
     :init
@@ -618,11 +617,10 @@
     :if (eq system-type `darwin)
     :demand t
     :after consult
-    :straight (:type git :host github :repo "mclear-tools/consult-notes")
-    :commands (
-                  consult-notes
-                  consult-notes-search-in-all-notes
-                  )
+    :straight
+    (:type git :host github :repo "mclear-tools/consult-notes")
+    :commands
+    (consult-notes consult-notes-search-in-all-notes)
     :config
     (setq consult-notes-use-rg nil)
 
