@@ -1151,7 +1151,7 @@
 ;;
 (use-package copilot
     :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-    :disabled copilot-disabled
+    :disabled disable-github-copilot
     :demand t
     :ensure t
     :config
