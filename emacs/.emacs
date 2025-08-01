@@ -1,8 +1,9 @@
 ;; *-* mode: lisp *-*
 
-;; Note that if there is an error when you start up emacs. You should restart it with --debug-init flag.
-;; Once the debugger can pinpoint where the error happens, you can type M-x goto-char and type in the error
-;; position in the .emacs buffer in order to jump to that position.
+;; - Note that if there is an error when you start up emacs. You should restart it with --debug-init flag.
+;;   Once the debugger can pinpoint where the error happens, you can type M-x goto-char and type in the error
+;;   position in the .emacs buffer in order to jump to that position.
+;; - to reload this file when you run emacs, you should M-x load-file.
 ;; ----------------------------------------------------------------------
 ;; basic setup
 (when (<= 27 emacs-major-version)
