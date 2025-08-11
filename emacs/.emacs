@@ -1419,9 +1419,16 @@
 ;; TODO list:
 ;; install
 ;; - https://github.com/emacscollective/no-littering
-;; I recommend installing no-littering. It automatically puts backup files (file~) in ~/.emacs.d/var/backup/.
-;; It doesn't do anything about autosaves (#file#), but there is a note about putting those files in a specified directory in the README:
+;; I recommend installing no-littering. It automatically puts backup
+;; files (file~) in ~/.emacs.d/var/backup/.  It doesn't do anything
+;; about autosaves (#file#), but there is a note about putting those
+;; files in a specified directory in the README:
 ;; 
 ;; (setq auto-save-file-name-transforms
 ;;      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-
+;; - https://nathantypanski.com/blog/2014-08-03-a-vim-like-emacs-config.html
+;; - https://tkf.github.io/emacs-jedi/latest/
+;; - https://github.com/jorgenschaefer/elpy?tab=readme-ov-file
+;; - https://github.com/emacs-exordium/exordium
+;; - https://tuhdo.github.io/c-ide.html
+;; - https://emacs-lsp.github.io/lsp-mode/tutorials/CPP-guide/
