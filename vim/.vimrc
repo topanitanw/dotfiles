@@ -191,6 +191,9 @@ Plug 'brenoprata10/nvim-highlight-colors'
 " Plug 'sitiom/nvim-numbertoggle' " toggle the relative number of lines in the
 " current buffer, and use the absolute number in other buffers.
 Plug 'sitiom/nvim-numbertoggle'
+
+" Neotree
+" Plug 'nvim-neo-tree/neo-tree.nvim'
 call plug#end()
 
 au BufNewFile,BufRead *.con set syntax=Condor

@@ -131,6 +131,8 @@
             (file-name-concat (getenv "HOME") "Dropbox" "notes")
             (format "%s/%s/%s" (getenv "HOME") "Dropbox" "notes"))
         "The path of the obsidian notes")
+
+        
     )
 
 (defun mine-coding-style ()
@@ -483,7 +485,7 @@
     :delight '(:eval (show-mode-in-modeline "jk"))
     :config
     (evil-escape-mode)
-    (setq-default evil-escape-key-sequence "jk")
+    (setq-default eil-escape-key-sequence "jk")
     (setq-default evil-escape-delay 0.2)
     ;; (rename-minor-mode "evil-escape" evil-escape-mode "jk")
     )
@@ -544,7 +546,7 @@
     :bind
     (("C-x b" . helm-buffers-list)
         ("M-x" . helm-M-x)
-                                        ; ("M-y" . helm-show-kill-ring)
+        ; ("M-y" . helm-show-kill-ring)
         ("C-x C-f" . helm-find-files)
         ("C-c h" . helm-mini))
 
@@ -1368,6 +1370,24 @@
 (use-package woman
     :disabled)
 
+(use-package perspective
+    :bind
+    ("C-x C-b" . persp-list-buffers)         ; or use a nicer switcher, see below
+    :custom
+    (persp-mode-prefix-key (kbd "C-c M-p"))  ; pick your own prefix key here
+    :config
+    (make-directory "~/.emacs.data/perspectives" t)
+    :init
+    (persp-mode))
+
+(use-package treemacs
+    :ensure t
+    :defer t)
+
+(use-package treemacs-evil
+  :after (treemacs evil)
+  :ensure t)
+
 ;; show weird characters
 ;; (use-package xeft
 ;;     :disabled
@@ -1394,8 +1414,7 @@
 ;; - (package-installed-p 'package-name) = check whether the package is installed
 ;; or not
 ;; - (progn
-
-;;   ...)    =  execute the statements in sequence and return the value
+;;    ...)
 ;;              of the last one
 ;; - (load-file "directory/file.el")
 

@@ -96,7 +96,8 @@ function prepend_variable {
 }
 
 function remove_window_newline {
-    sed -i 's/$//' $1
+    sed -i 's/
+$//' $1
 }
 
 function pjr {
@@ -146,4 +147,14 @@ function symlink_force() {
     local dst_file_path="$2/$filename"
     infop "symlink ${1} ${2}/$filename"
     ln -sf $(pwd)/$1 $dst_file_path
+}
+
+MY_VAR_PREFIX="pw_"
+function list_my_variables {
+    echo "Listing variables with prefix '$MY_VAR_PREFIX':";
+    # Use eval to properly expand the variable prefix
+    for var in $(eval echo \${!${MY_VAR_PREFIX}@}); do
+        echo "$var=${!var}";
+    done
+    echo "---"
 }

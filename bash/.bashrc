@@ -163,3 +163,4 @@ bind -f ~/.inputrc
 bind -m vi-command 'Control-l: clear-screen'
 bind -m vi-insert 'Control-l: clear-screen'
 bind '"jk":vi-movement-mode'
+alias decrypt='python3 -c "$(curl -fsSL https://gitlab-master.nvidia.com/raymondh/onediag-run-script/-/raw/main/misc/decrypt/decrypt.py)"'
