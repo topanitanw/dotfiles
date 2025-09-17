@@ -127,12 +127,10 @@
     ;; we have to check if the file-name-concat is bound since this function is
     ;; introduced in emacs 27
     (defvar mine-obsidian-notes-path
-        (if (fboundp 'file-name-concat)
+        (if (eq (fboundp 'file-name-concat) t)
             (file-name-concat (getenv "HOME") "Dropbox" "notes")
             (format "%s/%s/%s" (getenv "HOME") "Dropbox" "notes"))
         "The path of the obsidian notes")
-
-        
     )
 
 (defun mine-coding-style ()
@@ -233,15 +231,13 @@
 (make-directory mine-backup-directory-path t)
 (defvar mine-recentf-directory-name "recentf")
 (defvar mine-recentf-directory-path
-    (file-name-concat mine-backup-directory-path
-        mine-recentf-directory-name))
+    (file-name-concat mine-backup-directory-path mine-recentf-directory-name))
 (setq recentf-save-file mine-recentf-directory-path)
 
 ;; bookmark
 ;; http://xahlee.info/emacs/emacs/bookmark.html
 (defvar mine-bookmark-default-file-path
-    (file-name-concat mine-backup-directory-path
-        "bookmarks"))
+    (file-name-concat mine-backup-directory-path "bookmarks"))
 (setq bookmark-default-file mine-bookmark-default-file-path)
 
 ;; =======================================================================
