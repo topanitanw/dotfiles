@@ -128,6 +128,9 @@
     ;; we have to check if the file-name-concat is bound since this function is
     ;; introduced in emacs 27
     (defvar mine-obsidian-notes-path
+        ;; note that in the old emacs version such as emacs 25, this
+        ;; fboundp returns a string of the symbol when this symbol is unbound instead of nil.
+        ;; for this reason, checking if this function returns true is added to handle this case.
         (if (eq (fboundp 'file-name-concat) t)
             (file-name-concat (getenv "HOME") "Dropbox" "notes")
             (format "%s/%s/%s" (getenv "HOME") "Dropbox" "notes"))
