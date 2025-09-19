@@ -172,7 +172,7 @@ endif
 " Plug 'whonore/Coqtail'
 
 " To disable this copilot version permanently, run :Copilot signout 
-Plug 'github/copilot.vim'
+" Plug 'github/copilot.vim'
 
 Plug 'neovim/nvim-lspconfig'
 " Plug 'hrsh7th/cmp-nvim-lsp'

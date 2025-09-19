@@ -1,9 +1,10 @@
-;; *-* mode: lisp *-*
-
+;; -*- mode: emacs-lisp -*-
 ;; - Note that if there is an error when you start up emacs. You should restart it with --debug-init flag.
 ;;   Once the debugger can pinpoint where the error happens, you can type M-x goto-char and type in the error
 ;;   position in the .emacs buffer in order to jump to that position.
 ;; - to reload this file when you run emacs, you should M-x load-file.
+;; - If you want to download a new package, please check this out
+;;   https://github.com/emacs-tw/awesome-emacs
 ;; ----------------------------------------------------------------------
 ;; basic setup
 (when (<= 27 emacs-major-version)
@@ -288,6 +289,7 @@
     )
 
 (use-package delight)
+
 ;; =======================================================================
 ;; Zenburn
 ;; =======================================================================
@@ -353,72 +355,10 @@
              ("REVIEW"     font-lock-keyword-face bold)
              ("NOTE"       success bold italic)
              ("DEPRECATED" font-lock-doc-face bold))))
-;; =======================================================================
-;; restart emacs
-;; =======================================================================
-(use-package restart-emacs)
 
 ;; =======================================================================
-;; Company
-;; =======================================================================
-(use-package company
-    :defer 8
-    :bind
-    (("C-p" . company-complete))
-    :init
-    (global-company-mode)
-    ;; (add-hook 'after-init-hook 'global-company-mode)
-    :hook
-    ((racket-mode . company-mode)
-        (racket-repl-mode . company-mode))
-    :config
-    (setq lsp-completion-provider :capf)
-    ;; decrease delay before autocompletion popup shows
-    (setq company-idle-delay 0.2
-        ;; remove annoying blinking
-        company-echo-delay 0
-        ;; start autocompletion only after typing
-        company-begin-commands '(self-insert-command)
-        ;; turn on the company-selection-wrap-around
-        company-selection-wrap-around t
-        ;; make the text completion output case-sensitive
-        company-dabbrev-downcase nil ;; set it globally
-        ;; need to type at least 3 characters until the autocompletion starts
-        company-minimum-prefix-length 2
-        company-tooltip-align-annotations 't
-        company-show-numbers t
-        company-tooltip-align-annotations 't
-        ;; weight by frequency
-        company-transformers '(company-sort-by-occurrence
-                                  company-sort-by-backend-importance))
-
-    ;; call the function named company-select-next when tab is pressed
-    ;; (define-key company-active-map [tab] 'company-select-next)
-    ;; (define-key company-active-map (kbd "TAB") 'company-select-next)
-
-    ;; press S-TAB to select the previous option
-    (define-key company-active-map (kbd "S-TAB") #'company-select-previous)
-    (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
-
-    ;; press tab to complete the common characters and cycle to the next option
-    (define-key company-active-map (kbd "<tab>") #'company-complete-common-or-cycle)
-    (define-key company-active-map (kbd "TAB")   #'company-complete-common-or-cycle)
-    (rename-minor-mode "company" company-mode "Com")
-    (add-hook 'after-init-hook 'global-company-mode)
-    )
-
-(use-package company-box
-    :after company
-    :diminish
-    :hook (company-mode . company-box-mode))
-
-(use-package company-lsp
-    :demand t
-    :ensure t
-    :commands company-lsp)
-
-;; =======================================================================
-;; Evil
+;; evil
+;; objective: emulate vim keybindings
 ;; =======================================================================
 (use-package evil
     :demand t
@@ -457,6 +397,7 @@
 
 ;; =======================================================================
 ;; evil-leader
+;; objective: emulate vim keybindings
 ;; =======================================================================
 (use-package evil-leader
     :after (evil)
@@ -470,6 +411,7 @@
 
 ;; =======================================================================
 ;; evil-escape
+;; objective: enable other keys to escape from insert mode
 ;; =======================================================================
 ;; use the jk to escape from the insert mode
 (use-package evil-escape
@@ -485,456 +427,127 @@
     (setq-default evil-escape-delay 0.2)
     ;; (rename-minor-mode "evil-escape" evil-escape-mode "jk")
     )
-;; =======================================================================
-;; Undo Tree
-;; =======================================================================
-;; Undo-tree makes the undo and redo in emacs more easy-to-use
-;; C-_ or C-/  (`undo-tree-undo') Undo changes.
-;; M-_ or C-?  (`undo-tree-redo') Redo changes.
-;; C-x u to run undo-tree-visualize which opens a second buffer
-;; displaying a tree view of your undo history in a buffer. You can
-;; navigate this with the arrow keys and watch the main buffer change
-;; through its previous states, and hit q to exit when you have the
-;; buffer the way you wanted it, or C-q to quit without making any
-;; changes. 1 2 3
-(use-package undo-tree
-    ;;:delight '(:eval (if mine-debug-show-modes-in-modeline
-    ;;                     undo-tree
-    ;;                     ""))
-    :delight '(:eval (show-mode-in-modeline 'undo-tree))
-    :init
-    (global-undo-tree-mode 1)
-    (setq undo-tree-visualizer-timestamp t
-        undo-tree-visualizer-diff t)
-    (defun clear-undo-tree ()
-        (interactive)
-        (setq buffer-undo-tree nil))
-    :bind
-    (("C-c u" . clear-undo-tree))
-    :config
-    (rename-minor-mode "undo-tree" undo-tree-mode "UT")
-    (when (featurep 'evil)
-        (evil-set-undo-system 'undo-tree))
-    )
 
 ;; =======================================================================
-;; helm
+;; vertico
+;; objective: a highly customizable minibuffer extension
+;; ref: vertico, marginalia, orderless https://kristofferbalintona.me/posts/202202211546
+;;      https://www.reddit.com/r/emacs/comments/qfrxgb/using_emacs_episode_80_vertico_marginalia_consult/
 ;; =======================================================================
-(use-package helm
-    :disabled ; if emacs version is before 24.4
-    :requires helm-config
-    :if (version< "24.4" emacs-version)
-    :diminish (helm-mode)
-    :init
-    (progn
-        (require 'helm-config)
-        (setq helm-candidate-number-limit 100
-            ;; From https://gist.github.com/antifuchs/9238468
-            helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
-                                        ; this actually updates things reeeelatively quickly.
-            helm-input-idle-delay 0.01
-            helm-yas-display-key-on-candidate t
-            helm-quick-update t
-            helm-M-x-requires-pattern nil
-            ;; ignore boring files like .o and .a
-            helm-ff-skip-boring-files t)
-        (helm-mode))
-    :bind
-    (("C-x b" . helm-buffers-list)
-        ("M-x" . helm-M-x)
-        ; ("M-y" . helm-show-kill-ring)
-        ("C-x C-f" . helm-find-files)
-        ("C-c h" . helm-mini))
-
-    :config
-    (recentf-mode 1)
-    (setq helm-ff-file-name-history-use-recentf t)
-    (when (featurep 'evil-leader)
-        (evil-leader/set-key
-            "ls" #'helm-buffers-list
-            "gf" #'helm-projectile-find-file
-            "d"  #'helm-projectile-find-file-dwim
-            "ff" #'helm-projectile-find-file
-            )
-        )
-    )
-
-;; https://www.reddit.com/r/emacs/comments/qfrxgb/using_emacs_episode_80_vertico_marginalia_consult/
 (use-package vertico
+    :bind (:map vertico-map
+              ("C-j" . vertico-next)         ; Alternative next binding
+              ("C-k" . vertico-previous)     ; Alternative previous binding
+    ) 
+    :custom
+    ;; Enable cycling for vertico-next/previous
+    (vertico-cycle t)
+
     :init
     (vertico-mode +1))
 
-(use-package orderless
-    :init
-    (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion))))
-    )
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-    :init
-    (savehist-mode))
-
-(use-package general
+;; =======================================================================
+;; posfram
+;; objective: provide support for emacs to create a minibuffer any where on the screen/emacs window
+;; =======================================================================
+(use-package posframe
+    :ensure t
     :demand t)
 
+;; =======================================================================
+;; vertico-posframe
+;; objective: provide the support of posframe to vertico
+;; =======================================================================
+(use-package vertico-posframe
+    :ensure t
+    :demand t
+    :init
+    (vertico-posframe-mode))
+
+;; =======================================================================
+;; orderless
+;; objective: enable the advanced pattern matching
+;; =======================================================================
+(use-package orderless
+    :init
+    (setq completion-styles '(orderless basic))
+    )
+
+;; =======================================================================
+;; marginalia
+;; objective: enable more description in the minibuffer
+;; =======================================================================
+(use-package marginalia
+    :demand t
+    :custom
+    (marginalia-max-relative-age 0)
+    (marginalia-align 'left)
+
+    :init
+    ;; Marginalia must be activated in the :init section of use-package such that
+    ;; the mode gets enabled right away. Note that this forces loading the
+    ;; package.
+    (marginalia-mode 1)
+    )
+
+;; =======================================================================
+;; consult
+;; objective: enable functionalities such as consult-find-notes
+;; =======================================================================
 (use-package consult
     :ensure t
     :demand t
     ;; Enable automatic preview at point in the *Completions* buffer. This is
     ;; relevant when you use the default completion UI.
     :hook (completion-list-mode . consult-preview-at-point-mode)
+
     :config
     (recentf-mode)
     (setq completion-ignore-case t)
     (setq read-file-name-completion-ignore-case t)
+
     (defun consult-find-notes ()
         "Find notes in the notes directory."
         (interactive)
         (consult-find mine-obsidian-notes-path))
-    (when (featurep 'evil-leader)
-        (evil-leader/set-key
-            "ls" #'consult-buffer
-            "ff" #'consult-find
-            "fn" #'consult-find-notes
-            "fr" #'consult-recent-file
-            "gf" #'consult-grep
-            "bl" #'consult-bookmark
-            ))
-    )
 
-(use-package marginalia
-    :ensure t
-    :config
-    (marginalia-mode)
-    (marginalia-max-relative-age 0)
-    (marginalia-align 'right))
-
-;; we enable this package only it is in mac.
-(use-package consult-notes
-    :if (eq system-type `darwin)
-    :demand t
-    :after consult
-    :straight
-    (:type git :host github :repo "mclear-tools/consult-notes")
-    :commands
-    (consult-notes consult-notes-search-in-all-notes)
-    :config
-    (setq consult-notes-use-rg nil)
-
-    (when (featurep 'evil-leader)
-        (evil-leader/set-key
-            "nn" #'consult-notes
-            "ng" #'consult-notes-search-in-all-notes))
-
-    ;; note that the consult-notes-file-dir-sources is a list of alist
-    ;; we put a quote in front of the list so that it is not evaluated
-    ;; and we put a comma in front of a variable so that it is evaluated.
-    ;; so that the value of the variable is used.
-    (when (boundp `mine-obsidian-notes-path)
-        (setq consult-notes-file-dir-sources
-            `(("obsidian"  ?o  ,mine-obsidian-notes-path))))
-
-    ;; set notes dir(s), see below
-    ;; Set org-roam integration, denote integration, or org-heading integration e.g.:
-    ;; (setq consult-notes-org-headings-files '("~/path/to/file1.org"
-    ;;                                          "~/path/to/file2.org"))
-    ;; (consult-notes-org-headings-mode)
-    ;; (when (locate-library "denote")
-    ;;   (consult-notes-denote-mode))
-    )
-
-(use-package embark
-    :disabled
-    :ensure t
-    :bind
-    (("C-." . embark-act)         ;; pick some comfortable binding
-        ("C-;" . embark-dwim)        ;; good alternative: M-.
-        ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-    :init
-    ;; Optionally replace the key help with a completing-read interface
-    (setq prefix-help-command #'embark-prefix-help-command)
-    ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
-    ;; strategy, if you want to see the documentation from multiple providers.
-    (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-    ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-
-    :config
-    (define-key minibuffer-local-map (kbd "M-.") #'my-embark-preview)
-    (defun my-embark-preview ()
-        "Previews candidate in vertico buffer, unless it's a consult command"
+    (defun consult-ripgrep-single-file ()
+        "Call `consult-ripgrep' for the current buffer (single file)."
         (interactive)
-        (unless (bound-and-true-p consult--preview-function)
-            (save-selected-window
-                (let ((embark-quit-after-action nil))
-                    (embark-dwim)))))  
+        (let ((consult-project-function (lambda (x) nil)))
+            (consult-ripgrep (list (shell-quote-argument buffer-file-name)))))
 
-    ;; Hide the mode line of the Embark live/completions buffers
-    (add-to-list 'display-buffer-alist
-        '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-             nil
-             (window-parameters (mode-line-format . none)))))
-
-;; Consult users will also want the embark-consult package.
-(use-package embark-consult
-    :disabled
-    :ensure t ; only need to install it, embark loads it after consult if found
-    :hook
-    (embark-collect-mode . consult-preview-at-point-mode))
-
-(use-package corfu
-    ;; Optional customizations
-    :custom
-    (corfu-cycle t)                 ; Allows cycling through candidates
-    (corfu-auto t)                  ; Enable auto completion
-    (corfu-auto-prefix 2)
-    (corfu-auto-delay 0.0)
-    (corfu-echo-documentation 0.25) ; Enable documentation for completions
-    (corfu-preview-current 'insert) ; Do not preview current candidate
-    (corfu-preselect-first nil)
-    (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
-
-    ;; Optionally use TAB for cycling, default is `corfu-complete'.
-    :bind (:map corfu-map
-              ("M-SPC" . corfu-insert-separator)
-              ("TAB"     . corfu-next)
-              ([tab]     . corfu-next)
-              ("S-TAB"   . corfu-previous)
-              ([backtab] . corfu-previous)
-              ("S-<return>" . corfu-insert)
-              ("RET"     . nil) ;; leave my enter alone!
-              )
-
-    :init
-    (global-corfu-mode)
-
-    :config
-    (setq tab-always-indent 'complete)
-    (add-hook 'eshell-mode-hook
-        (lambda ()
-            (setq-local corfu-quit-at-boundary t
-                corfu-quit-no-match t
-                corfu-auto nil)
-            (corfu-mode)))
-    )
-
-;; =======================================================================
-;; highlight the indentation of the code
-;; =======================================================================
-(use-package highlight-indent-guides
-    :delight '(:eval (show-mode-in-modeline 'highlight-indent-guides))
-    :demand t
-    :hook ((prog-mode . highlight-indent-guides-mode))
-    :config
-    (setq highlight-indent-guides-method 'character)
-    (setq highlight-indent-guides-auto-enabled nil)
-
-    (set-face-background 'highlight-indent-guides-odd-face "darkgray")
-    (set-face-background 'highlight-indent-guides-even-face "dimgray")
-    (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
-    )
-
-;; =======================================================================
-;; Mode
-;; =======================================================================
-(use-package markdown-mode
-    :commands (markdown-mode gfm-mode)
-    :mode
-    (("README\\.md\\'" . gfm-mode)
-        ("\\.md\\'" . markdown-mode)
-        ("\\.markdown\\'" . markdown-mode))
-    :init
-    ;;(setq markdown-command "multimarkdown")
-    (setq markdown-enable-math t)
-    )
-
-(use-package auctex
-    :mode ("\\.tex\\'" . latex-mode)
-    :init
-    (add-hook 'LaTeX-mode-hook #'flyspell-mode)
-    (setq
-        Tex-brace-indent-level mine-space-tap-offset
-        LaTeX-indent-level mine-space-tap-offset
-        LaTeX-item-indent 0 ;;mine-space-tap-offset
+    (when (featurep 'evil-leader)
+        (evil-leader/set-key
+            ;; list all buffers
+            "ls" #'consult-buffer
+            ;; find a file within the currenlt directory
+            "ff" #'consult-find
+            ;; search for a note from a place
+            "fn" #'consult-find-notes
+            ;; provide a list of recently-accessed files
+            "fr" #'consult-recent-file
+            ;; find the definition of variables/functions
+            "fd" #'consult-imenu-multi
+            ;; "fg" #'consult-ripgrep-single-file
+            ;; search for a keyword in a file
+            "fl" #'consult-line
+            ;; search for a keyword from multiple buffers
+            "fm" #'consult-line-multi
+            ;; display the result of the ripgrip
+            "rg" #'consult-ripgrep
+           ;; open a list of bookmark
+            "bl" #'consult-bookmark
+            )
         )
-    :config
     )
 
-;;; org
-(use-package org
-    :bind
-    (("C-c a" . org-agenda)
-        ("C-c SPC" . org-table-blank-field))
-
-    :mode
-    (("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
-        ("\\.txt\\'" . org-mode))
-
-    :config
-    ;; hide the structural markers in the org-mode
-    (setq org-hide-emphasis-markers t)
-    ;; Display emphasized text as you would in a WYSIWYG editor.
-    (setq org-fontify-emphasized-text t)
-    ;; add more work flow
-    (setq org-todo-keywords
-        '((sequence "TODO(t)" "DOING(i)" "HOLD(h@)" "WAITING(w@/!)" "|" "CANCELED(c@)" "DONE(d@/!)")))
-    ;; set the source file to create an agenda
-    ;; (when window-system
-    ;;   (setq org-agenda-files
-    ;;         (list
-    ;;          "e:/Dropbox/todolist/mytodolist.org"
-    ;;          "e:/Dropbox/todolist/today_plan.org")))
-    ;; turn on auto fill mode to avoid pressing M-q too often
-    ;; set the amount of whitespaces between a headline and its tag
-    ;; -70 comes from the width of ~70 characters per line. Thus,
-    ;; tags willl be shown up at the end of the headline's line
-    (setq org-tags-column -70)
-    ;; let me determine the image width
-    (setq org-image-actual-width nil)
-    ;; highlight syntax in the code block
-    (setq org-src-fontify-natively t)
-    ;; keep track of when a certain TODO item was finished
-    (setq org-log-done 'time)
-    (setq org-startup-folded 'nofold)
-    (setq org-startup-indented t)
-    (setq org-startup-with-inline-images t)
-    (setq org-startup-truncated t)
-    (setq org-cycle-emulate-tab t)
-    ;; set the archive file org-file.s_archieve
-    (setq org-archive-location "%s_archive::")
-    (setq org-adapt-indentation nil)
-    ;; (require 'ob-sh)
-    ;; (org-babel-do-load-languages 'org-babel-do-load-languages
-    ;;                              '((sh . t)))
-    ;; customize the todo keyword faces
-    ;; (setq org-todo-keyword-faces
-    ;;       '(("TODO" . (:foreground "green" :weight bold))
-    ;;         ("NEXT" :foreground "blue" :weight bold)
-    ;;         ("WAITING" :foreground "orange" :weight bold)
-    ;;         ("HOLD" :foreground "magenta" :weight bold)
-    ;;         ("CANCELLED" :foreground "forest green" :weight bold)))
-
-    ;; make sure that the exported source code in html has the same
-    ;; indentation as the one in the org file
-    (setq org-src-preserve-indentation t)
-    (setq org-edit-src-content-indentation 0)
-    (setq org-startup-with-inline-images t)
-    (setq org-src-preserve-indentation nil)
-    ;; we build a template to create a source code block
-    ;; <s|
-    (require 'org-tempo)
-
-    (org-babel-do-load-languages
-        'org-babel-load-languages
-        '((python . t)))
-    )
-
-;; use the consult-note instead
-(use-package deft
-    :disabled
-    :init
-    (when (featurep 'evil-leader)
-        (evil-leader/set-key
-            "d" #'deft))
-    :config
-    (setq deft-extensions '("txt" "org" "md"))
-    ;; mac specific settings
-    (when (eq system-type 'darwin)
-        (setq deft-directory (file-truename "~/Dropbox/notes"))
-        (setq deft-recursive-ignore-dir-regexp
-            (concat "\\(?:"
-                "\\."
-                "\\|\\.\\."
-                "\\|\\.obsidian"
-                "\\)$")))
-    (setq deft-recursive t)
-    (setq deft-use-filename-as-title t)
-    (setq deft-file-naming-rules '((noslash . "_")
-                                      (nospace . "_")
-                                      (case-fn . downcase)))
-    (setq deft-text-mode 'org-mode)
-    (setq deft-org-mode-title-prefix t)
-    (setq deft-use-filter-string-for-filename t)
-    (setq deft-default-extension "txt")
-    )
-
-(use-package md-roam
-    :straight (md-roam :type git :host github :repo "nobiot/md-roam")
-    :config
-    (require 'md-roam)
-    (setq md-roam-file-extension-single "md")
-    (setq md-roam-use-markdown-file-links t)
-    )
-
-(use-package org-roam
-    :after org
-                                        ;:delight '(:eval (if mine-debug-show-modes-in-modeline
-                                        ;                     org-roam
-                                        ;                     ""))
-    :delight '(:eval (show-mode-in-modeline 'org-roam))
-    :hook
-    (after-init . org-roam-mode)
-    :custom
-    (org-roam-directory (file-truename "~/Dropbox/notes"))
-    :init
-    (when (featurep 'evil-leader)
-        (evil-leader/set-key
-            "rr"  #'org-roam
-            "rf"  #'org-roam-find-file
-            "rg"  #'org-roam-graph
-            "ri"  #'org-roam-insert
-            "rt"  #'org-roam-tag-add))
-
-    (setq org-roam-v2-ack t)
-    ;; :bind (:map org-roam-mode-map
-    ;; 	      (("C-c r r" . org-roam)
-    ;; 	       ("C-c r f" . org-roam-find-file)
-    ;; 	       ("C-c r g" . org-roam-graph))
-    ;; 	      :map org-mode-map
-    ;; 	      (("C-c r i" . org-roam-insert))
-    ;; 	      (("C-c r I" . org-roam-insert-immediate)))
-    :config
-    (setq org-roam-db-update-method 'immediate)
-                                        ; set the file name without the date format
-    (setq org-roam-capture-templates
-        '(("d" "default" plain (function org-roam--capture-get-point)
-              "%?"
-              :file-name "${slug}"
-	          :head "# -*- mode: org; -*-\n#+title: ${title}\n"
-	          :immediate-finish t
-	          :unnarrowed t)))
-                                        ; the first element in the list is the default extension of the org-roam
-    (setq org-roam-file-extensions '("md" "txt" "org"))
-    (setq org-roam-graph-executable (executable-find "dot"))
-    (setq org-roam-graph-viewer "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
-    (setq org-roam-title-sources '(title))
-    (setq org-id-link-to-org-use-id t)
-
-    (require 'org-protocol)
-    (require 'org-roam-protocol)
-    )
-
-(use-package org-roam-server
-    :after org-roam
-    :config
-    (setq org-roam-server-host "127.0.0.1"
-	    org-roam-server-port 8080
-	    org-roam-server-export-inline-images t
-	    org-roam-server-authenticate nil
-	    org-roam-server-network-poll t
-	    org-roam-server-network-arrows nil
-	    org-roam-server-network-label-truncate t
-	    org-roam-server-network-label-truncate-length 60
-	    org-roam-server-network-label-wrap-length 20)
-    )
 ;; =======================================================================
-;; Avy
+;; avy
+;; objective: enable cursor moving functions to go to a specific line
+;;     or a set of characters
 ;; =======================================================================
 (use-package avy
-    ;; :bind
-    ;; (("C-c j" . avy-goto-char-2)
-    ;;  ("C-c l" . avy-goto-line))
     :demand t
     :config
     (when (featurep 'evil-leader)
@@ -943,7 +556,12 @@
             "jc" #'avy-goto-char-2))
     )
 
+;; =======================================================================
+;; ace-window
+;; objective: enable the window switching function
+;; =======================================================================
 (use-package ace-window
+    :demand t
     :bind (("C-x o" . ace-window))
     :config
     (global-set-key [remap other-window] 'ace-window)
@@ -952,256 +570,11 @@
         (evil-leader/set-key "w" 'ace-window))
     )
 
-(use-package origami
-    :disabled
-    :hook (prog-mode . origami-mode)
-    :config
-    (global-origami-mode)
-    (setq-local origami-fold-style 'triple-braces)
-    (setq origami-show-fold-header t)     ;highlight fold headers
-                                        ; (add-hook 'prog-mode-hook
-                                        ;           (lambda ()
-                                        ;             (setq-local origami-fold-style 'triple-braces)))
-    )
-
-(use-package hideshowvis
-    :diminish hs-minor-mode
-    ;; on mac (25.3) this module has a problem
-    :ensure nil
-    :init
-    (dolist (hook (list 'emacs-lisp-mode-hook
-                      'c++-mode-hook
-                      'nesc-mode-hook
-                      'python-mode-hook))
-        (add-hook hook 'hideshowvis-enable))
-    ;; (hideshowvis-symbols)
-    :config
-    (setq hideshowvis-ignore-same-line nil))
-
-(autoload 'hideshowvis-enable "hideshowvis" "Highlight foldable regions")
-(autoload 'hideshowvis-minor-mode
-    "hideshowvis"
-    "Will indicate regions foldable with hideshow in the fringe."
-    'interactive)
-;; lsp-origami provides support for origami.el using language server protocol’s
-;; textDocument/foldingRange functionality.
-;; https://github.com/emacs-lsp/lsp-origami/
-(use-package lsp-origami
-    :disabled
-    :hook ((lsp-after-open . lsp-origami-mode))
-    )
-
-(use-package vimish-fold
-    :disabled
-    :after evil
-    :config
-    (vimish-fold-global-mode 1)
-    )
-
-(use-package evil-vimish-fold
-    :disabled
-    :after vimish-fold
-    :init
-    (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))
-    :config
-    (global-evil-vimish-fold-mode))
-
-(use-package vimrc-mode
-    :config
-    (add-to-list 'auto-mode-alist '("\\.vim\\(rc\\)?\\'" . vimrc-mode))
-    )
-
-(use-package flyspell
-    :delight '(:eval (show-mode-in-modeline "flys"))
-    :config
-    ;; remove/remap the minor-mode key map
-    ;; (rename-minor-mode "flyspell" flyspell-mode "FlyS")
-    (define-key flyspell-mode-map (kbd "C-;") nil)
-
-    ;; Enable spell check in program comments
-    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-    ;; Enable spell check in plain text / org-mode
-    (add-hook 'text-mode-hook 'flyspell-mode)
-    (add-hook 'org-mode-hook 'flyspell-mode)
-    (setq flyspell-issue-welcome-flag nil)
-    (setq flyspell-issue-message-flag nil)
-
-    ;; ignore repeated words
-    (setq flyspell-mark-duplications-flag nil)
-    (when (and (or (eq system-type 'gnu/linux)
-                   (eq system-type 'darwin))
-              (executable-find "aspell"))
-        (setq-default ispell-program-name (executable-find "aspell")))
-    (setq-default ispell-list-command "list")
-    )
-
-;; https://www.linw1995.com/en/blog/Write-Racket-With-Emacs/
-;; https://marketsplash.com/tutorials/emacs/how-to-use-racket-mode-in-emacs/
-(use-package racket-mode
-    :bind
-    (("C-c r" . racket-run))
-    :init
-    (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
-    (add-hook 'racket-mode-hook      #'racket-xp-mode)
-    (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
-    :config
-    (setq racket-mode-pretty-lambda nil)
-    ;; (type-case FAW a-fae
-    ;;     [a ...
-    ;;     [b ...
-    (put 'type-case 'racket-indent-function 2)
-    (put 'local 'racket-indent-function nil)
-    (put '+ 'racket-indent-function nil)
-    (put '- 'racket-indent-function nil)
-    (setq tab-always-indent 'complete)
-    (when (eq system-type 'darwin) ;; mac specific settings
-        (setq racket-program "/opt/homebrew/bin/racket")
-        )
-    )
-
-(use-package geiser-mit
-    :ensure t)
-
-(use-package verilog-mode
-    :ensure nil
-    :init 
-    (setq auto-mode-alist (cons '("\\.v\\'" . verilog-mode) auto-mode-alist))
-    (setq auto-mode-alist (cons '("\\.sv\\'" . verilog-mode) auto-mode-alist))
-    :config
-    (setq verilog-align-ifelse t
-        verilog-auto-delete-trailing-whitespace t
-        verilog-auto-inst-param-value t
-        verilog-auto-inst-vector nil
-        verilog-auto-lineup nil ;(quote all)
-        verilog-auto-indent-on-newline t
-        verilog-auto-newline nil
-        verilog-auto-save-policy nil
-        verilog-auto-template-warn-unused t
-        verilog-case-indent mine-space-tap-offset
-        verilog-cexp-indent mine-space-tap-offset
-        verilog-highlight-grouping-keywords t
-        verilog-highlight-modules t
-        verilog-indent-lists nil
-        verilog-indent-level mine-space-tap-offset
-        verilog-indent-level-behavioral mine-space-tap-offset
-        verilog-indent-level-declaration mine-space-tap-offset
-        verilog-indent-level-module mine-space-tap-offset
-        verilog-indent-level-directive mine-space-tap-offset
-        verilog-tab-to-comment t
-        verilog-indent-begin-after-if nil
-        verilog-case-indent mine-space-tap-offset)
-    )
-
-(use-package yaml-mode)
-
-(use-package websocket
-    :after org-roam)
-
-(use-package simple-httpd)
-
-(use-package f)
-
-(use-package org-roam-ui
-    :straight
-    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
-    :after org-roam
-    :hook (org-roam . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start t)
-    )
-
-(use-package vterm
-    :ensure t)
-
-(use-package cmake-mode
-    :ensure t)
-
-(use-package proof-general
-    :ensure t
-    :disabled
-    :config
-    (load-file "/opt/homebrew/Cellar/math-comp//1.15.0_1/share/emacs/site-lisp/math-comp/pg-ssr.el"))
-
-(use-package company-coq
-    :ensure t)
-
-(use-package go-mode
-    :ensure t
-    :mode
-    (("\\.go\\'" . go-mode)))
-
-(use-package helm-projectile
-    :ensure t)
-
-(use-package dockerfile-mode
-    :ensure t)
-
-;; Setup:
-;; - There are two ways to install copilot language server
-;;   1. npm install -g @github/copilot-language-server
-;;   2. M-x copilot-install-server
-;; - Log in to copilot by M-x copilot-login
-;;
-;; Etc.
-;; - You can disable the copilot mode by M-x copilot-mode
-;;
-(use-package copilot
-    :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-    :disabled disable-github-copilot
-    :demand t
-    :ensure t
-    :config
-    (add-hook 'prog-mode-hook 'copilot-mode)
-    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-    (setq copilot-use-auto-complete t)
-    (setq copilot--indent-warning-printed-p t)
-    ;; if you see the warning message, you can set the copilot--indent-warning-printed-p to nil
-    ;; you should check copilot--indentation-alist to see if the indentation is set correctly.
-    )
-
-;; (use-package lsp-mode
-;;   :ensure t
-;;   :config
-;;   ;; Start lsp when you open a file for each langauge
-;;   (add-hook 'python-mode-hook #'lsp)
-;;   (add-hook 'go-mode-hook     #'lsp)
-;;   (add-hook 'verilog-mode-hook #'lsp)
-;;   (setq lsp-prefer-flymake nil)
-;;   )
-
-;; (use-package lsp-ui
-;;   :config
-;;   ;; Show the peek view even if there is only 1 cross reference
-;;   (setq lsp-ui-peek-always-show t)
-;;   (setq lsp-ui-peek-fontify (quote always))
-;;   ;; sideline config
-;;   (setq lsp-ui-sideline-show-diagnostics t)
-;;   (setq lsp-ui-sideline-show-hover t)
-;;   (setq lsp-ui-sideline-show-code-actions t)
-;;   (setq lsp-ui-sideline-diagnostic-max-line-length 80) ; we have treemacs taking up space
-;;   (setq lsp-ui-sideline-ignore-duplicate t)
-;;   ;; doc popup config
-;;   (setq lsp-ui-doc-show-with-cursor nil)
-;;   (setq lsp-ui-doc-show-with-mouse nil)
-;;   ;; remap xref bindings to use peek
-;;   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-;;   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
-;;   ;; custom sideline
-;;   :bind ("M-RET" . lsp-execute-code-action)
-;;   :bind ("C-c h" . lsp-ui-doc-show)
-;;   )
-
-(use-package dashboard
-    :ensure t
-    :demand t
-    :config
-    (dashboard-setup-startup-hook)
-    )
-
+;; =======================================================================
+;; which-key
+;; objective: enable the minibuffer to guide you based on pressed key
+;;     binding
+;; =======================================================================
 (use-package which-key
     :ensure t
     :demand t
@@ -1210,6 +583,11 @@
     (which-key-setup-side-window-bottom)
     )
 
+;; =======================================================================
+;; rainbow-delimiters
+;; objective: enable the colorful-highlight delimiter such as parenthesis
+;;    this plugin should be used with color
+;; =======================================================================
 (use-package rainbow-delimiters
     :ensure t
     :demand t
@@ -1277,104 +655,31 @@
     (add-hook 'prog-mode-hook
         '(lambda () (set-random-rainbow-colors 0.8 0.6 0.7))))
 
-;; (use-package centaur-tabs
-;;   :disabled
-;;   :demand t
-;;   :config
-;;   (centaur-tabs-mode t)
-;;   :bind
-;;   ("C-<prior>" . centaur-tabs-backward)
-;;   ("C-<next>" . centaur-tabs-forward))
 
-;; ;; https://amaikinono.github.io/introduce-awesome-tab.html
-;; (use-package awesome-tab
-;;   :disabled
-;;   :config
-;;   (awesome-tab-mode t)
-;;   (setq awesome-tab-show-tab-index t))
-
-;; (use-package tabbar
-;;   :disabled
-;;   :config
-;;   (customize-set-variable 'tabbar-background-color "gray20")
-;;   (customize-set-variable 'tabbar-separator '(0.5))
-;;   (customize-set-variable 'tabbar-use-images nil)
-;;   (tabbar-mode 1)
-
-;;   ;; My preferred keys
-;;   (define-key global-map [(alt j)] 'tabbar-backward)
-;;   (define-key global-map [(alt k)] 'tabbar-forward)
-
-;;   ;; Colors
-;;   (set-face-attribute 'tabbar-default nil
-;;                       :background "gray20" :foreground
-;;                       "gray60" :distant-foreground "gray50"
-;;                       :family "Helvetica Neue" :box nil)
-;;   (set-face-attribute 'tabbar-unselected nil
-;;                       :background "gray80" :foreground "black" :box nil)
-;;   (set-face-attribute 'tabbar-modified nil
-;;                       :foreground "red4" :box nil
-;;                       :inherit 'tabbar-unselected)
-;;   (set-face-attribute 'tabbar-selected nil
-;;                       :background "#4090c0" :foreground "white" :box nil)
-;;   (set-face-attribute 'tabbar-selected-modified nil
-;;                       :inherit 'tabbar-selected :foreground "GoldenRod2" :box nil)
-;;   (set-face-attribute 'tabbar-button nil
-;;                       :box nil)
-;;   )
-
-(use-package obsidian
-  :disabled
-  :ensure t
-  :demand t
-  :config
-  ;; (obsidian-specify-path mine-obsidian-notes-path)
-  (global-obsidian-mode t)
-  :custom
-  ;; This directory will be used for `obsidian-capture' if set.
-  (obsidian-inbox-directory "Inbox")
-  ;; Create missing files in inbox? - when clicking on a wiki link
-  ;; t: in inbox, nil: next to the file with the link
-  ;; default: t
-  ;(obsidian-wiki-link-create-file-in-inbox nil)
-  ;; The directory for daily notes (file name is YYYY-MM-DD.md)
-  (obsidian-daily-notes-directory "Daily Notes")
-  ;; Directory of note templates, unset (nil) by default
-  ;(obsidian-templates-directory "Templates")
-  ;; Daily Note template name - requires a template directory. Default: Daily Note Template.md
-  ;(setq obsidian-daily-note-template "Daily Note Template.md")
-  :bind (:map obsidian-mode-map
-  ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
-  ("C-c C-o" . obsidian-follow-link-at-point)
-  ;; Jump to backlinks
-  ("C-c C-b" . obsidian-backlink-jump)
-  ;; If you prefer you can use `obsidian-insert-link'
-  ("C-c C-l" . obsidian-insert-wikilink)))
-
-(use-package ediff
-    :config
-    (setq ediff-split-window-function 'split-window-horizontally)
-    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-    (defun my/command-line-diff (switch)
-        (setq initial-buffer-choice nil)
-        (let ((file1 (pop command-line-args-left))
-              (file2 (pop command-line-args-left)))
-            (ediff file1 file2)))
-    ;; show the ediff command buffer in the same frame
-    (add-to-list 'command-switch-alist '("-diff" . my/command-line-diff)))
-
-(use-package woman
-    :disabled)
-
-(use-package perspective
-    :bind
-    ("C-x C-b" . persp-list-buffers)         ; or use a nicer switcher, see below
+;; =======================================================================
+;; vterm
+;; objective: a terminal emulator
+;; =======================================================================
+(use-package vterm
+    :ensure t
     :custom
-    (persp-mode-prefix-key (kbd "C-c M-p"))  ; pick your own prefix key here
+    (vterm-max-scrollback 10000))
+
+(use-package treemacs
+    :demand t
+    :ensure t
     :config
-    (make-directory "~/.emacs.data/perspectives" t)
-    :init
-    (persp-mode))
+    (setq treemacs-collapse-dirs nil) ; Optional: Keep directories expanded
+    (setq treemacs-follow-mode t)    ; Optional: Follow current buffer
+    (setq treemacs-is-never-other-window t)
+
+    (when (featurep 'evil-leader)
+        (evil-leader/set-key
+            "tf" #'treemacs
+            )
+        )
+    )
+
 
 (use-package treemacs
     :ensure t
@@ -1384,20 +689,226 @@
   :after (treemacs evil)
   :ensure t)
 
-;; show weird characters
-;; (use-package xeft
-;;     :disabled
+(use-package dashboard
+    :ensure t
+    :demand t
+    :config
+    (dashboard-setup-startup-hook)
+    )
+
+;; =======================================================================
+;; copilot
+;; objective: enable github copilot
+;; =======================================================================
+;; Setup:
+;; - There are two ways to install copilot language server
+;;   1. npm install -g @github/copilot-language-server
+;;   2. M-x copilot-install-server
+;; - Log in to copilot by M-x copilot-login
+;;
+;; Etc.
+;; - You can disable the copilot mode by M-x copilot-mode
+(use-package copilot
+    :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+    :disabled disable-github-copilot
+    :demand t
+    :ensure t
+    :config
+    (add-hook 'prog-mode-hook 'copilot-mode)
+    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+    (setq copilot-use-auto-complete t)
+    (setq copilot--indent-warning-printed-p t)
+    ;; if you see the warning message, you can set the copilot--indent-warning-printed-p to nil
+    ;; you should check copilot--indentation-alist to see if the indentation is set correctly.
+    )
+
+
+;; =======================================================================
+;; corfu
+;; objective: enable auto-complete
+;; =======================================================================
+(use-package corfu
+    :ensure t
+    :demand t
+    ;; Optional customizations
+    :custom
+    (corfu-cycle t)                 ; Allows cycling through candidates
+    (corfu-auto t)                  ; Enable auto completion
+    (corfu-auto-prefix 2)
+    (corfu-auto-delay 0.0)
+    (corfu-echo-documentation 0.25) ; Enable documentation for completions
+    (corfu-preview-current 'insert) ; Do not preview current candidate
+    (corfu-preselect-first nil)
+    (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
+    (corfu-min-width 80)
+    (corfu-max-width corfu-min-width)     ; Always have the same width
+    (corfu-count 14)
+    (corfu-scroll-margin 4)
+
+    ;; Optionally use TAB for cycling, default is `corfu-complete'.
+    :bind
+    (
+        :map corfu-map
+        ("S-SPC"    . corfu-insert-separator)
+        ("TAB"      . corfu-next)
+        ([tab]      . corfu-next)
+        ("S-TAB"    . corfu-previous)
+        ([backtab]  . corfu-previous)
+        ("S-<return>" . corfu-insert)
+        ("M-l"      . corfu-show-location)
+        ("<escape>" . corfu-quit)
+        ("RET"      . nil) ;; leave my enter alone!
+        )
+
+    :init
+    (global-corfu-mode)
+
+    :config
+    (setq tab-always-indent 'complete)
+    ; Enable popup info
+    ; it does not work in terminal 
+    (corfu-popupinfo-mode 1) 
+    (setq corfu-popupinfo-delay '(0.4 . 0.2)) ; Set delay for popup info
+    )
+
+;; =======================================================================
+;; corfu-terminal
+;; objective: enable corfu in terminal
+;; =======================================================================
+;; https://kristofferbalintona.me/posts/202202270056/
+(use-package corfu-terminal
+    :demand t
+    :config
+    (unless (display-graphic-p)
+        (corfu-terminal-mode +1))
+    )
+
+;; =======================================================================
+;; kind-icon
+;; objective: adds colorful icons for completion in Emacs
+;; =======================================================================
+;; https://kristofferbalintona.me/posts/202202270056/
+(use-package kind-icon
+    :after corfu
+    :custom
+    (kind-icon-use-icons t)
+    (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
+    (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
+    (kind-icon-blend-frac 0.08)
+
+    ;; NOTE 2022-02-05: `kind-icon' depends `svg-lib' which creates a cache
+    ;; directory that defaults to the `user-emacs-directory'. Here, I change that
+    ;; directory to a location appropriate to `no-littering' conventions, a
+    ;; package which moves directories of other packages to sane locations.
+    (svg-lib-icons-dir (no-littering-expand-var-file-name "svg-lib/cache/")) ; Change cache dir
+
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
+
+    ;; Add hook to reset cache so the icon colors match my theme
+    ;; NOTE 2022-02-05: This is a hook which resets the cache whenever I switch
+    ;; the theme using my custom defined command for switching themes. If I don't
+    ;; do this, then the backgound color will remain the same, meaning it will not
+    ;; match the background color corresponding to the current theme. Important
+    ;; since I have a light theme and dark theme I switch between. This has no
+    ;; function unless you use something similar
+    (add-hook 'kb/themes-hooks #'(lambda () (interactive) (kind-icon-reset-cache)))
+    )
+
+;; =======================================================================
+;; fussy
+;; objective: provide a completion-style to Emacs that is able to
+;;     leverage flx as well as various other libraries such as fzf-native
+;;     to provide intelligent scoring and sorting.
+;; =======================================================================
+(use-package fussy
+    :ensure t
+    :config
+    (fussy-setup)
+    )
+
+;; it seems that corfu completion list is better.
+;; (use-package company
+;; ;    :defer 8
+;;     :bind
+;;     (("C-p" . company-complete))
+;;     :init
+;;     (global-company-mode)
+;;     ;; (add-hook 'after-init-hook 'global-company-mode)
+;;     :hook
+;;     ((racket-mode . company-mode)
+;;         (racket-repl-mode . company-mode))
 ;;     :config
-;;     (setq xeft-extensions '("txt" "org" "md"))
-;;     (setq xeft-recursive t)
-;;     (setq xeft-directory mine-obsidian-notes-path)
+;;     (setq lsp-completion-provider :capf)
+;;     ;; decrease delay before autocompletion popup shows
+;;     (setq company-idle-delay 0.2
+;;         ;; remove annoying blinking
+;;         company-echo-delay 0
+;;         ;; start autocompletion only after typing
+;;         company-begin-commands '(self-insert-command)
+;;         ;; turn on the company-selection-wrap-around
+;;         company-selection-wrap-around t
+;;         ;; make the text completion output case-sensitive
+;;         company-dabbrev-downcase nil ;; set it globally
+;;         ;; need to type at least 3 characters until the autocompletion starts
+;;         company-minimum-prefix-length 2
+;;         company-tooltip-align-annotations 't
+;;         company-show-numbers t
+;;         company-tooltip-align-annotations 't
+;;         ;; weight by frequency
+;;         company-transformers '(company-sort-by-occurrence
+;;                                   company-sort-by-backend-importance))
+
+;;     ;; call the function named company-select-next when tab is pressed
+;;     ;; (define-key company-active-map [tab] 'company-select-next)
+;;     ;; (define-key company-active-map (kbd "TAB") 'company-select-next)
+
+;;     ;; press S-TAB to select the previous option
+;;     (define-key company-active-map (kbd "S-TAB") #'company-select-previous)
+;;     (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
+
+;;     ;; press tab to complete the common characters and cycle to the next option
+;;     (define-key company-active-map (kbd "<tab>") #'company-complete-common-or-cycle)
+;;     (define-key company-active-map (kbd "TAB")   #'company-complete-common-or-cycle)
+;;     (rename-minor-mode "company" company-mode "Com")
+;;     (add-hook 'after-init-hook 'global-company-mode)
 ;;     )
-;; ;; ==================================================================
+
+;; ;; a company font-end with icons
+;; ;; note that it works on for gui
+;; (use-package company-box
+;;     :after company
+;;     :diminish
+;;     :hook (company-mode . company-box-mode))
+
+;; (use-package company-lsp
+;;     :after company
+;;     :diminish
+;;     :demand t
+;;     :ensure t
+;;     :commands company-lsp)
+
+;; (use-package company-quickhelp
+;;     :after company
+;;     :diminish
+;;     :demand t
+;;     :ensure t
+;;     :config
+;;     (company-quickhelp-mode))
+
+;; (use-package company-flx
+;;     :demand t
+;;     :ensure t
+;;     :config
+;;     (company-flx-mode +1)
+;; )
+;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
     (lambda () (message "emacs-init-time: %s" (emacs-init-time))))
 
-;; # Emacs Lisp 
+;; # Emacs Lisp
 ;; ## Basic Settings
 ;; - Use (setq ...) to set value locally to a buffer
 ;; - Use (setq-default ...) to set value globally
@@ -1429,7 +940,7 @@
 ;;   (org-babel-load-file
 ;;      (expand-file-name "config.org"
 ;;      		   user-emacs-directory))
-;; - To render the html file, run the command 
+;; - To render the html file, run the command
 ;; - https://www.reddit.com/r/emacs/comments/x7ahgz/how_many_of_you_switched_from_ivycounsel_or_helm/
 ;; TODO list:
 ;; install
@@ -1438,7 +949,7 @@
 ;; files (file~) in ~/.emacs.d/var/backup/.  It doesn't do anything
 ;; about autosaves (#file#), but there is a note about putting those
 ;; files in a specified directory in the README:
-;; 
+;;
 ;; (setq auto-save-file-name-transforms
 ;;      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 ;; - https://nathantypanski.com/blog/2014-08-03-a-vim-like-emacs-config.html
