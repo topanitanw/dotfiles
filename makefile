@@ -9,6 +9,7 @@ mac_setup:
 clean:
 	find . -type f -iname "*.~undo-tree~" -delete
 	find . -type f -iname "#*#" -delete
+	find . -type f -iname "*~" -delete
 .PHONY: clean
 
 view:

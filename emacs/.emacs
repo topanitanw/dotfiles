@@ -665,29 +665,22 @@
     :custom
     (vterm-max-scrollback 10000))
 
-(use-package treemacs
-    :demand t
+;; =======================================================================
+;; ranger
+;; objective: a file explorer
+;; =======================================================================
+;; zh to enable the hidden files
+;; ? to open help
+(use-package ranger
     :ensure t
+    :demand t
     :config
-    (setq treemacs-collapse-dirs nil) ; Optional: Keep directories expanded
-    (setq treemacs-follow-mode t)    ; Optional: Follow current buffer
-    (setq treemacs-is-never-other-window t)
-
     (when (featurep 'evil-leader)
         (evil-leader/set-key
-            "tf" #'treemacs
-            )
+            ;; list all buffers
+            "r" #'ranger)
         )
     )
-
-
-(use-package treemacs
-    :ensure t
-    :defer t)
-
-(use-package treemacs-evil
-  :after (treemacs evil)
-  :ensure t)
 
 (use-package dashboard
     :ensure t
