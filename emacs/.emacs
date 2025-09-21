@@ -665,8 +665,14 @@
     :custom
     (vterm-max-scrollback 10000))
 
+;; =======================================================================
+;; multi-vterm
+;; objective: a package to allow multiple instance of vterm
+;; usage: call multi-vterm command to create a new vterm instance
+;; =======================================================================
 (use-package multi-vterm
     :ensure t)
+
 ;; =======================================================================
 ;; ranger
 ;; objective: a file explorer
