@@ -665,6 +665,8 @@
     :custom
     (vterm-max-scrollback 10000))
 
+(use-package multi-vterm
+    :ensure t)
 ;; =======================================================================
 ;; ranger
 ;; objective: a file explorer
