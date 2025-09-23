@@ -659,6 +659,9 @@
 ;; =======================================================================
 ;; vterm
 ;; objective: a terminal emulator
+;; usage:
+;; - to exit from the insert mode to normal mode, you can type jk.
+;; - to enter into the insert mode, you can type i.
 ;; =======================================================================
 (use-package vterm
     :ensure t
