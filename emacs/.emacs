@@ -457,10 +457,12 @@
 ;; =======================================================================
 ;; vertico-posframe
 ;; objective: provide the support of posframe to vertico
+;; disable: due to the bug if the path is very long
 ;; =======================================================================
 (use-package vertico-posframe
-    :ensure t
-    :demand t
+    :disabled
+    :ensure nil
+    :demand nil
     :init
     (vertico-posframe-mode))
 
