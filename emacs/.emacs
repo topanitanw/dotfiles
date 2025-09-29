@@ -571,11 +571,12 @@
 (use-package ace-window
     :demand t
     :bind (("C-x o" . ace-window))
+    :init 
+    (when (featurep 'evil-leader)
+        (evil-leader/set-key "w" 'ace-window))
     :config
     (global-set-key [remap other-window] 'ace-window)
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-    (when (featurep 'evil-leader)
-        (evil-leader/set-key "w" 'ace-window))
     )
 
 ;; =======================================================================
