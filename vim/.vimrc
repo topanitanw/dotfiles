@@ -192,6 +192,7 @@ Plug 'brenoprata10/nvim-highlight-colors'
 " current buffer, and use the absolute number in other buffers.
 Plug 'sitiom/nvim-numbertoggle'
 
+Plug 'sindrets/diffview.nvim'
 " Neotree
 " Plug 'nvim-neo-tree/neo-tree.nvim'
 call plug#end()

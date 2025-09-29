@@ -168,6 +168,7 @@
     (c-set-offset 'arglist-close 0)
     )
 (mine-coding-style)
+(add-to-list 'auto-mode-alist '("\\.spc\\'" . javascript-mode))
 
 ;; set the indent of private, public keywords to be 0.5 x c-basic-offset
 (c-set-offset 'access-label '--)
