@@ -132,8 +132,9 @@
         ;; fboundp returns a string of the symbol when this symbol is unbound instead of nil.
         ;; for this reason, checking if this function returns true is added to handle this case.
         (if (eq (fboundp 'file-name-concat) t)
-            (file-name-concat (getenv "HOME") "Dropbox" "notes")
-            (format "%s/%s/%s" (getenv "HOME") "Dropbox" "notes"))
+            (file-name-concat (getenv "HOME") "obsidian_vault" "panitan_notes")
+            (format "%s/%s/%s" (getenv "HOME") "obsidian_vault" "panitan_notes")
+        )
         "The path of the obsidian notes")
     )
 
@@ -167,6 +168,7 @@
     ;; |); <--- arglist-close is at the | symbol.
     (c-set-offset 'arglist-close 0)
     )
+
 (mine-coding-style)
 (add-to-list 'auto-mode-alist '("\\.spc\\'" . javascript-mode))
 
@@ -442,7 +444,7 @@
     :bind (:map vertico-map
               ("C-j" . vertico-next)         ; Alternative next binding
               ("C-k" . vertico-previous)     ; Alternative previous binding
-    ) 
+    )
     :custom
     ;; Enable cycling for vertico-next/previous
     (vertico-cycle t)
@@ -777,8 +779,8 @@
     :config
     (setq tab-always-indent 'complete)
     ; Enable popup info
-    ; it does not work in terminal 
-    (corfu-popupinfo-mode 1) 
+    ; it does not work in terminal
+    (corfu-popupinfo-mode 1)
     (setq corfu-popupinfo-delay '(0.4 . 0.2)) ; Set delay for popup info
     )
 
@@ -913,6 +915,9 @@
 ;;     :config
 ;;     (company-flx-mode +1)
 ;; )
+
+(use-package markdown-mode
+    :ensure t)
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
