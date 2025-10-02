@@ -739,9 +739,12 @@
 
 ;; =======================================================================
 ;; corfu
-;; objective: enable auto-complete
+;; objective: enable a new UI for the auto-complete
 ;; =======================================================================
+;; issue: the output of the corfu has a suffix garbage such as "=", "_"
+
 (use-package corfu
+    :disabled
     :ensure t
     :demand t
     ;; Optional customizations
@@ -791,6 +794,7 @@
 ;; =======================================================================
 ;; https://kristofferbalintona.me/posts/202202270056/
 (use-package corfu-terminal
+    :disabled
     :demand t
     :config
     (unless (display-graphic-p)
@@ -829,93 +833,106 @@
     (add-hook 'kb/themes-hooks #'(lambda () (interactive) (kind-icon-reset-cache)))
     )
 
+
+;; it seems that corfu completion list is better.
+(use-package company
+;    :defer 8
+    :bind
+    (("C-p" . company-complete))
+    :init
+    (global-company-mode)
+    ;; (add-hook 'after-init-hook 'global-company-mode)
+    :hook
+    ((racket-mode . company-mode)
+        (racket-repl-mode . company-mode))
+    :config
+    (setq lsp-completion-provider :capf)
+    ;; decrease delay before autocompletion popup shows
+    (setq company-idle-delay 0.2
+        ;; remove annoying blinking
+        company-echo-delay 0
+        ;; start autocompletion only after typing
+        company-begin-commands '(self-insert-command)
+        ;; turn on the company-selection-wrap-around
+        company-selection-wrap-around t
+        ;; make the text completion output case-sensitive
+        company-dabbrev-downcase nil ;; set it globally
+        ;; need to type at least 3 characters until the autocompletion starts
+        company-minimum-prefix-length 2
+        company-tooltip-align-annotations 't
+        company-show-numbers t
+        company-tooltip-align-annotations 't
+        ;; weight by frequency
+        company-transformers '(company-sort-by-occurrence
+                                  company-sort-by-backend-importance))
+
+    ;; call the function named company-select-next when tab is pressed
+    ;; (define-key company-active-map [tab] 'company-select-next)
+    ;; (define-key company-active-map (kbd "TAB") 'company-select-next)
+
+    ;; press S-TAB to select the previous option
+    (define-key company-active-map (kbd "S-TAB") #'company-select-previous)
+    (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
+
+    ;; press tab to complete the common characters and cycle to the next option
+    (define-key company-active-map (kbd "<tab>") #'company-complete-common-or-cycle)
+    (define-key company-active-map (kbd "TAB")   #'company-complete-common-or-cycle)
+    (rename-minor-mode "company" company-mode "Com")
+    (add-hook 'after-init-hook 'global-company-mode)
+    )
+
+;; a company font-end with icons
+;; note that it works on for gui
+(use-package company-box
+    :after company
+    :diminish
+    :hook (company-mode . company-box-mode))
+
+(use-package company-lsp
+    :after company
+    :diminish
+    :demand t
+    :ensure t
+    :commands company-lsp)
+
+(use-package company-quickhelp
+    :after company
+    :diminish
+    :demand t
+    :ensure t
+    :config
+    (company-quickhelp-mode))
+
+(use-package company-flx
+    :after company
+    :demand t
+    :ensure t
+    :config
+    (company-flx-mode +1)
+)
+
 ;; =======================================================================
 ;; fussy
 ;; objective: provide a completion-style to Emacs that is able to
 ;;     leverage flx as well as various other libraries such as fzf-native
 ;;     to provide intelligent scoring and sorting.
 ;; =======================================================================
+(use-package fzf-native
+  :straight (fzf-native :type git :host github :repo "dangduc/fzf-native" :files (:defaults "bin"))
+  :config
+  (fzf-native-load-dyn)
+  (setq fussy-score-fn 'fussy-fzf-native-score))
+
 (use-package fussy
-    :ensure t
-    :config
-    (fussy-setup)
-    )
-
-;; it seems that corfu completion list is better.
-;; (use-package company
-;; ;    :defer 8
-;;     :bind
-;;     (("C-p" . company-complete))
-;;     :init
-;;     (global-company-mode)
-;;     ;; (add-hook 'after-init-hook 'global-company-mode)
-;;     :hook
-;;     ((racket-mode . company-mode)
-;;         (racket-repl-mode . company-mode))
-;;     :config
-;;     (setq lsp-completion-provider :capf)
-;;     ;; decrease delay before autocompletion popup shows
-;;     (setq company-idle-delay 0.2
-;;         ;; remove annoying blinking
-;;         company-echo-delay 0
-;;         ;; start autocompletion only after typing
-;;         company-begin-commands '(self-insert-command)
-;;         ;; turn on the company-selection-wrap-around
-;;         company-selection-wrap-around t
-;;         ;; make the text completion output case-sensitive
-;;         company-dabbrev-downcase nil ;; set it globally
-;;         ;; need to type at least 3 characters until the autocompletion starts
-;;         company-minimum-prefix-length 2
-;;         company-tooltip-align-annotations 't
-;;         company-show-numbers t
-;;         company-tooltip-align-annotations 't
-;;         ;; weight by frequency
-;;         company-transformers '(company-sort-by-occurrence
-;;                                   company-sort-by-backend-importance))
-
-;;     ;; call the function named company-select-next when tab is pressed
-;;     ;; (define-key company-active-map [tab] 'company-select-next)
-;;     ;; (define-key company-active-map (kbd "TAB") 'company-select-next)
-
-;;     ;; press S-TAB to select the previous option
-;;     (define-key company-active-map (kbd "S-TAB") #'company-select-previous)
-;;     (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
-
-;;     ;; press tab to complete the common characters and cycle to the next option
-;;     (define-key company-active-map (kbd "<tab>") #'company-complete-common-or-cycle)
-;;     (define-key company-active-map (kbd "TAB")   #'company-complete-common-or-cycle)
-;;     (rename-minor-mode "company" company-mode "Com")
-;;     (add-hook 'after-init-hook 'global-company-mode)
-;;     )
-
-;; ;; a company font-end with icons
-;; ;; note that it works on for gui
-;; (use-package company-box
-;;     :after company
-;;     :diminish
-;;     :hook (company-mode . company-box-mode))
-
-;; (use-package company-lsp
-;;     :after company
-;;     :diminish
-;;     :demand t
-;;     :ensure t
-;;     :commands company-lsp)
-
-;; (use-package company-quickhelp
-;;     :after company
-;;     :diminish
-;;     :demand t
-;;     :ensure t
-;;     :config
-;;     (company-quickhelp-mode))
-
-;; (use-package company-flx
-;;     :demand t
-;;     :ensure t
-;;     :config
-;;     (company-flx-mode +1)
-;; )
+  :straight (fussy :type git :host github :repo "jojojames/fussy")
+  :config
+  (setq fussy-score-ALL-fn 'fussy-fzf-score)
+  (setq fussy-filter-fn 'fussy-filter-default)
+  (setq fussy-use-cache t)
+  (setq fussy-compare-same-score-fn 'fussy-histlen->strlen<)
+  (fussy-setup)
+  (fussy-eglot-setup)
+  (fussy-company-setup))
 
 (use-package markdown-mode
     :ensure t)
