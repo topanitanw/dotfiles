@@ -298,6 +298,7 @@
 
 ;; =======================================================================
 ;; Zenburn
+;; objective: color theme
 ;; =======================================================================
 (use-package zenburn-theme
     :demand t
@@ -348,7 +349,8 @@
     (telephone-line-mode 1))
 
 ;; =======================================================================
-;; hl-todo highlight the keywords TODO FIXME HACK REVIEW NOTE DEPRECATED
+;; hl-todo
+;; objective: highlight the keywords TODO FIXME HACK REVIEW NOTE DEPRECATED
 ;; =======================================================================
 (use-package hl-todo
     :hook (prog-mode . hl-todo-mode)
@@ -362,6 +364,24 @@
              ("NOTE"       success bold italic)
              ("DEPRECATED" font-lock-doc-face bold))))
 
+;; =======================================================================
+;; highlight-indent-guides
+;; objective: provide the indentation guide
+;; =======================================================================
+(use-package highlight-indent-guides
+    :ensure t ; Ensures the package is installed from MELPA if not already present
+    :hook (prog-mode . highlight-indent-guides-mode) ; Activates the mode in programming buffers
+    :config
+    ;; Customization options for highlight-indent-guides
+    (setq highlight-indent-guides-method 'character) ; Use characters for guides (e.g., '│')
+    (setq highlight-indent-guides-character ?│) ; Specify the character to use
+    (setq highlight-indent-guides-responsive 'top) ; Highlight guides based on the top-level indentation
+    ;; Further customization of faces for visual appearance
+    (custom-set-faces
+        '(highlight-indent-guides-face ((t (:foreground "dark grey"))))
+        '(highlight-indent-guides-current-face ((t (:foreground "red")))))
+
+    )
 ;; =======================================================================
 ;; evil
 ;; objective: emulate vim keybindings
@@ -936,6 +956,7 @@
 
 (use-package markdown-mode
     :ensure t)
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
