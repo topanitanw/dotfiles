@@ -70,6 +70,9 @@
 (when (file-exists-p custom-file)
     (load custom-file))
 
+;; enable the code folding with the hide and show mode 
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+
 ;; we can use either one of the two to check the os
 ;; (when (string-equal system-type "darwin")
 (when (eq system-type 'darwin) ;; mac specific settings
@@ -162,7 +165,7 @@
     (c-set-offset 'arglist-intro '+)
     ;; the closing brace of the function argument
     ;; void
-  ;;;veryLongFunctionName(
+    ;; veryLongFunctionName(
     ;;     |void* arg1, <--- arglist-intro is at the | symbol
     ;;     void* arg2,
     ;; |); <--- arglist-close is at the | symbol.
@@ -299,6 +302,7 @@
 ;; =======================================================================
 ;; Zenburn
 ;; objective: color theme
+;; theme: Zenburn 
 ;; =======================================================================
 (use-package zenburn-theme
     :demand t
@@ -321,6 +325,9 @@
     ;; (set-face-background hl-line-face "gray13") ;; SeaGreen4 gray13
     )
 
+;; =======================================================================
+;; mode-line: telephone-line 
+;; =======================================================================
 (use-package telephone-line
     :if (>= emacs-major-version 25)
     :demand t
@@ -377,11 +384,18 @@
     (setq highlight-indent-guides-character ?│) ; Specify the character to use
     (setq highlight-indent-guides-responsive 'top) ; Highlight guides based on the top-level indentation
     ;; Further customization of faces for visual appearance
-    (custom-set-faces
-        '(highlight-indent-guides-face ((t (:foreground "dark grey"))))
-        '(highlight-indent-guides-current-face ((t (:foreground "red")))))
+    ;; (custom-set-faces
+    ;;     '(highlight-indent-guides-face ((t (:foreground "white"))))
+    ;;     '(highlight-indent-guides-current-face ((t (:foreground "red")))))
 
+    (setq highlight-indent-guides-auto-enabled nil)
+    (set-face-background 'highlight-indent-guides-odd-face "black")
+    (set-face-background 'highlight-indent-guides-even-face "black")
+    (set-face-foreground 'highlight-indent-guides-character-face "gray")
+
+    (setq highlight-indent-guides-auto-character-face-perc 5)
     )
+
 ;; =======================================================================
 ;; evil
 ;; objective: emulate vim keybindings
@@ -762,7 +776,6 @@
 ;; objective: enable a new UI for the auto-complete
 ;; =======================================================================
 ;; issue: the output of the corfu has a suffix garbage such as "=", "_"
-
 (use-package corfu
     :disabled
     :ensure t
@@ -853,8 +866,10 @@
     (add-hook 'kb/themes-hooks #'(lambda () (interactive) (kind-icon-reset-cache)))
     )
 
-
-;; it seems that corfu completion list is better.
+;; =======================================================================
+;; company
+;; objective: enable the autocompletion
+;; =======================================================================
 (use-package company
 ;    :defer 8
     :bind
@@ -906,14 +921,16 @@
 (use-package company-box
     :after company
     :diminish
-    :hook (company-mode . company-box-mode))
+    :hook (company-mode . company-box-mode)
+    )
 
 (use-package company-lsp
     :after company
     :diminish
     :demand t
     :ensure t
-    :commands company-lsp)
+    :commands company-lsp
+    )
 
 (use-package company-quickhelp
     :after company
@@ -921,7 +938,8 @@
     :demand t
     :ensure t
     :config
-    (company-quickhelp-mode))
+    (company-quickhelp-mode)
+    )
 
 (use-package company-flx
     :after company
@@ -929,7 +947,7 @@
     :ensure t
     :config
     (company-flx-mode +1)
-)
+    )
 
 ;; =======================================================================
 ;; fussy
@@ -954,8 +972,85 @@
   (fussy-eglot-setup)
   (fussy-company-setup))
 
+;; =======================================================================
+;; markdown mode
+;; objective: enable the markdown mode to read and render 
+;; =======================================================================
 (use-package markdown-mode
     :ensure t)
+
+
+;;; org
+(use-package org
+    :defer 10
+    :bind
+    (
+        ("C-c a" . org-agenda)
+        ("C-c SPC" . org-table-blank-field)
+    )
+
+    :mode
+    (("\\.org\\'" . org-mode) ;; redundant, emacs has this by default.
+        ("\\.txt\\'" . org-mode))
+
+    :config
+    ;; hide the structural markers in the org-mode
+    (setq org-hide-emphasis-markers t)
+    ;; Display emphasized text as you would in a WYSIWYG editor.
+    (setq org-fontify-emphasized-text t)
+    ;; add more work flow
+    (setq org-todo-keywords
+        '((sequence "TODO(t)" "DOING(i)" "HOLD(h@)" "WAITING(w@/!)" "|" "CANCELED(c@)" "DONE(d@/!)")))
+    ;; set the source file to create an agenda
+    ;; (when window-system
+    ;;   (setq org-agenda-files
+    ;;         (list
+    ;;          "e:/Dropbox/todolist/mytodolist.org"
+    ;;          "e:/Dropbox/todolist/today_plan.org")))
+    ;; turn on auto fill mode to avoid pressing M-q too often
+    ;; set the amount of whitespaces between a headline and its tag
+    ;; -70 comes from the width of ~70 characters per line. Thus,
+    ;; tags willl be shown up at the end of the headline's line
+    (setq org-tags-column -70)
+    ;; let me determine the image width
+    (setq org-image-actual-width nil)
+    ;; highlight syntax in the code block
+    (setq org-src-fontify-natively t)
+    ;; keep track of when a certain TODO item was finished
+    (setq org-log-done 'time)
+    (setq org-startup-folded 'nofold)
+    (setq org-startup-indented t)
+    (setq org-startup-with-inline-images t)
+    (setq org-startup-truncated t)
+    (setq org-cycle-emulate-tab t)
+    ;; set the archive file org-file.s_archieve
+    (setq org-archive-location "%s_archive::")
+    (setq org-adapt-indentation nil)
+    ;; (require 'ob-sh)
+    ;; (org-babel-do-load-languages 'org-babel-do-load-languages
+    ;;                              '((sh . t)))
+    ;; customize the todo keyword faces
+    ;; (setq org-todo-keyword-faces
+    ;;       '(("TODO" . (:foreground "green" :weight bold))
+    ;;         ("NEXT" :foreground "blue" :weight bold)
+    ;;         ("WAITING" :foreground "orange" :weight bold)
+    ;;         ("HOLD" :foreground "magenta" :weight bold)
+    ;;         ("CANCELLED" :foreground "forest green" :weight bold)))
+
+    ;; make sure that the exported source code in html has the same
+    ;; indentation as the one in the org file
+    (setq org-src-preserve-indentation t)
+    (setq org-edit-src-content-indentation 0)
+    (setq org-startup-with-inline-images t)
+    (setq org-src-preserve-indentation nil)
+    ;; we build a template to create a source code block
+    ;; <s|
+    (require 'org-tempo)
+
+    (org-babel-do-load-languages
+        'org-babel-load-languages
+        '((python . t)))
+    )
 
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
