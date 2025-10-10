@@ -1052,6 +1052,38 @@
         '((python . t)))
     )
 
+(use-package lsp-mode
+    :init
+    ;; Set up lsp-mode to be deferred, meaning it loads only when needed
+    (setq lsp-enable-text-document-sync-on-save nil) ; or t, depending on preference
+
+    :commands lsp
+
+    :config
+    ;; Global settings for lsp-mode
+    (lsp-mode 1)
+    ;; Bind common lsp commands to a prefix key
+    ;; (define-key lsp-mode-map (kbd "C-c l") 'lsp-command-map)
+    (add-hook 'python-mode-hook #'lsp-deferred)
+    (add-hook 'js-mode-hook #'lsp-deferred)
+    (add-hook 'typescript-mode-hook #'lsp-deferred)
+    (add-hook 'sh-mode-hook #'lsp-deferred)
+    )
+
+(use-package company-lsp
+    :after lsp-mode
+    :config
+    (setq company-lsp-async t) ; Enable asynchronous completion
+    :hook (lsp-mode . company-mode)) ; Enable company-mode in lsp-mode buffers
+
+(use-package lsp-ui
+    :after lsp-mode
+    :config
+    (setq lsp-ui-doc-enable t
+        lsp-ui-sideline-enable t
+        lsp-ui-peek-enable t)
+    :hook (lsp-mode . lsp-ui-mode))
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
