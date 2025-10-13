@@ -637,6 +637,7 @@ kernel."
   (add-hook 'prog-mode-hook #'whitespace-mode)
   (add-hook 'before-save-hook 'whitespace-cleanup)
   )
+
 ;; =======================================================================
 ;; Beacon Mode
 ;; =======================================================================

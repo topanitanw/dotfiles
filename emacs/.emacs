@@ -28,10 +28,6 @@
         mode-sym
         ""))
 
-;; enable the whitespace mode to visualize various types of whitespace characters
-(global-whitespace-mode 1)
-(setq whitespace-style '(trailing tabs newline tab-mark newline-mark))
-
 ;; Change "yes or no" to "y or n"
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -77,7 +73,7 @@
 (when (file-exists-p custom-file)
     (load custom-file))
 
-;; enable the code folding with the hide and show mode 
+;; enable the code folding with the hide and show mode
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
 ;; we can use either one of the two to check the os
@@ -310,7 +306,7 @@
 ;; =======================================================================
 ;; Zenburn
 ;; objective: color theme
-;; theme: Zenburn 
+;; theme: Zenburn
 ;; =======================================================================
 (use-package zenburn-theme
     :demand t
@@ -334,7 +330,7 @@
     )
 
 ;; =======================================================================
-;; mode-line: telephone-line 
+;; mode-line: telephone-line
 ;; =======================================================================
 (use-package telephone-line
     :if (>= emacs-major-version 25)
@@ -362,6 +358,21 @@
              (evil   . (telephone-line-airline-position-segment))))
     (telephone-line-evil-config)
     (telephone-line-mode 1))
+
+;; highlight extra spaces and tabs
+(use-package whitespace
+    :demand t
+    :delight '(:eval (if mine-debug-show-modes-in-modeline
+                         whitespace-mode
+                         ""))
+    :config
+    ;; highlight the only part of the text longer than 80 characters on a line0000000000000000000
+    ;; highlight the trailing whitespaces
+    (setq-default whitespace-line-column 80)
+    (setq whitespace-style '(face tabs tab-mark lines-tail trailing))
+    (add-hook 'prog-mode-hook #'whitespace-mode)
+    (add-hook 'before-save-hook 'whitespace-cleanup)
+    )
 
 ;; =======================================================================
 ;; hl-todo
@@ -481,7 +492,7 @@
     :custom
     (evil-collection-setup-minibuffer t)
 
-    :config 
+    :config
     (setq evil-want-keybinding nil)
 
     :init
@@ -624,7 +635,7 @@
 (use-package ace-window
     :demand t
     :bind (("C-x o" . ace-window))
-    :init 
+    :init
     (when (featurep 'evil-leader)
         (evil-leader/set-key "w" 'ace-window))
     :config
@@ -993,7 +1004,7 @@
 
 ;; =======================================================================
 ;; markdown mode
-;; objective: enable the markdown mode to read and render 
+;; objective: enable the markdown mode to read and render
 ;; =======================================================================
 (use-package markdown-mode
     :ensure t)
@@ -1102,6 +1113,7 @@
 ;;         lsp-ui-sideline-enable t
 ;;         lsp-ui-peek-enable t)
 ;;     :hook (lsp-mode . lsp-ui-mode))
+
 (use-package exec-path-from-shell
     :ensure t
     :if (memq window-system '(mac ns x))
