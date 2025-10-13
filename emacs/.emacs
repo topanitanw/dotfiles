@@ -399,7 +399,7 @@
     (setq highlight-indent-guides-auto-enabled nil)
     (set-face-background 'highlight-indent-guides-odd-face "black")
     (set-face-background 'highlight-indent-guides-even-face "black")
-    (set-face-foreground 'highlight-indent-guides-character-face "gray")
+    (set-face-foreground 'highlight-indent-guides-character-face "dim gray")
 
     (setq highlight-indent-guides-auto-character-face-perc 5)
     )
