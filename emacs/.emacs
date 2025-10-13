@@ -7,8 +7,11 @@
 ;;   https://github.com/emacs-tw/awesome-emacs
 ;; ----------------------------------------------------------------------
 ;; basic setup
-(when (<= 27 emacs-major-version)
-    (setq package-enable-at-startup nil))
+;; (when (<= 27 emacs-major-version)
+;;     (setq package-enable-at-startup nil)
+;;     )
+
+(setq package-enable-at-startup nil)
 
 ;; load a customized machine specific file
 (when (file-exists-p "~/.emacs-init-machine.el")
@@ -24,6 +27,10 @@
     (if mine-debug-show-modes-in-modeline
         mode-sym
         ""))
+
+;; enable the whitespace mode to visualize various types of whitespace characters
+(global-whitespace-mode 1)
+(setq whitespace-style '(trailing tabs newline tab-mark newline-mark))
 
 ;; Change "yes or no" to "y or n"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -243,6 +250,7 @@
 (defvar mine-recentf-directory-path
     (file-name-concat mine-backup-directory-path mine-recentf-directory-name))
 (setq recentf-save-file mine-recentf-directory-path)
+(setq recentf-max-saved-items 300)
 
 ;; bookmark
 ;; http://xahlee.info/emacs/emacs/bookmark.html
@@ -405,6 +413,7 @@
     ;; :disabled
     :init
     (setq evil-want-abbrev-expand-on-insert-exit nil)
+    (setq evil-want-keybinding nil)
     (evil-mode 1)
 
     :config
@@ -468,6 +477,16 @@
     ;; (rename-minor-mode "evil-escape" evil-escape-mode "jk")
     )
 
+(use-package evil-collection
+    :custom
+    (evil-collection-setup-minibuffer t)
+
+    :config 
+    (setq evil-want-keybinding nil)
+
+    :init
+    (evil-collection-init)
+    )
 ;; =======================================================================
 ;; vertico
 ;; objective: a highly customizable minibuffer extension
@@ -881,7 +900,7 @@
     ((racket-mode . company-mode)
         (racket-repl-mode . company-mode))
     :config
-    (setq lsp-completion-provider :capf)
+    ;; (setq lsp-completion-provider :capf)
     ;; decrease delay before autocompletion popup shows
     (setq company-idle-delay 0.2
         ;; remove annoying blinking
@@ -924,13 +943,13 @@
     :hook (company-mode . company-box-mode)
     )
 
-(use-package company-lsp
-    :after company
-    :diminish
-    :demand t
-    :ensure t
-    :commands company-lsp
-    )
+;; (use-package company-lsp
+;;     :after company
+;;     :diminish
+;;     :demand t
+;;     :ensure t
+;;     :commands company-lsp
+;;     )
 
 (use-package company-quickhelp
     :after company
@@ -1052,38 +1071,49 @@
         '((python . t)))
     )
 
-(use-package lsp-mode
-    :init
-    ;; Set up lsp-mode to be deferred, meaning it loads only when needed
-    (setq lsp-enable-text-document-sync-on-save nil) ; or t, depending on preference
+;; (use-package lsp-mode
+;;     :init
+;;     ;; Set up lsp-mode to be deferred, meaning it loads only when needed
+;;     (setq lsp-enable-text-document-sync-on-save nil) ; or t, depending on preference
 
-    :commands lsp
+;;     :commands lsp
+
+;;     :config
+;;     ;; Global settings for lsp-mode
+;;     (lsp-mode 1)
+;;     ;; Bind common lsp commands to a prefix key
+;;     ;; (define-key lsp-mode-map (kbd "C-c l") 'lsp-command-map)
+;;     (add-hook 'python-mode-hook #'lsp-deferred)
+;;     (add-hook 'js-mode-hook #'lsp-deferred)
+;;     (add-hook 'typescript-mode-hook #'lsp-deferred)
+;;     (add-hook 'sh-mode-hook #'lsp-deferred)
+;;     )
+
+;; (use-package company-lsp
+;;     :after lsp-mode
+;;     :config
+;;     (setq company-lsp-async t) ; Enable asynchronous completion
+;;     :hook (lsp-mode . company-mode)) ; Enable company-mode in lsp-mode buffers
+
+;; (use-package lsp-ui
+;;     :after lsp-mode
+;;     :config
+;;     (setq lsp-ui-doc-enable t
+;;         lsp-ui-sideline-enable t
+;;         lsp-ui-peek-enable t)
+;;     :hook (lsp-mode . lsp-ui-mode))
+(use-package exec-path-from-shell
+    :ensure t
+    :if (memq window-system '(mac ns x))
+    :config
+    (exec-path-from-shell-initialize))
+
+(use-package flycheck
+    :ensure t
 
     :config
-    ;; Global settings for lsp-mode
-    (lsp-mode 1)
-    ;; Bind common lsp commands to a prefix key
-    ;; (define-key lsp-mode-map (kbd "C-c l") 'lsp-command-map)
-    (add-hook 'python-mode-hook #'lsp-deferred)
-    (add-hook 'js-mode-hook #'lsp-deferred)
-    (add-hook 'typescript-mode-hook #'lsp-deferred)
-    (add-hook 'sh-mode-hook #'lsp-deferred)
+    (add-hook 'after-init-hook #'global-flycheck-mode)
     )
-
-(use-package company-lsp
-    :after lsp-mode
-    :config
-    (setq company-lsp-async t) ; Enable asynchronous completion
-    :hook (lsp-mode . company-mode)) ; Enable company-mode in lsp-mode buffers
-
-(use-package lsp-ui
-    :after lsp-mode
-    :config
-    (setq lsp-ui-doc-enable t
-        lsp-ui-sideline-enable t
-        lsp-ui-peek-enable t)
-    :hook (lsp-mode . lsp-ui-mode))
-
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
