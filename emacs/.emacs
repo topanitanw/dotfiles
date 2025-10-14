@@ -363,12 +363,16 @@
 
 ;; highlight extra spaces and tabs
 (use-package whitespace
-    :demand t
+    :ensure t
     :delight '(:eval (if mine-debug-show-modes-in-modeline
                          whitespace-mode
                          ""))
+    :init
+    (global-whitespace-mode 1)
+
     :config
-    ;; highlight the only part of the text longer than 80 characters on a line0000000000000000000
+
+    ;; highlight the only part of the text longer than 80 characters on a line 00000
     ;; highlight the trailing whitespaces
     (setq-default whitespace-line-column 80)
     (setq whitespace-style '(face tabs tab-mark lines-tail trailing))
