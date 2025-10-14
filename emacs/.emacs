@@ -18,7 +18,7 @@
     (load-file "~/.emacs-init-machine.el"))
 
 (defvar mine-debug-show-modes-in-modeline nil
-    "show the mode symbol in the mode line")
+    "show the mode symbol in the mode line.")
 
 (defvar mine-space-tap-offset 4
     "the number of spaces per tap")
@@ -142,6 +142,8 @@
             (format "%s/%s/%s" (getenv "HOME") "obsidian_vault" "panitan_notes")
         )
         "The path of the obsidian notes")
+
+    (setq exec-path (append exec-path '("/opt/homebrew/bin" "/opt/homebrew/sbin")))
     )
 
 (defun mine-coding-style ()
@@ -223,7 +225,7 @@
 ;; There are two solutions to solve this problem.
 ;; 1. call this function
 (defun remove-control-M ()
-    "Remove ^M at end of line in the whole buffer. from Steve"
+    "Remove ^M at end of line in the whole buffer from Steve."
     (interactive)
     (save-match-data
         (save-excursion
@@ -1122,9 +1124,12 @@
 
 (use-package flycheck
     :ensure t
+    :init
+    (global-flycheck-mode)
 
     :config
     (add-hook 'after-init-hook #'global-flycheck-mode)
+
     )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
@@ -1181,3 +1186,4 @@
 ;; - https://github.com/emacs-exordium/exordium
 ;; - https://tuhdo.github.io/c-ide.html
 ;; - https://emacs-lsp.github.io/lsp-mode/tutorials/CPP-guide/
+;; - https://justinbarclay.ca/posts/from-zero-to-ide-with-emacs-and-lsp/
