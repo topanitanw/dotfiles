@@ -262,7 +262,7 @@
 ;; note that for emacs version before 27, this straight might not work.
 (setq package-archives
     '(("gnu" . "http://elpa.gnu.org/packages/")
-         ("melpa" . "http://melpa.org/packages/")))
+      ("melpa" . "http://melpa.org/packages/")))
 (defvar bootstrap-version)
 (let ((bootstrap-file (expand-file-name "straight/repos/straight.el/bootstrap.el"
                           (or (bound-and-true-p straight-base-dir)
@@ -383,6 +383,7 @@
     (add-hook 'prog-mode-hook #'whitespace-mode)
     (add-hook 'before-save-hook 'whitespace-cleanup)
     )
+
 ;; =======================================================================
 ;; hl-todo
 ;; objective: highlight the keywords TODO FIXME HACK REVIEW NOTE DEPRECATED
@@ -1139,6 +1140,20 @@
 
     )
 
+(use-package evil-owl
+    :ensure t
+    :demand t
+    :diminish ""
+    :config
+    (setq evil-owl-idle-delay 0.3)
+    (setq evil-owl-max-string-length 500)
+    (add-to-list 'display-buffer-alist
+        '("*evil-owl*"
+             (display-buffer-in-side-window)
+             (side . bottom)
+             (window-height . 20)))
+    (evil-owl-mode)
+    )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
