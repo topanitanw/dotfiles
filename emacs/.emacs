@@ -365,6 +365,7 @@
     (telephone-line-evil-config)
     (telephone-line-mode 1))
 
+
 ;; highlight extra spaces and tabs
 (use-package whitespace
     :ensure t
@@ -500,6 +501,7 @@
 
 (use-package evil-collection
     :custom
+    ;; use evil mode even when you edit text in the minibuffer.
     (evil-collection-setup-minibuffer t)
 
     :config
