@@ -73,9 +73,6 @@
 (when (file-exists-p custom-file)
     (load custom-file))
 
-;; enable the code folding with the hide and show mode
-(add-hook 'prog-mode-hook #'hs-minor-mode)
-
 ;; we can use either one of the two to check the os
 ;; (when (string-equal system-type "darwin")
 (when (eq system-type 'darwin) ;; mac specific settings
@@ -407,6 +404,7 @@
 ;; =======================================================================
 (use-package highlight-indent-guides
     :ensure t ; Ensures the package is installed from MELPA if not already present
+    :diminish ""
     :hook (prog-mode . highlight-indent-guides-mode) ; Activates the mode in programming buffers
     :config
     ;; Customization options for highlight-indent-guides
@@ -476,6 +474,7 @@
     :config
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>")
+    (evil-leader/set-key "ib" 'ibuffer)
     ;; (evil-leader/set-key "l" 'avy-goto-line)
     ;; (evil-leader/set-key "c" 'avy-goto-char-2)
     )
@@ -520,6 +519,8 @@
     :bind (:map vertico-map
               ("C-j" . vertico-next)         ; Alternative next binding
               ("C-k" . vertico-previous)     ; Alternative previous binding
+              ("M-<backspace>" . vertico-directory-delete-word)     ; Alternative previous binding
+              ("M-DEL" . vertico-directory-delete-word)     ; Alternative previous binding
     )
     :custom
     ;; Enable cycling for vertico-next/previous
@@ -663,6 +664,7 @@
 (use-package which-key
     :ensure t
     :demand t
+    :diminish ""
     :config
     (which-key-mode)
     (which-key-setup-side-window-bottom)
@@ -1156,6 +1158,36 @@
              (window-height . 20)))
     (evil-owl-mode)
     )
+
+(use-package hideshow
+    :ensure nil ; build-in
+    :diminish ""
+    :hook (prog-mode . hs-minor-mode) ; Enable hs-minor-mode for all programming modes
+    ;; Or for specific modes:
+    ;; :hook ((emacs-lisp-mode c-mode python-mode) . hs-minor-mode)
+    :config
+    ;; Optional: Customize default behavior
+    (setq hs-hide-comments-when-folding t) ; Hide comments when folding
+    (setq hs-isearch-open-block t) ; Open folded blocks during isearch
+    (diminish 'hs-minor-mode "")
+    )
+
+;; force ediff control panel to open from the minibuffer,
+;; not from a separate window
+(use-package ediff
+    :ensure nil
+    :init
+    (setq ediff-split-window-function 'split-window-horizontally
+        ediff-window-setup-function 'ediff-setup-windows-plain
+        )
+    )
+
+;; open a ibuffer control panel from the minibuffer
+;; reference: https://olddeuteronomy.github.io/post/emacs-ibuffer-config/
+(use-package casual
+    :ensure t
+    )
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
