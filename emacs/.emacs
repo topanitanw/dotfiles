@@ -103,8 +103,7 @@
     (global-set-key (kbd "C-c x") 'pbcut)
     ;; sets fn-delete to be right-delete
     (global-set-key [kp-delete] 'delete-char)
-    ;; set the ispell path to the emacs for mac machines
-    (setq ispell-program-name (executable-find "ispell"))
+
     ;; set the alt key to be the option key
     (setq mac-option-modifier 'meta)
     (setq mac-command-modifier 'alt)
@@ -125,9 +124,6 @@
                            ":"
                            (getenv "PATH"))))
 
-    (when (not (executable-find "node"))
-        (push "/opt/homebrew/bin" exec-path))
-
     ;; we have to check if the file-name-concat is bound since this function is
     ;; introduced in emacs 27
     (defvar mine-obsidian-notes-path
@@ -141,6 +137,9 @@
         "The path of the obsidian notes")
 
     (setq exec-path (append exec-path '("/opt/homebrew/bin" "/opt/homebrew/sbin")))
+
+    ;; set the ispell path to the emacs for mac machines
+    (setq ispell-program-name (executable-find "ispell"))
     )
 
 (defun mine-coding-style ()
@@ -519,19 +518,23 @@
     :bind (:map vertico-map
               ("C-j" . vertico-next)         ; Alternative next binding
               ("C-k" . vertico-previous)     ; Alternative previous binding
-              ("M-<backspace>" . vertico-directory-delete-word)     ; Alternative previous binding
-              ("M-DEL" . vertico-directory-delete-word)     ; Alternative previous binding
+              ;; delete the uppoer folder in the full path
+              ("M-<backspace>" . vertico-directory-delete-word)
+              ;; delete the uppoer folder in the full path
+              ("M-DEL" . vertico-directory-delete-word)
     )
     :custom
     ;; Enable cycling for vertico-next/previous
     (vertico-cycle t)
 
     :init
-    (vertico-mode +1))
+    (vertico-mode +1)
+    )
 
 ;; =======================================================================
 ;; posfram
-;; objective: provide support for emacs to create a minibuffer any where on the screen/emacs window
+;; objective: provide support for emacs to create a minibuffer any where on
+;;     the screen/emacs window
 ;; =======================================================================
 (use-package posframe
     :ensure t
@@ -547,7 +550,8 @@
     :ensure nil
     :demand nil
     :init
-    (vertico-posframe-mode))
+    (vertico-posframe-mode)
+    )
 
 ;; =======================================================================
 ;; orderless
@@ -614,7 +618,8 @@
             "fr" #'consult-recent-file
             ;; find the definition of variables/functions
             "fd" #'consult-imenu-multi
-            ;; "fg" #'consult-ripgrep-single-file
+            ;; search for a keyword in a file with rg
+            "fg" #'consult-ripgrep-single-file
             ;; search for a keyword in a file
             "fl" #'consult-line
             ;; search for a keyword from multiple buffers
@@ -1000,21 +1005,21 @@
 ;;     to provide intelligent scoring and sorting.
 ;; =======================================================================
 (use-package fzf-native
-  :straight (fzf-native :type git :host github :repo "dangduc/fzf-native" :files (:defaults "bin"))
-  :config
-  (fzf-native-load-dyn)
-  (setq fussy-score-fn 'fussy-fzf-native-score))
+    :straight (fzf-native :type git :host github :repo "dangduc/fzf-native" :files (:defaults "bin"))
+    :config
+    (fzf-native-load-dyn)
+    (setq fussy-score-fn 'fussy-fzf-native-score))
 
 (use-package fussy
-  :straight (fussy :type git :host github :repo "jojojames/fussy")
-  :config
-  (setq fussy-score-ALL-fn 'fussy-fzf-score)
-  (setq fussy-filter-fn 'fussy-filter-default)
-  (setq fussy-use-cache t)
-  (setq fussy-compare-same-score-fn 'fussy-histlen->strlen<)
-  (fussy-setup)
-  (fussy-eglot-setup)
-  (fussy-company-setup))
+    :straight (fussy :type git :host github :repo "jojojames/fussy")
+    :config
+    (setq fussy-score-ALL-fn 'fussy-fzf-score)
+    (setq fussy-filter-fn 'fussy-filter-default)
+    (setq fussy-use-cache t)
+    (setq fussy-compare-same-score-fn 'fussy-histlen->strlen<)
+    (fussy-setup)
+    (fussy-eglot-setup)
+    (fussy-company-setup))
 
 ;; =======================================================================
 ;; markdown mode
@@ -1186,7 +1191,14 @@
 ;; reference: https://olddeuteronomy.github.io/post/emacs-ibuffer-config/
 (use-package casual
     :ensure t
+    :config
+    (evil-leader/set-key
+        "it" #'casual-ibuffer-tmenu
+        "if" #'casual-ibuffer-filter-tmenu
+        "is" #'casual-ibuffer-sortby-tmenu
     )
+    )
+
 
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
