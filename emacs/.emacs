@@ -626,7 +626,7 @@
             "fm" #'consult-line-multi
             ;; display the result of the ripgrip
             "rg" #'consult-ripgrep
-           ;; open a list of bookmark
+            ;; open a list of bookmark
             "bl" #'consult-bookmark
             )
         )
@@ -1198,7 +1198,6 @@
         "is" #'casual-ibuffer-sortby-tmenu
     )
     )
-
 
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
