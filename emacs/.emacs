@@ -141,7 +141,6 @@
     ;; set the ispell path to the emacs for mac machines
     (setq ispell-program-name (executable-find "ispell"))
     )
-
 (defun mine-coding-style ()
     "My coding style."
     (interactive)
@@ -239,6 +238,9 @@
 ;;----------------------------------------------------------------------
 ;; file storage
 (defvar mine-backup-directory-path "~/.emacs.data")
+;; (setq desktop-path mine-backup-directory-path)
+;; (desktop-save-mode 1)
+
 (make-directory mine-backup-directory-path t)
 (defvar mine-recentf-directory-name "recentf")
 (defvar mine-recentf-directory-path
@@ -278,6 +280,20 @@
 
 (straight-use-package 'use-package)
 
+;; (use-package package-name
+;;     :init
+;;     ;; Code to run *before* the package is loaded
+;;     :config
+;;     ;; Code to run *after* the package is loaded
+;;     :bind
+;;     ;; Keybindings specific to this package
+;;     :hook
+;;     ;; Hooks to add for this package
+;;     :custom
+;;     ;; Customizations for variables
+;;     :ensure t ; Install the package if not already installed (optional)
+;;     )
+
 ;; use-package-always-ensure variable is related to the package,
 ;; so you are not supposed to use it.
 ;; :ensure as well.
@@ -286,6 +302,10 @@
     use-package-always-defer t
     use-package-expand-minimally t)
 
+;; =======================================================================
+;; diminish
+;; objective: remove the name of the minor mode from the mode line
+;; =======================================================================
 (use-package diminish
     :demand t
     :config
@@ -303,7 +323,22 @@
     ;; (rename-minor-mode "company" company-mode "CMP")
     )
 
+;; =======================================================================
+;; delight
+;; objective: easily customise how major and minor modes appear in the ModeLine.
+;; =======================================================================
 (use-package delight)
+
+;; =======================================================================
+;; exec-path-from-shell
+;; objective: ensure that even though I start emacs from gui, it sill
+;;    has the same execution path from the shell.
+;; =======================================================================
+(use-package exec-path-from-shell
+    :ensure t
+    :if (memq window-system '(mac ns x))
+    :config
+    (exec-path-from-shell-initialize))
 
 ;; =======================================================================
 ;; Zenburn
@@ -577,6 +612,7 @@
     ;; the mode gets enabled right away. Note that this forces loading the
     ;; package.
     (marginalia-mode 1)
+    (set-face-attribute 'marginalia-documentation nil :foreground "gray")
     )
 
 ;; =======================================================================
@@ -1029,8 +1065,12 @@
     :ensure t)
 
 
-;;; org
+;; =======================================================================
+;; org
+;; objective: org mode
+;; =======================================================================
 (use-package org
+    :ensure t
     :defer 10
     :bind
     (
@@ -1133,12 +1173,11 @@
 ;;         lsp-ui-peek-enable t)
 ;;     :hook (lsp-mode . lsp-ui-mode))
 
-(use-package exec-path-from-shell
-    :ensure t
-    :if (memq window-system '(mac ns x))
-    :config
-    (exec-path-from-shell-initialize))
 
+;; =======================================================================
+;; ediff
+;; objective: ediff
+;; =======================================================================
 (use-package flycheck
     :ensure t
     :init
@@ -1146,9 +1185,12 @@
 
     :config
     (add-hook 'after-init-hook #'global-flycheck-mode)
-
     )
 
+;; =======================================================================
+;; evil-owl
+;; objective: evil-owl
+;; =======================================================================
 (use-package evil-owl
     :ensure t
     :demand t
@@ -1164,10 +1206,15 @@
     (evil-owl-mode)
     )
 
+;; =======================================================================
+;; hideshow
+;; objective: hideshow
+;; =======================================================================
 (use-package hideshow
     :ensure nil ; build-in
     :diminish ""
-    :hook (prog-mode . hs-minor-mode) ; Enable hs-minor-mode for all programming modes
+    ;; Enable hs-minor-mode for all programming modes
+    :hook (prog-mode . hs-minor-mode)
     ;; Or for specific modes:
     ;; :hook ((emacs-lisp-mode c-mode python-mode) . hs-minor-mode)
     :config
@@ -1177,16 +1224,25 @@
     (diminish 'hs-minor-mode "")
     )
 
+;; =======================================================================
+;; ediff
+;; objective: ediff
+;; =======================================================================
 ;; force ediff control panel to open from the minibuffer,
 ;; not from a separate window
 (use-package ediff
     :ensure nil
     :init
+    ;; ensure that the help menu opens from the minibuffer
     (setq ediff-split-window-function 'split-window-horizontally
         ediff-window-setup-function 'ediff-setup-windows-plain
         )
     )
 
+;; =======================================================================
+;; casual
+;; objective: create a mini menu for other modes such as ibuffer.
+;; =======================================================================
 ;; open a ibuffer control panel from the minibuffer
 ;; reference: https://olddeuteronomy.github.io/post/emacs-ibuffer-config/
 (use-package casual
@@ -1199,6 +1255,23 @@
     )
     )
 
+;; =======================================================================
+;; persp-mode
+;; objective: create a workspace that works across all frames
+;; =======================================================================
+;; - use the persp-load-state-from-file, persp-load-from-file-by-names
+;;   to load the workspace from a saved file
+;; - use the persp-add-new to create a new workspace
+(use-package persp-mode
+    :ensure t
+    :config
+    (persp-mode 1)
+
+    ;; specify the location of the perspective file to save
+    (setq persp-save-dir (file-name-concat
+                             mine-backup-directory-path
+                             "perspectives"))
+    )
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
