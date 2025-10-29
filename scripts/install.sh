@@ -55,6 +55,7 @@ SHELLFILES_DIR="${DST_DIR}/.shell_files"
 mkdir -p "${SHELLFILES_DIR}"
 
 symlink bash/alias_command.sh "${SHELLFILES_DIR}"
+symlink bash/p8_functions.bash "${SHELLFILES_DIR}"
 
 symlink_force bash/bash_function.sh "${SHELLFILES_DIR}"
 
