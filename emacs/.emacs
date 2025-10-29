@@ -327,6 +327,20 @@
 ;; delight
 ;; objective: easily customise how major and minor modes appear in the ModeLine.
 ;; =======================================================================
+;;; https://elpa.gnu.org/packages/delight.html
+;;; (delight 'abbrev-mode " Abv" "abbrev")
+;;;
+;;; (delight '((abbrev-mode " Abv" "abbrev")
+;;;            (smart-tab-mode " \\t" "smart-tab")
+;;;            (eldoc-mode nil "eldoc")
+;;;            (rainbow-mode)
+;;;            (overwrite-mode " Ov" t)
+;;;            (emacs-lisp-mode "Elisp" :major)))
+;;;
+;;; The first argument is the mode symbol.
+;;;
+;;; The second argument is the replacement name to use in the mode line
+;;; (or nil to hide it).
 (use-package delight)
 
 ;; =======================================================================
