@@ -151,10 +151,10 @@ function symlink_force() {
 
 MY_VAR_PREFIX="pw_"
 function list_my_variables {
-    echo "Listing variables with prefix '$MY_VAR_PREFIX':";
+    echo "Listing variables with prefix '$MY_VAR_PREFIX':"
     # Use eval to properly expand the variable prefix
     for var in $(eval echo \${!${MY_VAR_PREFIX}@}); do
-        echo "$var=${!var}";
+        echo "$var=${!var}"
     done
     echo "---"
 }
