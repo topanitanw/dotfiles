@@ -1277,6 +1277,7 @@
 ;;   to load the workspace from a saved file
 ;; - use the persp-add-new to create a new workspace
 (use-package persp-mode
+    :disabled
     :ensure t
     :config
     (persp-mode 1)
@@ -1286,6 +1287,24 @@
                              mine-backup-directory-path
                              "perspectives"))
     )
+
+(use-package activities
+    :init
+    (activities-mode)
+    (activities-tabs-mode)
+    ;; Prevent `edebug' default bindings from interfering.
+    (setq edebug-inhibit-emacs-lisp-mode-bindings t)
+
+    :bind
+    (("C-x C-a C-n" . activities-new)
+        ("C-x C-a C-d" . activities-define)
+        ("C-x C-a C-a" . activities-resume)
+        ("C-x C-a C-s" . activities-suspend)
+        ("C-x C-a C-k" . activities-kill)
+        ("C-x C-a RET" . activities-switch)
+        ("C-x C-a b" . activities-switch-buffer)
+        ("C-x C-a g" . activities-revert)
+        ("C-x C-a l" . activities-list)))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

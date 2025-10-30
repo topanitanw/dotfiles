@@ -2,7 +2,7 @@
 
 # Function to reopen all currently opened Perforce files to a specific changelist
 # Usage: p8_reopen_to_cl <changelist_number>
-p8_reopen_to_cl() {
+function p8_reopen_to_cl() {
     local clno=$1
 
     # Check if changelist number is provided
@@ -67,7 +67,7 @@ p8_reopen_to_cl() {
 
 # Function to set P4ROOT environment variable from p4 info
 # Usage: p8_set_root
-p8_set_root() {
+function p8_set_root() {
     # Check if p4 is available
     if ! command -v p4 &> /dev/null; then
         echo "Error: p4 command not found"
@@ -102,7 +102,7 @@ p8_set_root() {
 
 # Function to set P4CLIENT environment variable from p4 info
 # Usage: p8_set_client
-p8_set_client() {
+function p8_set_client() {
     # Check if p4 is available
     if ! command -v p4 &> /dev/null; then
         echo "Error: p4 command not found"
@@ -137,7 +137,7 @@ p8_set_client() {
 
 # Function to set up both P4ROOT and P4CLIENT environment variables from p4 info
 # Usage: p8_setup_env
-p8_setup_env() {
+function p8_setup_env() {
     echo "Setting up P4 environment variables..."
 
     # Set P4ROOT
@@ -153,3 +153,69 @@ p8_setup_env() {
     return 0
 }
 
+# Function to output absolute paths to all opened files
+# Usage: p8_open_path
+function p8_open_path() {
+    # Check if p4 is available
+    if ! command -v p4 &> /dev/null; then
+        echo "Error: p4 command not found"
+        return 1
+    fi
+
+    # Get list of opened files with their depot paths
+    # p4 opened output format: //depot/path/file.txt#1 - edit change 12345 (text)
+    local opened_output=$(p4 opened 2>/dev/null)
+
+    # Check if p4 command was successful
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to get opened files from Perforce"
+        return 1
+    fi
+
+    # Check if there are any opened files
+    if [ -z "$opened_output" ]; then
+        echo "No files are currently opened"
+        return 0
+    fi
+
+    # Extract depot paths from p4 opened output (everything before the first #)
+    local depot_paths=$(echo "$opened_output" | cut -d "#" -f 1)
+
+    # Convert depot paths to absolute local paths using p4 where
+    while IFS= read -r depot_path; do
+        # If depot path is empty, continue to next iteration
+        if [ -z "$depot_path" ]; then
+            continue
+        fi
+
+        # Use p4 where to get the local absolute path
+        # p4 where output format: //depot/path/file.txt //client/path/file.txt /absolute/local/path/file.txt
+        local where_output=$(p4 where "$depot_path" 2>/dev/null)
+        local where_exit_code=$?
+
+        # If p4 where command failed (non-zero exit), terminate
+        if [ $where_exit_code -ne 0 ]; then
+            echo "Error: p4 where command failed for $depot_path (exit code: $where_exit_code)" >&2
+            return 1
+        fi
+
+        # If where output is empty, terminate
+        if [ -z "$where_output" ]; then
+            echo "Error: p4 where returned empty output for $depot_path" >&2
+            return 1
+        fi
+
+        # Extract the local path (third field in p4 where output)
+        local local_path=$(echo "$where_output" | awk '{print $3}')
+        # If local path extraction failed, continue to next iteration
+        if [ -z "$local_path" ]; then
+            echo "Warning: Could not extract local path for $depot_path, skipping" >&2
+            continue
+        fi
+
+        # Successfully extracted local path, output it
+        echo "$local_path"
+    done <<< "$depot_paths"
+
+    return 0
+}
