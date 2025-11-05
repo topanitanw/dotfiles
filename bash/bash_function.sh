@@ -158,3 +158,7 @@ function list_my_variables {
     done
     echo "---"
 }
+
+function hard_reboot {
+    sudo ipmitool chassis power cycle
+}
