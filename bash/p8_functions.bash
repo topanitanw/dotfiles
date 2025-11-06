@@ -236,8 +236,9 @@ function p8_status() {
     echo
 
     # Display P4 Info
+    echo "--------------------------------"
     echo "📋 P4 INFO:"
-    echo "----------"
+    echo "--------------------------------"
     local p4_info_output=$(p4 info 2>/dev/null)
     if [ $? -eq 0 ] && [ -n "$p4_info_output" ]; then
         echo "$p4_info_output"
@@ -248,8 +249,9 @@ function p8_status() {
     echo
 
     # Display P4 Environment Variables
+    echo "--------------------------------"
     echo "🌍 P4 ENVIRONMENT VARIABLES:"
-    echo "----------------------------"
+    echo "--------------------------------"
     echo "P4CONFIG = ${P4CONFIG:-<not set>}"
     echo "P4EDITOR = ${P4EDITOR:-<not set>}"
     echo "P4DIFF = ${P4DIFF:-<not set>}"
@@ -260,8 +262,9 @@ function p8_status() {
     echo
 
     # Display P4 Opened Files
+    echo "--------------------------------"
     echo "📂 OPENED FILES:"
-    echo "----------------"
+    echo "--------------------------------"
     local opened_output=$(p4 opened 2>/dev/null)
     if [ $? -eq 0 ]; then
         if [ -n "$opened_output" ]; then
@@ -279,6 +282,7 @@ function p8_status() {
     echo
 
     # Display Current Opened Changelist(s)
+    echo "--------------------------------"
     echo "📝 CURRENT OPENED CHANGELIST(s):"
     echo "--------------------------------"
     if [ -n "$opened_output" ]; then
@@ -310,9 +314,15 @@ function p8_status() {
         echo "No opened files to check for changelists"
     fi
 
+    echo "--------------------------------"
     echo "📝 PENDING CHANGELISTS:"
     echo "--------------------------------"
     p4 changes -u ${P4USER} -c ${P4CLIENT} -s pending
+
+    echo "--------------------------------"
+    echo "📝 SHELVED CHANGELISTS:"
+    echo "--------------------------------"
+    p4 changes -u ${P4USER} -c ${P4CLIENT} -s shelved 
 
     echo "=========================================="
     return 0
