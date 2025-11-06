@@ -219,3 +219,97 @@ function p8_open_path() {
 
     return 0
 }
+
+# Function to display comprehensive Perforce status information
+# Shows p4 info, p4 opened, P4 environment variables, and current opened changelist
+# Usage: p8_status
+function p8_status() {
+    # Check if p4 is available
+    if ! command -v p4 &> /dev/null; then
+        echo "Error: p4 command not found"
+        return 1
+    fi
+
+    echo "=========================================="
+    echo "           PERFORCE STATUS"
+    echo "=========================================="
+    echo
+
+    # Display P4 Info
+    echo "📋 P4 INFO:"
+    echo "----------"
+    local p4_info_output=$(p4 info 2>/dev/null)
+    if [ $? -eq 0 ] && [ -n "$p4_info_output" ]; then
+        echo "$p4_info_output"
+    else
+        echo "❌ Failed to get p4 info or no connection to Perforce server"
+        return 1
+    fi
+    echo
+
+    # Display P4 Environment Variables
+    echo "🌍 P4 ENVIRONMENT VARIABLES:"
+    echo "----------------------------"
+    echo "P4CONFIG = ${P4CONFIG:-<not set>}"
+    echo "P4EDITOR = ${P4EDITOR:-<not set>}"
+    echo "P4DIFF = ${P4DIFF:-<not set>}"
+    echo "P4ROOT = ${P4ROOT:-<not set>}"
+    echo "P4USER = ${P4USER:-<not set>}"
+    echo "P4CLIENT = ${P4CLIENT:-<not set>}"
+    echo "P4PORT = ${P4PORT:-<not set>}"
+    echo
+
+    # Display P4 Opened Files
+    echo "📂 OPENED FILES:"
+    echo "----------------"
+    local opened_output=$(p4 opened 2>/dev/null)
+    if [ $? -eq 0 ]; then
+        if [ -n "$opened_output" ]; then
+            echo "$opened_output"
+            echo
+            # Count opened files
+            local file_count=$(echo "$opened_output" | wc -l | tr -d ' ')
+            echo "Total opened files: $file_count"
+        else
+            echo "No files are currently opened"
+        fi
+    else
+        echo "❌ Failed to get opened files"
+    fi
+    echo
+
+    # Display Current Opened Changelist(s)
+    echo "📝 CURRENT OPENED CHANGELIST(s):"
+    echo "--------------------------------"
+    if [ -n "$opened_output" ]; then
+        # Extract unique changelist numbers from opened files
+        # Format: //depot/path#1 - edit change 12345 (text)
+        local changelists=$(echo "$opened_output" | grep -o 'change [0-9]*' | cut -d' ' -f2 | sort -u)
+        
+        if [ -n "$changelists" ]; then
+            while IFS= read -r cl; do
+                if [ -n "$cl" ]; then
+                    if [ "$cl" = "default" ]; then
+                        echo "🔄 Default changelist"
+                    else
+                        echo "🔢 Changelist: $cl"
+                        # Get changelist description
+                        local cl_desc=$(p4 describe -s "$cl" 2>/dev/null | head -n 10)
+                        if [ $? -eq 0 ] && [ -n "$cl_desc" ]; then
+                            echo "   Description:"
+                            echo "$cl_desc" | sed 's/^/   /'
+                        fi
+                    fi
+                    echo
+                fi
+            done <<< "$changelists"
+        else
+            echo "No changelist information found"
+        fi
+    else
+        echo "No opened files to check for changelists"
+    fi
+
+    echo "=========================================="
+    return 0
+}
