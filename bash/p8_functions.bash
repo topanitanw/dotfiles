@@ -310,6 +310,10 @@ function p8_status() {
         echo "No opened files to check for changelists"
     fi
 
+    echo "📝 PENDING CHANGELISTS:"
+    echo "--------------------------------"
+    p4 changes -u ${P4USER} -c ${P4CLIENT} -s pending
+
     echo "=========================================="
     return 0
 }
