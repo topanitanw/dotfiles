@@ -19,7 +19,8 @@ function p8_reopen_to_cl() {
     fi
 
     # Get list of opened files
-    local opened_files=$(p4 opened 2>/dev/null | cut -d "#" -f 1 | cut -d " " -f 1)
+    local opened_files;
+    opened_files=$(p4 opened 2>/dev/null | cut -d "#" -f 1 | cut -d " " -f 1)
 
     # Check if p4 command was successful
     if [ $? -ne 0 ]; then
@@ -34,13 +35,17 @@ function p8_reopen_to_cl() {
     fi
 
     # Count files
-    local file_count=$(echo "$opened_files" | wc -l)
+    local file_count;
+    file_count=$(echo "$opened_files" | wc -l)
+
     echo "Found $file_count opened file(s)"
     echo "Reopening files to changelist $clno..."
 
     # Reopen each file to the specified changelist
-    local success_count=0
-    local fail_count=0
+    local success_count;
+    local fail_count;
+    success_count=0
+    fail_count=0
 
     while IFS= read -r file; do
         if [ -n "$file" ]; then
@@ -75,7 +80,8 @@ function p8_set_root() {
     fi
 
     # Get p4 info output
-    local p8_info_output=$(p4 info 2>/dev/null)
+    local p8_info_output;
+    p8_info_output=$(p4 info 2>/dev/null)
 
     if [ $? -ne 0 ]; then
         echo "Error: Failed to get p4 info"
@@ -83,7 +89,8 @@ function p8_set_root() {
     fi
 
     # Extract Client root for P4ROOT
-    local client_root=$(echo "$p8_info_output" | grep "^Client root:" | cut -d ":" -f 2- | sed 's/^[[:space:]]*//')
+    local client_root;
+    client_root=$(echo "$p8_info_output" | grep "^Client root:" | cut -d ":" -f 2- | sed 's/^[[:space:]]*//')
 
     # Check if value was found
     if [ -z "$client_root" ]; then
@@ -110,7 +117,8 @@ function p8_set_client() {
     fi
 
     # Get p4 info output
-    local p8_info_output=$(p4 info 2>/dev/null)
+    local p8_info_output;
+    p8_info_output=$(p4 info 2>/dev/null)
 
     if [ $? -ne 0 ]; then
         echo "Error: Failed to get p4 info"
@@ -265,13 +273,15 @@ function p8_status() {
     echo "--------------------------------"
     echo "📂 OPENED FILES:"
     echo "--------------------------------"
-    local opened_output=$(p4 opened 2>/dev/null)
+    local opened_output;
+    opened_output=$(p4 opened 2>/dev/null)
     if [ $? -eq 0 ]; then
         if [ -n "$opened_output" ]; then
             echo "$opened_output"
             echo
             # Count opened files
-            local file_count=$(echo "$opened_output" | wc -l | tr -d ' ')
+            local file_count;
+            file_count=$(echo "$opened_output" | wc -l | tr -d ' ')
             echo "Total opened files: $file_count"
         else
             echo "No files are currently opened"
@@ -288,8 +298,9 @@ function p8_status() {
     if [ -n "$opened_output" ]; then
         # Extract unique changelist numbers from opened files
         # Format: //depot/path#1 - edit change 12345 (text)
-        local changelists=$(echo "$opened_output" | grep -o 'change [0-9]*' | cut -d' ' -f2 | sort -u)
-        
+        local changelists;
+        changelists=$(echo "$opened_output" | grep -o 'change [0-9]*' | cut -d' ' -f2 | sort -u)
+
         if [ -n "$changelists" ]; then
             while IFS= read -r cl; do
                 if [ -n "$cl" ]; then
@@ -318,11 +329,13 @@ function p8_status() {
     echo "📝 PENDING CHANGELISTS:"
     echo "--------------------------------"
     p4 changes -u ${P4USER} -c ${P4CLIENT} -s pending
+    echo
 
     echo "--------------------------------"
     echo "📝 SHELVED CHANGELISTS:"
     echo "--------------------------------"
-    p4 changes -u ${P4USER} -c ${P4CLIENT} -s shelved 
+    p4 changes -u ${P4USER} -c ${P4CLIENT} -s shelved
+    echo
 
     echo "=========================================="
     return 0
