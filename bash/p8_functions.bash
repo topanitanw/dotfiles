@@ -309,7 +309,8 @@ function p8_status() {
                     else
                         echo "🔢 Changelist: $cl"
                         # Get changelist description
-                        local cl_desc=$(p4 describe -s "$cl" 2>/dev/null | head -n 10)
+                        local cl_desc
+                        cl_desc=$(p4 describe -s "$cl" 2>/dev/null | head -n 10)
                         if [ $? -eq 0 ] && [ -n "$cl_desc" ]; then
                             echo "   Description:"
                             echo "$cl_desc" | sed 's/^/   /'
@@ -324,17 +325,18 @@ function p8_status() {
     else
         echo "No opened files to check for changelists"
     fi
+    echo
 
     echo "--------------------------------"
     echo "📝 PENDING CHANGELISTS:"
     echo "--------------------------------"
-    p4 changes -u ${P4USER} -c ${P4CLIENT} -s pending
+    p4 changes -u "${P4USER}" -c "${P4CLIENT}" -s pending
     echo
 
     echo "--------------------------------"
     echo "📝 SHELVED CHANGELISTS:"
     echo "--------------------------------"
-    p4 changes -u ${P4USER} -c ${P4CLIENT} -s shelved
+    p4 changes -u "${P4USER}" -c "${P4CLIENT}" -s shelved
     echo
 
     echo "=========================================="
