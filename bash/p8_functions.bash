@@ -342,3 +342,71 @@ function p8_status() {
     echo "=========================================="
     return 0
 }
+
+# Function to convert a Perforce depot path to absolute local filesystem path
+# Usage: p8_abs_path <depot_path>
+# Example: p8_abs_path "///sw/mods/rel/dcdiag/r8/contrib/fieldiag"
+function p8_abs_path() {
+    local depot_path="$1"
+
+    # Check if depot path argument is provided
+    if [ -z "$depot_path" ]; then
+        echo "Error: Depot path is required"
+        echo "Usage: p8_abs_path <depot_path>"
+        echo "Example: p8_abs_path \"///sw/mods/rel/dcdiag/r8/contrib/fieldiag\""
+        return 1
+    fi
+
+    # Check if p4 is available
+    if ! command -v p4 &> /dev/null; then
+        echo "Error: p4 command not found"
+        return 1
+    fi
+
+    # Normalize the depot path - ensure it starts with //
+    if [[ "$depot_path" =~ ^///.*$ ]]; then
+        # Convert triple slash to double slash (normalize depot path format)
+        depot_path="//${depot_path#///}"
+    elif [[ ! "$depot_path" =~ ^//.*$ ]]; then
+        # Add // prefix if not present
+        depot_path="//$depot_path"
+    fi
+
+    # Use p4 where to get the local absolute path
+    # p4 where output format: //depot/path //client/path /absolute/local/path
+    local where_output
+    where_output=$(p4 where "$depot_path" 2>/dev/null)
+    local where_exit_code=$?
+
+    # Check if p4 where command failed
+    if [ $where_exit_code -ne 0 ]; then
+        echo "Error: p4 where command failed for '$depot_path' (exit code: $where_exit_code)" >&2
+        echo "This could mean:"
+        echo "  - The depot path doesn't exist in your client view"
+        echo "  - You're not connected to the Perforce server"
+        echo "  - The path is not mapped in your workspace"
+        return 1
+    fi
+
+    # Check if where output is empty
+    if [ -z "$where_output" ]; then
+        echo "Error: p4 where returned empty output for '$depot_path'" >&2
+        echo "The depot path may not be mapped in your current client workspace"
+        return 1
+    fi
+
+    # Extract the local path (third field in p4 where output)
+    local local_path
+    local_path=$(echo "$where_output" | awk '{print $3}')
+    
+    # Validate that we successfully extracted a local path
+    if [ -z "$local_path" ]; then
+        echo "Error: Could not extract local path from p4 where output" >&2
+        echo "p4 where output was: $where_output" >&2
+        return 1
+    fi
+
+    # Output the absolute local path
+    echo "$local_path"
+    return 0
+}

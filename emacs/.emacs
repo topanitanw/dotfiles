@@ -1287,8 +1287,10 @@
                              mine-backup-directory-path
                              "perspectives"))
     )
-
+;; https://github.com/seudut/perspeen
 (use-package activities
+    :disabled
+    :ensure t
     :init
     (activities-mode)
     (activities-tabs-mode)
