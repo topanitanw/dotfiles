@@ -145,7 +145,7 @@ Plug 'kevinhwang91/nvim-ufo'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " we might need to change the vim-easymotion to hop.nvim
 " https://github.com/smoka7/hop.nvim
-" However, I still don't have time to do this at the moment. 
+" However, I still don't have time to do this at the moment.
 Plug 'easymotion/vim-easymotion'
 " - remove leap because it is similar to to the easymotion.
 " Plug 'ggandor/leap.nvim'
@@ -171,7 +171,7 @@ endif
 
 " Plug 'whonore/Coqtail'
 
-" To disable this copilot version permanently, run :Copilot signout 
+" To disable this copilot version permanently, run :Copilot signout
 " Plug 'github/copilot.vim'
 
 Plug 'neovim/nvim-lspconfig'
@@ -471,6 +471,13 @@ augroup END
 if has('nvim')
     autocmd TermOpen * set bufhidden=hide
 endif
+
+"" Alternatively, you can globally set conceallevel to 0 or 1 if you don't
+"" want concealing for any file types:
+set conceallevel=0
+"" If you prefer to always see the quotes, you can disable concealing for
+"" JSON files. Add the following to your .vimrc
+let g:vim_json_syntax_conceal = 0
 
 "----------------------------------------------------------------------
 " package related setup
