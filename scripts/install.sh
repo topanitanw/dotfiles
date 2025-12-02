@@ -2,7 +2,7 @@
 
 git_root=$(git rev-parse --show-toplevel 2>/dev/null)
 
-source $git_root/bash/bash_function.sh
+source $git_root/bash/bash_function.sh `pwd`/bash
 
 LABEL="[INSTALL]"
 DST_DIR="${HOME}"
