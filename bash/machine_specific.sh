@@ -2,7 +2,7 @@
 
 echo "reading private_environment.sh"
 
-. ${HOME}/.shell_files/bash_function.sh
+# . ${HOME}/.shell_files/bash_function.sh
 
 USERNAME=$(whoami)
 

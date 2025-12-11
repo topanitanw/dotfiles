@@ -43,7 +43,7 @@ case "${unameOut}" in
 esac
 # echo "machine: ${machine}"
 # echo "path: ${PATH}"
-echo "reading ~/.bashrc"
+echo "in ~/.bashrc"
 
 # Fig pre block. Keep at the top of this file.
 # FIG_FILE="$HOME/.fig/shell/bashrc.pre.bash"
@@ -164,3 +164,5 @@ bind -m vi-command 'Control-l: clear-screen'
 bind -m vi-insert 'Control-l: clear-screen'
 bind '"jk":vi-movement-mode'
 alias decrypt='python3 -c "$(curl -fsSL https://gitlab-master.nvidia.com/raymondh/onediag-run-script/-/raw/main/misc/decrypt/decrypt.py)"'
+
+echo "end ~/.bashrc"

@@ -59,6 +59,7 @@ symlink bash/alias_command.sh "${SHELLFILES_DIR}"
 symlink bash/p8_functions.bash "${SHELLFILES_DIR}"
 
 symlink_force bash/bash_function.sh "${SHELLFILES_DIR}"
+symlink_force bash/bash_functions_etc.bash "${SHELLFILES_DIR}"
 
 cp_template bash/machine_specific.sh "${SHELLFILES_DIR}"/machine_specific.sh
 
