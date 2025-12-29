@@ -131,8 +131,8 @@
         ;; fboundp returns a string of the symbol when this symbol is unbound instead of nil.
         ;; for this reason, checking if this function returns true is added to handle this case.
         (if (eq (fboundp 'file-name-concat) t)
-            (file-name-concat (getenv "HOME") "obsidian_vault" "panitan_notes")
-            (format "%s/%s/%s" (getenv "HOME") "obsidian_vault" "panitan_notes")
+            (file-name-concat (getenv "HOME") "obsidian_vaults" "panitan_notes")
+            (format "%s/%s/%s" (getenv "HOME") "obsidian_vaults" "panitan_notes")
         )
         "The path of the obsidian notes")
 
