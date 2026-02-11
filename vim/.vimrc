@@ -9,12 +9,16 @@ if !exists("g:os")
     if has("win64") || has("win32") || has("win16")
         let g:os = "Windows"
         " gvim, g:os = Windows
-    else
-        let g:os = substitute(system('uname'), '\n', '', '')
-        " for bash window subsystem, g:os = 'Linux'
-        " for mac osx, g:os = 'Darwin'
+    elseif has('macunix')
+        let g:os = "Darwin"
+        " macOS settings
+    elseif has('unix')
+        " Linux/Unix settings
+        let g:os = "Linux"
     endif
 endif
+
+" echo "g:os = " . g:os
 
 if g:os == "Windows"
     if !has('nvim')
@@ -37,6 +41,8 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:python3_host_prog = exepath('python')
     let g:python_host_prog = exepath('python')
 endif
+
+echo "g:autoload_plugvim = " . g:autoload_plugvim
 
 if empty(glob(g:autoload_plugvim))
     execute "!curl -fLo " . g:autoload_plugvim . " --create-dirs " .
