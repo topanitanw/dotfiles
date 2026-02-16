@@ -42,7 +42,7 @@ if g:os == "Darwin" || g:os == "Linux"
     let g:python_host_prog = exepath('python')
 endif
 
-echo "g:autoload_plugvim = " . g:autoload_plugvim
+" echo "g:autoload_plugvim = " . g:autoload_plugvim
 
 if empty(glob(g:autoload_plugvim))
     execute "!curl -fLo " . g:autoload_plugvim . " --create-dirs " .
