@@ -139,14 +139,30 @@ if has('nvim') || (v:version >= 800)
     Plug 'folke/todo-comments.nvim'
     " Plug 'terrortylor/nvim-comment'
     Plug 'numToStr/Comment.nvim'
-else
-    " Plug 'ajh17/VimCompletesMe'
 endif
 
-" I replace 'tmhedberg/SimpylFold' with nvim-ufo
-" since its performance and correctness are better than the simplylfold.
-Plug 'kevinhwang91/promise-async'
-Plug 'kevinhwang91/nvim-ufo'
+" Neovim-specific plugins that require Lua/Neovim features
+if has('nvim')
+    " Treesitter and related plugins
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'p00f/nvim-ts-rainbow'
+    
+    " LSP and completion
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'ms-jpq/coq_nvim'
+    
+    " Folding with nvim-ufo (requires Neovim's Lua)
+    Plug 'kevinhwang91/promise-async'
+    Plug 'kevinhwang91/nvim-ufo'
+    
+    " Neovim-specific UI enhancements
+    Plug 'brenoprata10/nvim-highlight-colors'
+    Plug 'sitiom/nvim-numbertoggle'
+    Plug 'sindrets/diffview.nvim'
+else
+    " Vim-specific alternatives or fallbacks
+    " Plug 'ajh17/VimCompletesMe'
+endif
 
 Plug 'octol/vim-cpp-enhanced-highlight'
 " we might need to change the vim-easymotion to hop.nvim
@@ -161,8 +177,6 @@ Plug 'kassio/neoterm'
 " Plug 'folke/which-key.nvim'
 Plug 'mhinz/vim-startify'
 
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'p00f/nvim-ts-rainbow'
 " Plug 'vhda/verilog_systemverilog.vim'
 Plug 'lilydjwg/colorizer'
 
@@ -180,25 +194,15 @@ endif
 " To disable this copilot version permanently, run :Copilot signout
 " Plug 'github/copilot.vim'
 
-Plug 'neovim/nvim-lspconfig'
 " Plug 'hrsh7th/cmp-nvim-lsp'
 " Plug 'hrsh7th/cmp-buffer'
 " Plug 'hrsh7th/cmp-path'
 " Plug 'hrsh7th/cmp-cmdline'
 " Plug 'hrsh7th/nvim-cmp'
-Plug 'ms-jpq/coq_nvim'
 
 "" highlight the matching parenthesis with different colors
 Plug 'luochen1990/rainbow'
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
-
-Plug 'brenoprata10/nvim-highlight-colors'
-
-" Plug 'sitiom/nvim-numbertoggle' " toggle the relative number of lines in the
-" current buffer, and use the absolute number in other buffers.
-Plug 'sitiom/nvim-numbertoggle'
-
-Plug 'sindrets/diffview.nvim'
 " Neotree
 " Plug 'nvim-neo-tree/neo-tree.nvim'
 call plug#end()
@@ -1074,6 +1078,7 @@ ino <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 " enter to select the element
 ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
 
+if has('nvim')
 lua<<EOF
 local lspconfig = require("lspconfig")
 lspconfig.pyright.setup{}
@@ -1093,7 +1098,9 @@ lspconfig.gopls.setup {
     },
 }
 EOF
+endif
 
+if has('nvim')
 lua<<EOF
 -- turn off the fold column, which is an extra column on the left hand side
 -- of the buffer to indicate the fold level. I don't quite understand why
@@ -1143,6 +1150,7 @@ require('ufo').setup({
     end
 })
 EOF
+endif
 
 let g:rainbow_conf = {
 	\	'guifgs': ['lightblue', 'darkorange3', 'seagreen3', 'firebrick'],
@@ -1153,6 +1161,7 @@ let g:rainbow_conf = {
 	\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold']
 	\}
 
+if has('nvim')
 lua << EOF
 -- Ensure termguicolors is enabled if not already
 require('nvim-highlight-colors').setup({
@@ -1177,6 +1186,7 @@ enable_named_colors = true,
 require("nvim-highlight-colors").turnOn()
 vim.opt.termguicolors = true
 EOF
+endif
 
 " highlight Cursor guifg=white guibg=black
 " highlight iCursor guifg=white guibg=steelblue
