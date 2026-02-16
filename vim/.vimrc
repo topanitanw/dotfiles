@@ -204,7 +204,7 @@ au BufNewFile,BufRead *.con set syntax=Condor
 let g:zenburn_force_dark_Background = 0
 colorscheme zenburn
 
-
+set conceallevel=0
 "" set the default font and font size
 " set guifont=Dejavu\ Sans\ Mono:h12
 set guifont=JetBrains\ Mono:h14
@@ -478,6 +478,8 @@ set conceallevel=0
 "" If you prefer to always see the quotes, you can disable concealing for
 "" JSON files. Add the following to your .vimrc
 let g:vim_json_syntax_conceal = 0
+let g:vim_markdown_conceal = 0
+let g:indentLine_setConceal = 0
 
 "----------------------------------------------------------------------
 " package related setup
