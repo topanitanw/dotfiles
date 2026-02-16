@@ -131,8 +131,8 @@
         ;; fboundp returns a string of the symbol when this symbol is unbound instead of nil.
         ;; for this reason, checking if this function returns true is added to handle this case.
         (if (eq (fboundp 'file-name-concat) t)
-            (file-name-concat (getenv "HOME") "obsidian_vault" "panitan_notes")
-            (format "%s/%s/%s" (getenv "HOME") "obsidian_vault" "panitan_notes")
+            (file-name-concat (getenv "HOME") "obsidian_vaults" "panitan_notes")
+            (format "%s/%s/%s" (getenv "HOME") "obsidian_vaults" "panitan_notes")
         )
         "The path of the obsidian notes")
 
@@ -1307,6 +1307,20 @@
         ("C-x C-a b" . activities-switch-buffer)
         ("C-x C-a g" . activities-revert)
         ("C-x C-a l" . activities-list)))
+
+(defun my-xml-mode-hook ()
+    "Custom settings for nxml-mode."
+    ;; Use spaces instead of tabs for indentation
+    (setq indent-tabs-mode nil)
+    ;; Set the width of a tab character to 4 spaces (for display and indent-rigidly)
+    (setq tab-width 4)
+    ;; Set the child element indentation offset to 4 spaces
+    (setq nxml-child-indent 4)
+    ;; Set the attribute indentation offset to 4 spaces
+    (setq nxml-attribute-indent 4))
+
+;; Add the custom hook to nxml-mode
+(add-hook 'nxml-mode-hook 'my-xml-mode-hook)
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil

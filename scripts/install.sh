@@ -3,7 +3,7 @@
 git_root=$(git rev-parse --show-toplevel 2>/dev/null)
 
 # force to source the functions in this file.
-source $git_root/bash/bash_function.sh `pwd`/bash
+source $git_root/bash/bash_function.sh $(pwd)/bash
 
 LABEL="[INSTALL]"
 DST_DIR="${HOME}"
