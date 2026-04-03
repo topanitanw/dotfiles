@@ -228,6 +228,69 @@ function p8_open_path() {
     return 0
 }
 
+# Function to set p8_cl environment variable from currently opened files
+# Extracts unique changelist numbers from p4 opened output
+# Usage: p8_set_cl
+function p8_set_cl() {
+    if ! command -v p4 &> /dev/null; then
+        echo "Error: p4 command not found"
+        return 1
+    fi
+
+    local opened_output
+    opened_output=$(p4 opened 2>/dev/null)
+
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to get opened files from Perforce"
+        return 1
+    fi
+
+    if [ -z "$opened_output" ]; then
+        unset p8_cl
+        echo "p8_cl = <not set> (no files currently opened)"
+        return 0
+    fi
+
+    local changelists
+    changelists=$(echo "$opened_output" | grep -o 'change [0-9]*' | cut -d' ' -f2 | sort -u)
+
+    if [ -n "$changelists" ]; then
+        export p8_cl=$(echo "$changelists" | tr '\n' ' ' | sed 's/ $//')
+        echo "p8_cl = $p8_cl"
+    else
+        unset p8_cl
+        echo "p8_cl = <not set> (no changelist found)"
+    fi
+
+    return 0
+}
+
+# Function to display all exported p8_* shell variables
+# Usage: p8_env
+function p8_env() {
+    echo "--------------------------------"
+    echo "🔧 P8 VARIABLES:"
+    echo "--------------------------------"
+
+    local found=0
+
+    while IFS= read -r varname; do
+        if [ -n "$varname" ]; then
+            echo "${varname} = ${!varname}"
+            ((found++))
+        fi
+    done < <(compgen -v p8_)
+
+    if [ "$found" -eq 0 ]; then
+        echo "No p8_* variables are currently set."
+    else
+        echo
+        echo "Total: $found variable(s)"
+    fi
+
+    return 0
+}
+
 # Function to display comprehensive Perforce status information
 # Shows p4 info, p4 opened, P4 environment variables, and current opened changelist
 # Usage: p8_status
@@ -327,6 +390,9 @@ function p8_status() {
     fi
     echo
 
+    p8_set_cl
+    echo
+
     echo "--------------------------------"
     echo "📝 PENDING CHANGELISTS:"
     echo "--------------------------------"
@@ -337,6 +403,9 @@ function p8_status() {
     echo "📝 SHELVED CHANGELISTS:"
     echo "--------------------------------"
     p4 changes -u "${P4USER}" -c "${P4CLIENT}" -s shelved
+    echo
+
+    p8_env
     echo
 
     echo "=========================================="
