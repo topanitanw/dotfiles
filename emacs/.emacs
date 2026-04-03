@@ -138,6 +138,17 @@
 
     (setq exec-path (append exec-path '("/opt/homebrew/bin" "/opt/homebrew/sbin")))
 
+    ;; Configure shell settings to use bash from PATH (Homebrew bash preferred)
+    (let ((preferred-bash (or (executable-find "bash") "/bin/bash")))
+        ;; Set the default shell for various Emacs functions
+        (setq shell-file-name preferred-bash)
+        ;; Set the shell for explicit shell commands (M-x shell)
+        (setq explicit-shell-file-name preferred-bash)
+        ;; Set the shell for term mode and other terminal emulators
+        (setq-default explicit-bash-args '("-l" "-i"))
+        ;; Ensure SHELL environment variable is set correctly
+        (setenv "SHELL" preferred-bash))
+
     ;; set the ispell path to the emacs for mac machines
     (setq ispell-program-name (executable-find "ispell"))
     )
@@ -352,6 +363,11 @@
     :ensure t
     :if (memq window-system '(mac ns x))
     :config
+    ;; Use bash from PATH (Homebrew bash if installed, otherwise system bash)
+    (setq shell-file-name (or (executable-find "bash") "/bin/bash"))
+    ;; Also set explicit-shell-file-name for shell commands
+    (setq explicit-shell-file-name shell-file-name)
+    ;; Initialize environment from shell
     (exec-path-from-shell-initialize))
 
 ;; =======================================================================
@@ -808,7 +824,9 @@
 (use-package vterm
     :ensure t
     :custom
-    (vterm-max-scrollback 10000))
+    (vterm-max-scrollback 10000)
+    ;; Use the same shell as configured globally (Homebrew bash preferred)
+    (vterm-shell (or (executable-find "bash") "/bin/bash")))
 
 ;; =======================================================================
 ;; multi-vterm
