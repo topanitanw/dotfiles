@@ -1,5 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
-;; - Note that if there is an error when you start up emacs. You should restart it with --debug-init flag.
+;; - Note that if there is an error when you start up emacs. You should restart it with --debug-init flag. --------------------------------------------
 ;;   Once the debugger can pinpoint where the error happens, you can type M-x goto-char and type in the error
 ;;   position in the .emacs buffer in order to jump to that position.
 ;; - to reload this file when you run emacs, you should M-x load-file.
@@ -429,21 +429,28 @@
 
 ;; highlight extra spaces and tabs
 (use-package whitespace
-    :ensure t
+    ;; whitespace is built-in
+    :ensure nil
     :delight '(:eval (if mine-debug-show-modes-in-modeline
                          whitespace-mode
                          ""))
     :init
-    (global-whitespace-mode 1)
-
-    :config
+    ;; don't enable the whitespace for all modes.
+    ; (global-whitespace-mode 1)
 
     ;; highlight the only part of the text longer than 80 characters on a line 00000
     ;; highlight the trailing whitespaces
     (setq-default whitespace-line-column 80)
-    (setq whitespace-style '(face tabs tab-mark lines-tail trailing))
-    (add-hook 'prog-mode-hook #'whitespace-mode)
+    (setq whitespace-style '(face tabs trailing lines-tail))
+
     (add-hook 'before-save-hook 'whitespace-cleanup)
+
+    :hook
+    ;; No hook for org-mode / markdown-mode -> they stay unaffected
+    (prog-mode   . whitespace-mode)
+    (conf-mode   . whitespace-mode)
+
+    :config
     )
 
 ;; =======================================================================
@@ -1305,6 +1312,7 @@
                              mine-backup-directory-path
                              "perspectives"))
     )
+
 ;; https://github.com/seudut/perspeen
 (use-package activities
     :disabled
@@ -1339,6 +1347,29 @@
 
 ;; Add the custom hook to nxml-mode
 (add-hook 'nxml-mode-hook 'my-xml-mode-hook)
+
+(use-package imenu-list
+    :ensure t
+    :config
+    (setq imenu-list-focus-after-activation t
+          imenu-list-auto-resize nil))
+
+;; (use-package obisidian.el
+;;     :disable t
+;;     :straight (obsidian.el :type git :host github :repo "licht1stein/obsidian.el")
+;;     :ensure t
+;;     :config
+;;     (global-obsidian-mode t)
+;;     (obsidian-backlinks-mode t)
+
+;;     :custom
+;;     (obsidian-inbox-directory "index")
+;;     ;; Useful if you're going to be using wiki links
+;;     (markdown-enable-wiki-links t)
+;;     ;; Location of obsidian vault
+;;     (obsidian-directory "/Users/pwongseammat/obsidian_vaults/panitan_notes")
+;;     )
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
