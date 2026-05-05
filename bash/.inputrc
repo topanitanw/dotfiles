@@ -39,4 +39,13 @@ $if mode=vi
   # In insert mode, keep Emacs-like shortcuts:
   "\C-a": beginning-of-line
   "\C-e": end-of-line
+
+  # In either command or insert mode, pressing M-backspace/delete ca
+  # can delete the previous word.
+  set keymap vi-command
+  "\e\C-?": backward-kill-word
+
+  set keymap vi-insert
+  "\e\C-?": backward-kill-word
+
 $endif
