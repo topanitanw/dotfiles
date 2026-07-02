@@ -467,7 +467,7 @@ function p8_abs_path() {
     # Extract the local path (third field in p4 where output)
     local local_path
     local_path=$(echo "$where_output" | awk '{print $3}')
-    
+
     # Validate that we successfully extracted a local path
     if [ -z "$local_path" ]; then
         echo "Error: Could not extract local path from p4 where output" >&2
@@ -478,4 +478,68 @@ function p8_abs_path() {
     # Output the absolute local path
     echo "$local_path"
     return 0
+}
+
+# Create an empty integration changelist using hm-style description filtering.
+# Usage: create_integration_cl <source_cl> <from_branch> <to_branch> [generic_bug]
+create_integration_cl()
+{
+    local source_cl=$1
+    local from_branch=$2
+    local to_branch=$3
+    local generic_bug=${4:-}
+    local output
+    local new_cl
+
+    if ! output=$(
+        {
+            echo "Change: new"
+            echo "Status: new"
+            echo "Description:"
+
+            p4 describe -s "$source_cl" |
+                sed '1,/^$/d
+                     /PRESUBMIT_TESTING/d
+                     /https\?:\/\/ausdvs\.nvidia/d
+                     /https\?:\/\/AUSDVS\.nvidia/d
+                     /https\?:\/\/builds4u/d
+                     /https\?:\/\/testbot\.nvidia/d
+                     /skip_.vs_virtual_check/d
+                     /#review/d
+                     /AS2 Bundle ID/d
+                     /nvp4review\.p4review.*p4r/d
+                     /^[[:space:]]*\(Approved Bug\|Generic bug\)/d
+                     /^[^[:space:]]/,$d' |
+                sed 's/^[[:space:]]//' |
+                awk '
+                    NR == 1 { $0 = "(I) " $0 }
+                    { print "\t" $0 }
+                '
+
+            printf '\t\n'
+            printf '\t%s\n' \
+                "$(p4 describe -s "$source_cl" | head -n 1)"
+            printf '\tIntegrated from %s to %s\n' \
+                "$from_branch" "$to_branch"
+
+            if [[ -n "$generic_bug" ]]; then
+                printf '\tGeneric bug %s\n' "$generic_bug"
+            fi
+        } | p4 change -i
+    ); then
+        return 1
+    fi
+
+    new_cl=$(
+        printf '%s\n' "$output" |
+            sed -n 's/^Change \([0-9][0-9]*\) created\.$/\1/p'
+    )
+
+    if [[ -z "$new_cl" ]]; then
+        echo "ERROR: unable to extract new CL number from:" >&2
+        echo "$output" >&2
+        return 1
+    fi
+
+    printf '%s\n' "$new_cl"
 }

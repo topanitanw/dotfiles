@@ -44,8 +44,11 @@ $if mode=vi
   # can delete the previous word.
   set keymap vi-command
   "\e\C-?": backward-kill-word
+  "\C-l": clear-screen
 
   set keymap vi-insert
   "\e\C-?": backward-kill-word
+  "\C-l": clear-screen
+  "jk": vi-movement-mode
 
 $endif

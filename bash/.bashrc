@@ -157,12 +157,9 @@ FILE_ALIAS_COM=${SHELL_DIR}/alias_command.sh
 check_source ${FILE_ALIAS_COM}
 
 echo "reading the inputrc"
-INPUTRC="~/.inputrc"
+INPUTRC=~/.inputrc
 echo "inputrc=$INPUTRC"
 bind -f ~/.inputrc
-bind -m vi-command 'Control-l: clear-screen'
-bind -m vi-insert 'Control-l: clear-screen'
-bind '"jk":vi-movement-mode'
 alias decrypt='python3 -c "$(curl -fsSL https://gitlab-master.nvidia.com/raymondh/onediag-run-script/-/raw/main/misc/decrypt/decrypt.py)"'
 
 echo "end ~/.bashrc"
