@@ -1,24 +1,25 @@
+.PHONY: install
 install:
 	bash scripts/install.sh
-.PHONY: install
 
+.PHONY: mac_setup
 mac_setup:
 	bash mac/setup/mac_setup.sh
-.PHONY: mac_setup
 
+.PHONY: clean
 clean:
 	find . -type f -iname "*.~undo-tree~" -delete
 	find . -type f -iname "#*#" -delete
 	find . -type f -iname "*~" -delete
-.PHONY: clean
 
+.PHONY: view
 view:
 	tree -a --dirsfirst --noreport -I '.git'
-.PHONY: view
 
-format: format_bash
 .PHONY: format
+format: format_bash
 
+.PHONY: format_bash
 format_bash:
 	echo "Formatting bash scripts";
 	sh_scripts=`find . -type f -name "*.sh" -not -path "./.git/*"`; \
@@ -27,4 +28,3 @@ format_bash:
 		shfmt -w -s -i 4 -ci $$file; \
 	done
 	echo
-.PHONY: format_bash
