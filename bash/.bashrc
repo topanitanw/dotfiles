@@ -33,6 +33,13 @@ esac
 #     echo "This is a non-login shell"
 # fi
 
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
 unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)     machine=linux;;
