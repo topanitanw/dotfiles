@@ -114,5 +114,10 @@ YADF_CONFIG_DIR="${HOME}/.config/yapf"
 mkdir -p "${YADF_CONFIG_DIR}"
 symlink formatter/.style.yapf "${YADF_CONFIG_DIR}" "style"
 
+##################################################
+# herdr
+symlink ./herdr/config.toml ~/.config/herdr/.
+
 ## git config --file ~/.gitconfig
 infop "done\n"
+

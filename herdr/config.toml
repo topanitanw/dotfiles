@@ -1,0 +1,32 @@
+onboarding = false
+
+[theme]
+name = "catppuccin"
+auto_switch = false
+
+[theme.custom]
+accent = "#93E0E3"
+panel_bg = "#3F3F3F"
+sidebar_bg = "#2B2B2B"
+active_row_bg = "#494949"
+selection_bg = "#5F5F5F"
+surface0 = "#383838"
+surface1 = "#494949"
+surface_dim = "#303030"
+overlay0 = "#656555"
+overlay1 = "#989890"
+text = "#DCDCCC"
+subtext0 = "#989890"
+mauve = "#DC8CC3"
+green = "#8FB28F"
+yellow = "#F0DFAF"
+red = "#CC9393"
+blue = "#8CD0D3"
+teal = "#93E0E3"
+peach = "#DFAF8F"
+
+[ui.sidebar.spaces]
+rows = [
+  ["state_icon", { token = "workspace", fg = "#DCDCCC", bold = true }],
+  [{ token = "branch", fg = "#A7C7A0" }, "git_status"],
+]
