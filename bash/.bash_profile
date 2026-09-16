@@ -12,9 +12,11 @@ esac
 echo "reading bash_profile"
 
 bashrc_path=$HOME/.bashrc
-if test -f $bashrc_path; then
+if test -f "$bashrc_path"; then
     echo "reading $bashrc_path"
-    source $bashrc_path
+    # tell shellcheck not to inspect the source file
+    # shellcheck source=/dev/null
+    source "$bashrc_path"
 fi
 
 INPUTRC=~/.inputrc
@@ -31,7 +33,6 @@ fi
 
 # export LC_ALL=en_IN.UTF-8
 # export LANG=en_IN.UTF-8
-
 
 # source ~/.bashrc
 # bind -f ~/.inputrc
