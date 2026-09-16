@@ -58,4 +58,7 @@ alias ls='ls --color=auto'
 ## Show hidden files ##
 alias l.='ls -d .* --color=auto'
 
+## disk usage
+alias duf='du -sh -- * .[^.]* 2>/dev/null | sort -hr'
+
 # project specific
