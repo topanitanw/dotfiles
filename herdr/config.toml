@@ -1,11 +1,15 @@
 onboarding = false
 
+[keys]
+previous_agent = "ctrl+alt+p"
+next_agent = "ctrl+alt+n"
+
 [theme]
 name = "catppuccin"
 auto_switch = false
 
 [theme.custom]
-accent = "#93E0E3"
+accent = "#9FC59F"
 panel_bg = "#3F3F3F"
 sidebar_bg = "#2B2B2B"
 active_row_bg = "#494949"
