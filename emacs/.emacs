@@ -1370,6 +1370,17 @@
 ;;     (obsidian-directory "/Users/pwongseammat/obsidian_vaults/panitan_notes")
 ;;     )
 
+;; =======================================================================
+;; rainbow
+;; objective: display color in multiple formats
+;; ("zenburn-cyan"     . "#93E0E3")
+;; =======================================================================
+(use-package rainbow-mode
+    :ensure t
+    :hook (css-mode-hook
+              html-mode-hook
+              sass-mode-hook
+              web-mode-hook))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
