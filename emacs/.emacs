@@ -1380,7 +1380,9 @@
     :hook (css-mode-hook
               html-mode-hook
               sass-mode-hook
-              web-mode-hook))
+              web-mode-hook
+              emacs-lisp-mode-hook
+              prog-mode-hook))
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
