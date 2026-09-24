@@ -35,3 +35,14 @@ rows = [
   ["state_icon", { token = "workspace", fg = "#DCDCCC", bold = true }],
   [{ token = "branch", fg = "#A7C7A0" }, "git_status"],
 ]
+
+[experimental]
+# Pane screen history restores recent terminal contents after a full server
+# restart without restoring the old process.
+pane_history = true
+
+[session]
+# Some agents can resume their own conversation sessions. Herdr can use official
+# integration-reported session references to restart supported agent panes after
+# a Herdr server restart.
+resume_agents_on_restore = false
