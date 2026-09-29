@@ -1082,23 +1082,40 @@ ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C
 
 if has('nvim')
 lua<<EOF
-local lspconfig = require("lspconfig")
-lspconfig.pyright.setup{}
-local util = require("lspconfig/util")
-
-lspconfig.gopls.setup {
-    cmd = {"gopls", "serve"},
-    filetypes = {"go", "gomod"},
-    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-    settings = {
-      gopls = {
+local gopls_settings = {
+    gopls = {
         analyses = {
-          unusedparams = true,
+            unusedparams = true,
         },
         staticcheck = true,
-      },
     },
 }
+
+if vim.lsp.config and vim.lsp.enable then
+    -- Neovim 0.11+
+    vim.lsp.config("gopls", {
+        cmd = { "gopls", "serve" },
+        filetypes = { "go", "gomod" },
+        root_markers = { "go.work", "go.mod", ".git" },
+        settings = gopls_settings,
+    })
+
+    vim.lsp.enable({ "pyright", "gopls" })
+else
+    -- Neovim 0.10 and earlier
+    local lspconfig = require("lspconfig")
+    local util = require("lspconfig.util")
+
+    lspconfig.pyright.setup({})
+
+    lspconfig.gopls.setup({
+    cmd = { "gopls", "serve" },
+    filetypes = { "go", "gomod" },
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    settings = gopls_settings,
+    })
+    end
+
 EOF
 endif
 
