@@ -4,6 +4,12 @@ onboarding = false
 previous_agent = "ctrl+alt+p"
 next_agent = "ctrl+alt+n"
 
+[[keys.command]]
+key = "prefix+E"
+type = "plugin_action"
+command = "shibayu36.equalize-panes.equalize"
+description = "equalize panes"
+
 [theme]
 name = "catppuccin"
 auto_switch = false
@@ -32,8 +38,8 @@ peach = "#DFAF8F"
 
 [ui.sidebar.spaces]
 rows = [
-  ["state_icon", { token = "workspace", fg = "#DCDCCC", bold = true }],
-  [{ token = "branch", fg = "#A7C7A0" }, "git_status"],
+    ["state_icon", { token = "workspace", fg = "#DCDCCC", bold = true }],
+    [{ token = "branch", fg = "#A7C7A0" }, "git_status"],
 ]
 
 [experimental]
