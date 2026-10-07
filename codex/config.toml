@@ -1,0 +1,3 @@
+[tui]
+theme = "base16-ocean-dark"
+status_line = ["model-with-reasoning", "context-remaining", "current-dir"]
