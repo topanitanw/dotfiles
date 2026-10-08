@@ -1117,6 +1117,7 @@ else
     end
 
 EOF
+nnoremap <silent> <space>e <cmd>lua vim.diagnostic.open_float()<CR>
 endif
 
 if has('nvim')

@@ -291,6 +291,35 @@ function p8_env() {
     return 0
 }
 
+# List compact changelists with descriptions capped at 50 characters.
+function p8_list_changes() {
+    p4 changes -L -u "${P4USER}" -c "${P4CLIENT}" -s "$1" |
+        awk -v width=50 '
+            function emit() {
+                printf "cl: %s on %s in %s %s %c%s%c\n", change, date, client, status, 39, substr(desc, 1, width), 39
+            }
+
+            /^Change / {
+                if (change) emit()
+                change = $2
+                date = $4
+                client = $6
+                sub(/^[^@]*@/, "", client)
+                status = $7
+                desc = ""
+                next
+            }
+
+            {
+                gsub(/^[[:space:]]+|[[:space:]]+$/, "")
+                if ($0 != "" && length(desc) < width)
+                    desc = desc (desc ? " " : "") $0
+            }
+
+            END { if (change) emit() }
+        '
+}
+
 # Function to display comprehensive Perforce status information
 # Shows p4 info, p4 opened, P4 environment variables, and current opened changelist
 # Usage: p8_status
@@ -396,13 +425,13 @@ function p8_status() {
     echo "--------------------------------"
     echo "📝 PENDING CHANGELISTS:"
     echo "--------------------------------"
-    p4 changes -u "${P4USER}" -c "${P4CLIENT}" -s pending
+    p8_list_changes pending
     echo
 
     echo "--------------------------------"
     echo "📝 SHELVED CHANGELISTS:"
     echo "--------------------------------"
-    p4 changes -u "${P4USER}" -c "${P4CLIENT}" -s shelved
+    p8_list_changes shelved
     echo
 
     p8_env
@@ -481,8 +510,8 @@ function p8_abs_path() {
 }
 
 # Create an empty integration changelist using hm-style description filtering.
-# Usage: create_integration_cl <source_cl> <from_branch> <to_branch> [generic_bug]
-create_integration_cl()
+# Usage: p8_create_integration_cl <source_cl> <from_branch> <to_branch> [generic_bug]
+p8_create_integration_cl()
 {
     local source_cl=$1
     local from_branch=$2
@@ -511,8 +540,9 @@ create_integration_cl()
                      /^[[:space:]]*\(Approved Bug\|Generic bug\)/d
                      /^[^[:space:]]/,$d' |
                 sed 's/^[[:space:]]//' |
-                awk '
-                    NR == 1 { $0 = "(I) " $0 }
+                awk -v prefix="(I ${from_branch}->${to_branch}) " '
+                    # Prefix the copied title with the integration route.
+                    NR == 1 { $0 = prefix $0 }
                     { print "\t" $0 }
                 '
 
@@ -542,4 +572,167 @@ create_integration_cl()
     fi
 
     printf '%s\n' "$new_cl"
+}
+
+# Submit or resubmit any CL to DVS and automatically record its latest result URL.
+# Use this instead of manually running "hm test dvs", copying its URL, and editing the CL.
+# DVS options: axl, rm, mods/pvs, or any quoted raw keyword; DVS_BUILD_ALL is always included.
+# Example: p8_test_dvs 38890209 mods axl
+# Usage: p8_test_dvs <changelist> [axl|rm|mods|pvs|"DVS keyword" ...]
+p8_test_dvs()
+{
+    # Show the supported DVS shortcuts without submitting a test.
+    if [[ ${1:-} = -h || ${1:-} = --help ]]; then
+        printf '%s\n' \
+            'Usage: p8_test_dvs <changelist> [DVS option ...]' \
+            'DVS options (DVS_BUILD_ALL is always included):' \
+            '  axl       DVS_AXL_SANITY all' \
+            '  rm        DVS_RM_SANITY all' \
+            '  mods|pvs  DVS_MODS_SANITY all + DVS_Extended-Mods_SANITY all' \
+            '  "..."     Pass a quoted raw DVS keyword unchanged'
+        return 0
+    fi
+
+    # Validate the changelist before invoking hm.
+    if [[ $# -lt 1 || ! $1 =~ ^[0-9]+$ ]]; then
+        echo 'Usage: p8_test_dvs <changelist> [axl|rm|mods|pvs|"DVS keyword" ...]' >&2
+        echo 'DVS_BUILD_ALL is always included; use --help for option details.' >&2
+        return 2
+    fi
+
+    # Keep the changelist while forwarding every optional DVS argument to hm.
+    local changelist=$1
+    local output virtual_id dvs_url
+    shift
+
+    # Submit the requested changelist to DVS and preserve hm output for recovery.
+    if ! output=$(hm test dvs "$changelist" "$@" 2>&1); then
+        printf '%s\n' "$output" >&2
+        return 1
+    fi
+    printf '%s\n' "$output"
+
+    # Extract the virtual ID from either query-string or path-style DVS output.
+    if [[ $output =~ virtualId[=/]([0-9]+) ]]; then
+        virtual_id=${BASH_REMATCH[1]}
+    else
+        echo "ERROR: DVS submitted for CL $changelist, but virtualId was not found" >&2
+        return 1
+    fi
+
+    # Build the canonical link used by the Pre-submit testing field.
+    dvs_url="http://builds4u.nvidia.com/dvs/#/change/dvs/virtualId/${virtual_id}?showTab=DVS"
+
+    # Replace duplicate links or append the first link inside the Description field.
+    if ! p4 change -o "$changelist" |
+        awk -v dvs_line="\tPre-submit testing: $dvs_url" '
+            # Enter the changelist Description field.
+            /^Description:/ {
+                in_description = 1
+                print
+                next
+            }
+
+            # Replace the first link and remove any duplicate links.
+            in_description && /^\t[[:space:]]*Pre-submit testing:/ {
+                if (!link_written) {
+                    print dvs_line
+                    link_written = 1
+                }
+                next
+            }
+
+            # Append the link before the next changelist-spec field when absent.
+            in_description && /^[A-Z][A-Za-z]*:/ {
+                if (!link_written) {
+                    print dvs_line
+                    print ""
+                    link_written = 1
+                }
+                in_description = 0
+            }
+
+            # Preserve every changelist-spec line not handled above.
+            { print }
+        ' |
+        p4 change -i -u >/dev/null
+    then
+        echo "ERROR: DVS submitted, but CL $changelist could not be updated" >&2
+        echo "Pre-submit testing: $dvs_url" >&2
+        return 1
+    fi
+
+    # Report the recorded DVS result.
+    echo "CL $changelist updated: $dvs_url"
+}
+
+# Integrate a submitted CL through hm, label its route, submit DVS, and record the result URL.
+# Use this when promoting one CL between branches without manually creating or editing a new CL.
+# DVS options are the same as p8_test_dvs and are forwarded unchanged after the branch arguments.
+# Example: p8_integrate_cl 38889995 r570 r575 mods
+# Usage: p8_integrate_cl <source_cl> <from_branch> <to_branch> [DVS options ...]
+p8_integrate_cl()
+{
+    # Show integration usage together with the available DVS shortcuts.
+    if [[ ${1:-} = -h || ${1:-} = --help ]]; then
+        echo 'Usage: p8_integrate_cl <source_cl> <from_branch> <to_branch> [DVS options ...]'
+        p8_test_dvs --help | sed '1d'
+        return 0
+    fi
+
+    # Validate the required integration arguments.
+    if [[ $# -lt 3 || ! $1 =~ ^[0-9]+$ ]]; then
+        echo 'Usage: p8_integrate_cl <source_cl> <from_branch> <to_branch> [DVS options ...]' >&2
+        echo 'DVS options: axl, rm, mods, pvs, or a quoted raw keyword.' >&2
+        return 2
+    fi
+
+    # Keep the integration inputs and leave remaining arguments for DVS.
+    local source_cl=$1
+    local from_branch=$2
+    local to_branch=$3
+    local output new_cl
+    shift 3
+
+    # Reuse hm for branch mapping, integration, generic bugs, and trivial resolves.
+    if ! output=$(hm integrate "$source_cl" noask to "$to_branch" 2>&1); then
+        printf '%s\n' "$output" >&2
+        return 1
+    fi
+    printf '%s\n' "$output"
+
+    # Extract the destination changelist created by hm.
+    if [[ $output =~ Created[[:space:]]new[[:space:]]changelist[[:space:]]([0-9]+) ]]; then
+        new_cl=${BASH_REMATCH[1]}
+    else
+        echo 'ERROR: unable to determine the integration changelist' >&2
+        return 1
+    fi
+
+    # Rewrite the first description line as "(I from->to) original title".
+    if ! p4 change -o "$new_cl" |
+        awk -v prefix="(I ${from_branch}->${to_branch}) " '
+            # Enter the changelist Description field.
+            /^Description:/ {
+                in_description = 1
+            }
+
+            # Replace the hm integration marker on the first description line.
+            in_description && /^\t[^[:space:]]/ {
+                sub(/^\t\(I[^)]*\)[[:space:]]*/, "\t")
+                sub(/^\t/, "\t" prefix)
+                in_description = 0
+            }
+
+            # Preserve the complete changelist specification.
+            { print }
+        ' |
+        p4 change -i -u >/dev/null
+    then
+        echo "ERROR: unable to update integration CL $new_cl description" >&2
+        return 1
+    fi
+
+    # Reuse the standalone helper for DVS submission and link maintenance.
+    p8_test_dvs "$new_cl" "$@"
 }
