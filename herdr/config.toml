@@ -10,6 +10,12 @@ type = "plugin_action"
 command = "shibayu36.equalize-panes.equalize"
 description = "equalize panes"
 
+# equalize the pane size
+key = "prefix+="
+type = "plugin_action"
+command = "dimapanov.equalize.equalize"
+description = "equalize pane sizes"
+
 [theme]
 name = "catppuccin"
 auto_switch = false
