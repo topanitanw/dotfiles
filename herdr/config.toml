@@ -1,5 +1,9 @@
 onboarding = false
 
+[terminal]
+default_shell = "/opt/homebrew/bin/bash"
+shell_mode = "login"
+
 [keys]
 previous_agent = "ctrl+alt+p"
 next_agent = "ctrl+alt+n"
@@ -11,6 +15,7 @@ command = "shibayu36.equalize-panes.equalize"
 description = "equalize panes"
 
 # equalize the pane size
+[[keys.command]]
 key = "prefix+="
 type = "plugin_action"
 command = "dimapanov.equalize.equalize"
