@@ -1,3 +1,4 @@
 [tui]
+vim_mode_default = true
 theme = "base16-ocean-dark"
 status_line = ["model-with-reasoning", "context-remaining", "current-dir"]

@@ -11,14 +11,14 @@ next_agent = "ctrl+alt+n"
 [[keys.command]]
 key = "prefix+E"
 type = "plugin_action"
-command = "shibayu36.equalize-panes.equalize"
+command = "ponko2.equalize-panes.equalize"
 description = "equalize panes"
 
 # equalize the pane size
 [[keys.command]]
 key = "prefix+="
 type = "plugin_action"
-command = "dimapanov.equalize.equalize"
+command = "ponko2.equalize-panes.equalize"
 description = "equalize pane sizes"
 
 [theme]
