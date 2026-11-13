@@ -1383,6 +1383,13 @@
               web-mode-hook
               emacs-lisp-mode-hook
               prog-mode-hook))
+
+(use-package tree-sitter
+    :ensure nil
+    :config
+    (add-to-list 'treesit-language-source-alist
+        '(yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml")))
+
 ;; ==================================================================
 ;; Print out the emacs init time in the minibuffer
 (run-with-idle-timer 1 nil
