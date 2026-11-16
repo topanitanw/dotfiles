@@ -1,3 +1,10 @@
+# default models
+# light weight coding : "gpt-6-luna"
+# writing document : "gpt-6-terra"
+model = "gpt-6.1-sol"
+# "medium", "high", "xhigh"
+model_reasoning_effort = "xhigh"
+
 [tui]
 vim_mode_default = true
 theme = "base16-ocean-dark"
