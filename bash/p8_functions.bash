@@ -736,3 +736,26 @@ p8_integrate_cl()
     # Reuse the standalone helper for DVS submission and link maintenance.
     p8_test_dvs "$new_cl" "$@"
 }
+
+# Usage: p8_vdiff [p4 diff arguments ...]
+p8_vdiff() {
+    P4DIFF='nvim -d' p4 diff "$@"
+}
+
+# Usage: p8_cdiff [p4 diff arguments ...]
+p8_cdiff() {
+    P4DIFF='diff' p4 diff "$@"
+}
+
+# Usage: p8_chcl [changelist_number]; defaults to $p8_cl.
+p8_chcl() {
+    local cl=${1-${p8_cl:-}}
+
+    if [[ $# -gt 1 || ! $cl =~ ^[0-9]+$ ]]; then
+        echo 'Usage: p8_chcl [changelist_number]' >&2
+        echo 'Provide one numeric changelist explicitly or set p8_cl to one numeric changelist.' >&2
+        return 2
+    fi
+
+    p4 change -u "$cl"
+}
