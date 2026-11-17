@@ -144,8 +144,8 @@ endif
 " Neovim-specific plugins that require Lua/Neovim features
 if has('nvim')
     " Treesitter and related plugins
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-    Plug 'p00f/nvim-ts-rainbow'
+    Plug 'nvim-treesitter/nvim-treesitter', {'branch': 'main', 'do': ':TSUpdate'}
+    Plug 'HiPhish/rainbow-delimiters.nvim'
     
     " LSP and completion
     Plug 'neovim/nvim-lspconfig'
@@ -804,37 +804,9 @@ if !has("nvim")
     return
 endif
 lua << EOF
-    require("nvim-treesitter.configs").setup {
-        -- example
-        -- https://github.com/ahmed-rezk-dev/super-nvim/blob/main/lua/treesitter-nvim.lua
-        -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-        ensure_installed = {
-            "bash",
-            "c",
-            "comment",
-            "go",
-            "lua",
-            "vim",
-        },
-
-        -- Install languages synchronously (only applied to `ensure_installed`)
-        sync_install = false,
-
-        -- List of parsers to ignore installing
-        ignore_install = { "javascript" },
-        highlight = {
-        -- ...
-        },
-        -- ...
-        rainbow = {
-            enable = true,
-            -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
-            extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-            max_file_lines = nil, -- Do not enable for files with more than n lines, int
-            -- colors = {}, -- table of hex strings
-            -- termcolors = {} -- table of colour name strings
-        }
-    }
+    local treesitter = require("nvim-treesitter")
+    treesitter.setup()
+    treesitter.install({ "bash", "c", "comment", "go", "lua", "vim" })
 EOF
 endfunction
 
